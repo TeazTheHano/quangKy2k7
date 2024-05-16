@@ -1,6 +1,6 @@
 // system import
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, SafeAreaView, StatusBar, Image, TouchableOpacity, ScrollView, Animated, Switch } from 'react-native';
+import { View, Text, SafeAreaView, StatusBar, Image, TouchableOpacity, ScrollView, Animated, Switch, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 // style import
@@ -13,24 +13,137 @@ import { goldStar, noStar, notiBellIcon, someFkCurvedIcon, weeklyAchiveIcon, wee
 import * as Progress from 'react-native-progress';
 import { marginBottomForScrollView } from '../assets/component';
 import colorStyle from '../assets/componentStyleSheet';
+import storage, { clearStorage, weeklyProgressData } from '../data/storageFunc';
 
 const Home = () => {
     const navigation = useNavigation();
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setShowWeeklyProgress(false);
+
+        setTimeout(() => {
+            setRefreshing(false);
+            setShowWeeklyProgress(true);
+        }, 2000);
+    }, []);
+
+    // WEEKLY PROGRESS SECTION
+
+    const [isCollectedToday, setIsCollectedToday] = useState(false);
+    const [checkInData, setCheckInData] = useState([]);
+    const [showWeeklyProgress, setShowWeeklyProgress] = useState(false);
+
+    interface Weekly {
+        day: string[];
+        collected: boolean[];
+        award: any[];
+    }
+
+    const [weekly, setWeekly] = useState<Weekly>({
+        day: [],
+        collected: [],
+        award: [],
+    });
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await weeklyProgressData();
+                setCheckInData(res);
+                weeklyFnc(res);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const today = new Date();
     const todayWeekday = today.getDay();
+    const todayDate = today.getDate();
 
-    const [isCollectedToday, setIsCollectedToday] = useState(false);
+    function weeklyFnc(monthData: any[]) {
+        let currentMonth = `${today.getFullYear()}/${today.getMonth() + 1}`;
 
-    const weekly = {
-        day: ['M', 'T', 'W', 'TH', 'F', 'S', 'SU'],
-        collected: [true, true, true, true, isCollectedToday, false, false],
-        award: [
-            weeklyAchiveIcon(vw(6.25), vw(7.5)),
-            weeklyAchivedIcon(vw(6.25), vw(7.5)),
-            weeklyAwaitAchieveIcon(vw(6.25), vw(7.5)),
-        ]
+        let currentMonthData = monthData.find((item: { month: string }) => item.month == currentMonth);
+        let currentWeek = currentMonthData.data.find((item: { days: any[] }) => item.days.find((day: number) => day == todayDate));
+        console.log('currentWeek', currentWeek);
+
+        if (currentWeek) {
+            let todayIndex = currentWeek.days.findIndex((day: number) => day == todayDate);
+            setIsCollectedToday(currentWeek.checked[todayIndex]);
+        }
+
+        const weekly = {
+            day: ['M', 'T', 'W', 'TH', 'F', 'S', 'SU'],
+            collected: currentWeek.checked,
+            award: [
+                weeklyAchiveIcon(vw(6.25), vw(7.5)),
+                weeklyAchivedIcon(vw(6.25), vw(7.5)),
+                weeklyAwaitAchieveIcon(vw(6.25), vw(7.5)),
+            ]
+        }
+
+        setWeekly(weekly);
     }
+
+    useEffect(() => {
+        if (showWeeklyProgress) {
+            weeklyFnc(checkInData);
+        }
+    }, [weekly.collected])
+
+    const claimCheckIn = (monthData: any[]) => {
+        let currentMonth = `${today.getFullYear()}/${today.getMonth() + 1}`;
+
+        let currentMonthData = monthData.find((item: { month: string }) => item.month == currentMonth);
+        let currentWeek = currentMonthData.data.find((item: { days: any[] }) => item.days.find((day: number) => day == todayDate));
+        let todayIndex = currentWeek.days.findIndex((day: number) => day == todayDate);
+
+        currentWeek.checked[todayIndex] = true;
+        setIsCollectedToday(true);
+
+        storage.save({
+            key: 'weeklyProgress',
+            data: checkInData,
+            expires: null,
+        });
+    }
+
+    function renderWeeklyProgress(weekly: Weekly) {
+        return weekly.collected.length > 0 ? (
+            <Animated.View style={[styles.bgcolorBlack, styles.padding4vw,]}>
+                <Pay16RegAuto style={[styles.paddingH4vw, { color: 'white' }]}>Weekly progress</Pay16RegAuto>
+                <View style={[styles.flexRowBetweenCenter, styles.flexNoWrap, styles.marginTop1vw, styles.flex1, styles.paddingH2vw]}>
+                    {weekly.day.map((day, index) => {
+                        return (
+                            <View key={index} style={[styles.flexColCenter, styles.gap1vw, styles.paddingV2vw, todayWeekday == index + 1 ? styles.paddingH4vw : null, styles.borderRadius100, { backgroundColor: todayWeekday == index + 1 ? 'white' : null, }]}>
+                                <Lex14BlackAuto style={{ color: todayWeekday == index + 1 ? colorStyle.orange : 'rgba(87, 87, 87, 1)' }}>{day}</Lex14BlackAuto>
+                                {weekly.collected[index] ? weekly.award[1] : todayWeekday == index + 1 ? weekly.award[0] : weekly.award[2]}
+                                <Lex8BoldAuto style={{ color: weekly.collected[index] ? colorStyle.orange : colorStyle.grey }}>+10 ex</Lex8BoldAuto>
+                            </View>
+                        )
+                    })}
+                </View>
+                <TouchableOpacity
+                    onPress={() => { claimCheckIn(checkInData) }}
+                    style={[styles.marginTop6vw, styles.marginBottom2vw, styles.alignSelfCenter, styles.paddingV4vw, styles.paddingH6vw, styles.borderRadius100, { backgroundColor: colorStyle.neu4, display: !weekly.collected[todayWeekday - 1] ? 'block' : 'none' }]}>
+                    <Lex16BlackAuto style={[{ color: colorStyle.yellow }]}>Tap to recive +10 experience</Lex16BlackAuto>
+                </TouchableOpacity>
+            </Animated.View>
+        ) : (
+            <Animated.View style={[styles.bgcolorBlack, styles.padding4vw,]}>
+                <Pay16RegAuto style={[styles.paddingH4vw, { color: 'white' }]}>Loading</Pay16RegAuto>
+            </Animated.View>
+        )
+    }
+
+    // END OF WEEKLY PROGRESS SECTION
+
+    // DATA AND CARD SECTION
 
     const [switchSet, setSwitchSet] = useState(0);
     const [switchSetData, setSwitchSetData] = useState([true, false, false, false, false]);
@@ -55,7 +168,6 @@ const Home = () => {
     }, [switchSet])
 
     // data set
-
     const [setData, setSetData] = useState(
         [
             {
@@ -284,14 +396,6 @@ const Home = () => {
                             <View key={index}>
                                 <View style={[styles.flexRowStartCenter, styles.gap1vw, styles.wfit, styles.paddingH4vw, styles.paddingV2vw, { backgroundColor: 'rgba(79, 79, 79, 1)', borderTopLeftRadius: vw(4), borderTopRightRadius: vw(4), transform: [{ translateY: 1 }] }]}>
                                     <Lex12BoldAuto style={{ color: 'white' }}>{item.desk} {item.desk > 1 ? 'desks' : 'desk'}:</Lex12BoldAuto>
-                                    {/* <ProgressCircle
-                                        percent={item.current / item.total * 100}
-                                        radius={vw(2)}
-                                        borderWidth={vw(0.75)}
-                                        color={colorStyle.neu6}
-                                        shadowColor="rgba(164, 162, 162, 1)"
-                                        bgColor="rgba(0,0,0,1)"
-                                    /> */}
                                     <Progress.Circle
                                         progress={item.current / item.total}
                                         strokeCap='round'
@@ -351,11 +455,12 @@ const Home = () => {
         )
     }
 
+    // END OF DATA AND CARD SECTION
 
     return (
         <SafeAreaView style={[styles.flex1, styles.bgcolorBlack]}>
             <StatusBar />
-            <View style={[styles.flexRowBetweenCenter, styles.paddingH8vw, styles.paddingBottom4vw, styles.bgcolorBlack, ]}>
+            <View style={[styles.flexRowBetweenCenter, styles.paddingH8vw, styles.paddingBottom4vw, styles.bgcolorBlack,]}>
                 <View style={[styles.flexRowCenter, styles.gap2vw]}>
                     <Image source={require('../assets/image/placeholder.jpeg')} style={[styles.borderRadius100, { width: vw(14), height: vw(14), borderColor: 'rgba(77, 131, 101, 1)', borderWidth: vw(0.5), }]} />
                     <View>
@@ -369,27 +474,17 @@ const Home = () => {
                     {notiBellIcon(vw(10), vw(10),)}
                 </TouchableOpacity>
             </View>
-            <ScrollView style={[styles.flex1, styles.bgcolorBlack]}>
-                <Animated.View style={[styles.bgcolorBlack, styles.padding4vw,]}>
-                    <Pay16RegAuto style={[styles.paddingH4vw, { color: 'white' }]}>Weekly progress</Pay16RegAuto>
-                    <View style={[styles.flexRowBetweenCenter, styles.flexNoWrap, styles.marginTop1vw, styles.flex1, styles.paddingH2vw]}>
-                        {weekly.day.map((day, index) => {
-                            return (
-                                <View key={index} style={[styles.flexColCenter, styles.gap1vw, styles.paddingV2vw, todayWeekday == index + 1 ? styles.paddingH4vw : null, styles.borderRadius100, { backgroundColor: todayWeekday == index + 1 ? 'white' : null, }]}>
-                                    <Lex14BlackAuto style={{ color: todayWeekday == index + 1 ? colorStyle.orange : 'rgba(87, 87, 87, 1)' }}>{day}</Lex14BlackAuto>
-                                    {weekly.collected[index] ? weekly.award[1] : todayWeekday == index + 1 ? weekly.award[0] : weekly.award[2]}
-                                    <Lex8BoldAuto style={{ color: weekly.collected[index] ? colorStyle.orange : colorStyle.grey }}>+10 ex</Lex8BoldAuto>
-                                </View>
-                            )
-                        })}
-                    </View>
-                    <TouchableOpacity
-                        onPress={() => { setIsCollectedToday(true) }}
-                        style={[styles.marginTop6vw, styles.marginBottom2vw, styles.alignSelfCenter, styles.paddingV4vw, styles.paddingH6vw, styles.borderRadius100, { backgroundColor: colorStyle.neu4, display: !weekly.collected[todayWeekday - 1] ? 'block' : 'none' }]}>
-                        <Lex16BlackAuto style={[{ color: colorStyle.yellow }]}>Tap to recive +10 experience</Lex16BlackAuto>
-                    </TouchableOpacity>
-                </Animated.View>
-
+            <ScrollView
+                style={[styles.flex1, styles.bgcolorBlack]}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        style={{ backgroundColor: colorStyle.you }}
+                    />
+                }>
+                {/* WEEKLY PROGRESS SECTION */}
+                {renderWeeklyProgress(weekly)}
                 <View style={{ backgroundColor: colorStyle.you }}>
                     {/* blue part */}
                     <View style={[styles.paddingV3vw, styles.flexRowBetweenCenter, styles.flex1, styles.paddingH5vw,]}>
@@ -414,6 +509,8 @@ const Home = () => {
                                     <Lex16BlackAuto style={{ color: colorStyle.orange }}> memorized</Lex16BlackAuto> for all time</Lex16RegAuto>
                             </View>
                         </View>
+
+                        <TouchableOpacity onPress={() => { clearStorage() }}><Text>clear</Text></TouchableOpacity>
 
                         {/* Black part */}
                         <View style={[styles.bgcolorBlack, styles.paddingV4vw, styles.paddingH6vw, styles.positionRelative, { borderTopLeftRadius: vw(10), borderTopRightRadius: vw(10) }]}>
