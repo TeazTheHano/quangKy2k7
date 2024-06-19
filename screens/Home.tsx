@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 // style import
 import styles from '../assets/stylesheet';
-import { vw, vh, vmax, vmin } from "react-native-expo-viewport-units";
+import { vh, vw } from '../assets/stylesheet';
 
 // component import
 import { Lex10BoldAuto, Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex14BlackAuto, Lex14RegAuto, Lex16BlackAuto, Lex16MedAuto, Lex16RegAuto, Lex20BlackAuto, Lex8BoldAuto, Lex8LightAuto, Pay16RegAuto, Pay20BlackLine122, Pay32BlackLine40 } from '../assets/Class';

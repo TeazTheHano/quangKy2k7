@@ -9,7 +9,7 @@ import { Lex16RegAuto, Lex18RegAuto, Lex20BlackAuto, Pay32BlackLine40 } from '..
 import componentStyleSheet from '../assets/componentStyleSheet';
 
 import { SvgXml } from 'react-native-svg';
-import { vw, vh } from 'react-native-expo-viewport-units';
+import { vw, vh } from '../assets/stylesheet';
 
 function useColorWidthAnimation() {
     const animation = useRef(new Animated.Value(0)).current;

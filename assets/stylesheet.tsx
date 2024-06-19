@@ -1,5 +1,8 @@
 import { StyleSheet } from 'react-native';
-import { vw, vh } from 'react-native-expo-viewport-units';
+export const vw = (number: number) => Dimensions.get('window').width * (number / 100);
+export const vh = (number: number) => Dimensions.get('window').height * (number / 100);
+export const vmin = (number: number) => Math.min(Dimensions.get('window').width * (number / 100), Dimensions.get('window').height * (number / 100));
+export const vmax = (number: number) => Math.max(Dimensions.get('window').width * (number / 100), Dimensions.get('window').height * (number / 100));
 
 const styles = StyleSheet.create<any>({
     boxsizingBorderBox: {

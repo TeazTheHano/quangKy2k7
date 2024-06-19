@@ -7,7 +7,7 @@ import { Dimensions } from "react-native";
 // style import
 import styles from "./stylesheet";
 import componentStyle from './componentStyleSheet';
-import { vw, vh, vmax, vmin } from "react-native-expo-viewport-units";
+import { vw, vh } from "./stylesheet";
 import Svg, { SvgXml } from 'react-native-svg';
 
 // SVG import

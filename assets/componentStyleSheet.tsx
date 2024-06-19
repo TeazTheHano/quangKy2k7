@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { vw, vh } from 'react-native-expo-viewport-units';
+import { vw, vh } from './stylesheet';
 
 const colorStyle = StyleSheet.create<any>({
     white: '#FFFFFF',

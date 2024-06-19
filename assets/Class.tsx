@@ -6,7 +6,7 @@ import { View, Text, ScrollView, useColorScheme, TouchableOpacity, ImageBackgrou
 
 // style import
 import styles from './stylesheet';
-import { vw, vh, vmax, vmin } from "react-native-expo-viewport-units";
+import { vw, vh } from './stylesheet';
 
 // component import
 import { marginBottomForScrollView } from './component';

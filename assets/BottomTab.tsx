@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 // style import
 import Svg, { SvgUri, SvgXml } from 'react-native-svg';
-import { vw, vh, vmax, vmin } from "react-native-expo-viewport-units";
+import { vw, vh, vmax, vmin } from './stylesheet';
 import colorStyle from '../assets/componentStyleSheet';
 
 // screen import
