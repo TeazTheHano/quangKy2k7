@@ -1,6 +1,9 @@
 import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import {Alert} from 'react-native';
+import {Set, User} from './data';
+import {demoSets} from './factoryData';
 
 const storage = new Storage({
   // maximum capacity, default 1000 key-ids
@@ -22,14 +25,13 @@ const storage = new Storage({
   // the latest data.
   sync: {
     // Sync method for retrieving data from the server
-
   },
 });
 
 export default storage;
 
 /**
- * 
+ *
  * @param set Array[] | 'all': choose to reset all data or specific data
  */
 export const loadFactoryData = async (set: [] | 'all') => {
@@ -37,55 +39,58 @@ export const loadFactoryData = async (set: [] | 'all') => {
     // reset all data
   } else {
     // reset specific data with set as resparams
-    set.forEach((item) => {
-      storage.load({
-        key: item,
-        autoSync: false,
-        syncInBackground: false,
-      }).then((ret) => {
-        storage.save({
+    set.forEach(item => {
+      storage
+        .load({
           key: item,
-          data: ret,
-          expires: null,
+          autoSync: false,
+          syncInBackground: false,
+        })
+        .then(ret => {
+          storage.save({
+            key: item,
+            data: ret,
+            expires: null,
+          });
+        })
+        .catch(err => {
+          console.log(err.message);
         });
-      }
-      ).catch((err) => {
-        console.log(err.message);
-      });
-
     });
   }
-}
+};
 
 export const weeklyProgressData = async () => {
-  const weeklyProgress = await storage.load({
-    key: 'weeklyProgress',
-    autoSync: false,
-    syncInBackground: false,
-  }).then((ret) => {
-    if (ret !== null) {
-      console.log(ret);
-      return ret;
-    } else {
-      // create the weeklyProgress data
+  const weeklyProgress = await storage
+    .load({
+      key: 'weeklyProgress',
+      autoSync: false,
+      syncInBackground: false,
+    })
+    .then(ret => {
+      if (ret !== null) {
+        console.log(ret);
+        return ret;
+      } else {
+        // create the weeklyProgress data
+        getWeeksWithDaysInCurrentMonth();
+      }
+    })
+    .catch(err => {
+      console.log(err.message);
+      // if there is no data, create the weeklyProgress data
       getWeeksWithDaysInCurrentMonth();
-    }
-  }
-  ).catch((err) => {
-    console.log(err.message);
-    // if there is no data, create the weeklyProgress data
-    getWeeksWithDaysInCurrentMonth();
-  });
+    });
 
   return weeklyProgress;
-}
+};
 
 function getWeeksWithDaysInCurrentMonth(): void {
   console.log('getWeeksWithDaysInCurrentMonth');
-  
-  const checkInData: { month: string; data: {}}[] = []
-  let monthInfo = `${new Date().getFullYear()}/${new Date().getMonth() + 1}`
-  
+
+  const checkInData: {month: string; data: {}}[] = [];
+  let monthInfo = `${new Date().getFullYear()}/${new Date().getMonth() + 1}`;
+
   const currentMonth: number = new Date().getMonth(); // Get the current month
   const currentYear: number = new Date().getFullYear(); // Get the current year
   const firstDayOfMonth: Date = new Date(currentYear, currentMonth, 1);
@@ -95,9 +100,16 @@ function getWeeksWithDaysInCurrentMonth(): void {
   const lastDayOfMonthOfWeek: number = lastDayOfMonth.getDate();
 
   // Get the day of the week for the last day of the month in text format
-  const lastDayOfMonthOfWeekText: string = lastDayOfMonth.toLocaleString('default', { weekday: 'long' });
+  const lastDayOfMonthOfWeekText: string = lastDayOfMonth.toLocaleString(
+    'default',
+    {weekday: 'long'},
+  );
 
-  const weeks: { weekIndex: number; days: number[]; checked: [null | true | false] }[] = [];
+  const weeks: {
+    weekIndex: number;
+    days: number[];
+    checked: [null | true | false];
+  }[] = [];
   let weekIndex: number = 0;
   let days: number[] = [];
   let checked: [null | true | false] = [null];
@@ -111,17 +123,17 @@ function getWeeksWithDaysInCurrentMonth(): void {
           console.log('ii', ii);
         }
       }
-      weeks.push({ weekIndex, days, checked });
+      weeks.push({weekIndex, days, checked});
       weekIndex++;
       days = [];
       checked = [null];
     } else if (i === lastDayOfMonthOfWeek) {
-      weeks.push({ weekIndex, days, checked });
+      weeks.push({weekIndex, days, checked});
     }
   }
-  
-  checkInData.push({ month: monthInfo, data: weeks });
-  
+
+  checkInData.push({month: monthInfo, data: weeks});
+
   storage.save({
     key: 'weeklyProgress',
     data: checkInData,
@@ -132,9 +144,122 @@ function getWeeksWithDaysInCurrentMonth(): void {
 }
 
 // clear the storage
-export const clearStorage = async () => {
+export const clearWeekly = async () => {
   storage.remove({
     key: 'weeklyProgress',
   });
+};
 
-}
+export const saveSetWithID = async (data: Set) => {
+  try {
+    await storage.save({
+      key: 'set',
+      id: data.id,
+      data: data,
+    });
+    return true;
+  } catch (error) {
+    Alert.alert(`Failed to save set ${data.name}`);
+    return false;
+  }
+};
+
+export const loadSetWithID = async (id: string) => {
+  try {
+    const ret = await storage.load({
+      key: 'set',
+      id: id,
+    });
+    return ret;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const removeSetWithID = async (id: string) => {
+  try {
+    await storage.remove({
+      key: 'set',
+      id: id,
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const loadAllSets = async () => {
+  try {
+    const ret = await storage.getAllDataForKey('set');
+    return ret;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const clearAllSets = async () => {
+  try {
+    await storage.clearMapForKey('set');
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const loadAllDemoSets = async () => {
+  try {
+    demoSets.forEach(async set => {
+      await storage.save({
+        key: 'set',
+        id: set.id,
+        data: set,
+      });
+    });
+    return true;
+  } catch (error) {
+    Alert.alert('Failed to load demo sets');
+    return false;
+  }
+};
+
+export const clearAllDemoSets = async () => {
+  try {
+    demoSets.forEach(async set => {
+      await storage.remove({
+        key: 'set',
+        id: set.id,
+      });
+    });
+    return true;
+  } catch (error) {
+    Alert.alert('Failed to clear demo sets');
+    return false;
+  }
+};
+
+export const saveUser = async (data: User) => {
+  try {
+    await storage.save({
+      key: 'user',
+      data: data,
+    });
+    return true;
+  } catch (error) {
+    Alert.alert('Failed to save user');
+    return false;
+  }
+};
+
+export const loadDataInStartup = async () => {
+  const user = await storage.load({
+    key: 'user',
+    autoSync: false,
+    syncInBackground: false,
+  });
+
+  if (user !== null) {
+    return user;
+  } else {
+    return false;
+  }
+};

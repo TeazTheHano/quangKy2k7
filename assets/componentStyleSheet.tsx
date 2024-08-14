@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { vw, vh } from './stylesheet';
 
-const colorStyle = StyleSheet.create<any>({
+const clrStyle = StyleSheet.create<any>({
     white: '#FFFFFF',
     neu2: '#474747',
     neu3: '#A4A4A4',
@@ -19,7 +19,7 @@ const colorStyle = StyleSheet.create<any>({
     you: '#0083FF'
 });
 
-export default colorStyle;
+export default clrStyle;
 
 const componentStyle = StyleSheet.create<any>({
     // input 

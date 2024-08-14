@@ -1,14 +1,11 @@
 import { StyleSheet } from 'react-native';
-export const vw = (number: number) => Dimensions.get('window').width * (number / 100);
-export const vh = (number: number) => Dimensions.get('window').height * (number / 100);
-export const vmin = (number: number) => Math.min(Dimensions.get('window').width * (number / 100), Dimensions.get('window').height * (number / 100));
-export const vmax = (number: number) => Math.max(Dimensions.get('window').width * (number / 100), Dimensions.get('window').height * (number / 100));
+import { Dimensions } from 'react-native';
+export const vw = number => Dimensions.get('window').width * (number / 100);
+export const vh = number => Dimensions.get('window').height * (number / 100);
+export const vmin = number => Math.min(Dimensions.get('window').width * (number / 100), Dimensions.get('window').height * (number / 100));
+export const vmax = number => Math.max(Dimensions.get('window').width * (number / 100), Dimensions.get('window').height * (number / 100));
 
-const styles = StyleSheet.create<any>({
-    boxsizingBorderBox: {
-        boxSizing: 'border-box',
-    },
-
+const styles = StyleSheet.create({
     wfit: {
         alignSelf: 'flex-start'
     },
@@ -39,6 +36,14 @@ const styles = StyleSheet.create<any>({
 
     w80vw: {
         width: vw(80),
+    },
+
+    w70: {
+        width: '70%',
+    },
+
+    w70vw: {
+        width: vw(70),
     },
 
     w60: {
@@ -216,6 +221,10 @@ const styles = StyleSheet.create<any>({
 
     h30vh: {
         height: vh(30),
+    },
+
+    h30vw: {
+        height: vw(30),
     },
 
     h25: {
@@ -466,6 +475,38 @@ const styles = StyleSheet.create<any>({
         marginVertical: vw(1),
     },
 
+    margin1vw: {
+        margin: vw(1),
+    },
+
+    margin2vw: {
+        margin: vw(2),
+    },
+
+    margin3vw: {
+        margin: vw(3),
+    },
+
+    margin4vw: {
+        margin: vw(4),
+    },
+
+    margin5vw: {
+        margin: vw(5),
+    },
+
+    margin6vw: {
+        margin: vw(6),
+    },
+
+    margin8vw: {
+        margin: vw(8),
+    },
+
+    margin10vw: {
+        margin: vw(10),
+    },
+
     padding8vw: {
         padding: vw(8),
     },
@@ -482,12 +523,20 @@ const styles = StyleSheet.create<any>({
         padding: vw(4),
     },
 
+    padding3vw: {
+        padding: vw(3),
+    },
+
     padding2vw: {
         padding: vw(2),
     },
 
     padding1vw: {
         padding: vw(1),
+    },
+
+    padding10: {
+        padding: vw(2.5),
     },
 
     paddingLeft4vw: {
@@ -512,6 +561,18 @@ const styles = StyleSheet.create<any>({
 
     paddingRight1vw: {
         paddingRight: vw(1),
+    },
+
+    paddingTop10vw: {
+        paddingTop: vw(10),
+    },
+
+    paddingTop8vw: {
+        paddingTop: vw(8),
+    },
+
+    paddingTop6vw: {
+        paddingTop: vw(6),
     },
 
     paddingTop4vw: {
@@ -546,6 +607,10 @@ const styles = StyleSheet.create<any>({
         paddingBottom: vw(1),
     },
 
+    paddingH10vw: {
+        paddingHorizontal: vw(10),
+    },
+
     paddingH8vw: {
         paddingHorizontal: vw(8),
     },
@@ -578,6 +643,18 @@ const styles = StyleSheet.create<any>({
         paddingHorizontal: vw(2.5),
     },
 
+    paddingV10vw: {
+        paddingVertical: vw(10),
+    },
+
+    paddingV8vw: {
+        paddingVertical: vw(8),
+    },
+
+    paddingV6vw: {
+        paddingVertical: vw(6),
+    },
+
     paddingV4vw: {
         paddingVertical: vw(4),
     },
@@ -594,6 +671,18 @@ const styles = StyleSheet.create<any>({
         paddingVertical: vw(1),
     },
 
+    paddingV1vh: {
+        paddingVertical: vh(1),
+    },
+
+    paddingV2vh: {
+        paddingVertical: vh(2),
+    },
+
+    paddingV10vh: {
+        paddingVertical: vh(10),
+    },
+
     paddingV10H20: {
         paddingVertical: vw(2.5),
         paddingHorizontal: vw(5),
@@ -601,6 +690,18 @@ const styles = StyleSheet.create<any>({
 
     borderRadius10: {
         borderRadius: vw(2.5),
+    },
+
+    borderRadius2vw: {
+        borderRadius: vw(2),
+    },
+
+    borderRadius3vw: {
+        borderRadius: vw(3),
+    },
+
+    borderRadius4vw: {
+        borderRadius: vw(4),
     },
 
     borderRadius100: {
@@ -715,6 +816,10 @@ const styles = StyleSheet.create<any>({
         gap: vw(4),
     },
 
+    gap3vw: {
+        gap: vw(3),
+    },
+
     gap2vw: {
         gap: vw(2),
     },
@@ -789,6 +894,38 @@ const styles = StyleSheet.create<any>({
 
     justifyContentSpaceEvenly: {
         justifyContent: 'space-evenly',
+    },
+
+    alignContentCenter: {
+        alignContent: 'center',
+    },
+
+    alignContentStart: {
+        alignContent: 'flex-start',
+    },
+
+    alignContentEnd: {
+        alignContent: 'flex-end',
+    },
+
+    alignContentSpaceBetween: {
+        alignContent: 'space-between',
+    },
+
+    alignContentSpaceAround: {
+        alignContent: 'space-around',
+    },
+
+    alignContentSpaceEvenly: {
+        alignContent: 'space-evenly',
+    },
+
+    alignContentStretch: {
+        alignContent: 'stretch',
+    },
+
+    alignContentBaseline: {
+        alignContent: 'baseline',
     },
 
     alignItemsCenter: {
@@ -869,6 +1006,13 @@ const styles = StyleSheet.create<any>({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
+    },
+
+    flexRowStartBaseline: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'baseline',
     },
 
     flexColCenter: {
@@ -1006,6 +1150,14 @@ const styles = StyleSheet.create<any>({
         textAlign: 'justify',
     },
 
+    textUpperCase: {
+        textTransform: 'uppercase',
+    },
+
+    textLowerCase: {
+        textTransform: 'lowercase',
+    },
+
     fontSize1vw: {
         fontSize: vw(1),
     },
@@ -1032,6 +1184,46 @@ const styles = StyleSheet.create<any>({
 
     fontSize7vw: {
         fontSize: vw(7),
+    },
+
+    textUnderline: {
+        textDecorationLine: 'underline',
+    },
+
+    textLineThrough: {
+        textDecorationLine: 'line-through',
+    },
+
+    textNoUnderline: {
+        textDecorationLine: 'none',
+    },
+
+    textLineSolid: {
+        textDecorationStyle: 'solid',
+    },
+
+    textLineDotted: {
+        textDecorationStyle: 'dotted',
+    },
+
+    textLineDashed: {
+        textDecorationStyle: 'dashed',
+    },
+
+    textAlignVerticalTop: {
+        textAlignVertical: 'top',
+    },
+
+    textAlignVerticalCenter: {
+        textAlignVertical: 'center',
+    },
+
+    textAlignVerticalBottom: {
+        textAlignVertical: 'bottom',
+    },
+
+    textAlignVerticalAuto: {
+        textAlignVertical: 'auto',
     },
 
     lineHeight20: {
@@ -1107,6 +1299,10 @@ const styles = StyleSheet.create<any>({
         borderWidth: 1,
     },
 
+    zIndex1: {
+        zIndex: 1,
+    },
+
     zIndexM1: {
         zIndex: -1,
     },
@@ -1142,20 +1338,31 @@ const styles = StyleSheet.create<any>({
         shadowColor: 'black',
         shadowOffset: { width: vw(0), height: vw(1) },
         shadowOpacity: 0.25,
-        elevation: vw(2),
+        shadowRadius: vw(1),
+        elevation: vw(1),
     },
 
     shadowW0H05Black: {
         shadowColor: 'black',
         shadowOffset: { width: vw(0), height: vw(0.5) },
         shadowOpacity: 0.125,
+        shadowRadius: vw(0.5),
         elevation: vw(1),
     },
 
     shadowW0H1Color: {
         shadowOffset: { width: vw(0), height: vw(1) },
         shadowOpacity: 0.25,
+        shadowRadius: vw(1),
         elevation: vw(2),
+    },
+
+    shadowW0H2Black: {
+        shadowColor: 'black',
+        shadowOffset: { width: vw(0), height: vw(1.5) },
+        shadowOpacity: 0.075,
+        shadowRadius: vw(1.75),
+        elevation: vw(3),
     },
 
     bgcolorBlack: {

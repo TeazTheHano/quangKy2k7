@@ -2,7 +2,7 @@
 import React, { Component, useState } from 'react';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { View, Text, ScrollView, useColorScheme, TouchableOpacity, ImageBackground, Image, Animated, } from 'react-native';
+import { View, Text, ScrollView, useColorScheme, TouchableOpacity, ImageBackground, Image, Animated, StatusBar, Platform, ImageStyle, } from 'react-native';
 
 // style import
 import styles from './stylesheet';
@@ -12,9 +12,65 @@ import { vw, vh } from './stylesheet';
 import { marginBottomForScrollView } from './component';
 
 // svg import
-import { searchIcon } from './svgXml';
+import { goldStar, lockIcon, noStar, peopleIcon, savedIcon, searchIcon, unSavedIcon } from './svgXml';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+// other import
+
 
 // ____________________END OF IMPORT_______________________
+
+// UNIVESAL CLASS SECTION
+
+
+/**
+ * Component that renders a view with a colored status bar.
+ *
+ * @component
+ * @example
+ * // Usage:
+ * <SaveViewWithColorStatusBar
+ *   StatusBarColor="#FF0000"
+ *   StatusBarLightContent={true}
+ *   SameColorBottom={true}
+ *   StatusBarMargin={true}
+ *   bgColor="#FFFFFF"
+ *   StatusBarTranslucent={false}
+ * >
+ *   // Content goes here
+ * </SaveViewWithColorStatusBar>
+ *
+ * @param {React.ReactNode} children - The content to be rendered inside the component.
+ * @param {string} StatusBarColor - The color of the status bar.
+ * @param {boolean} StatusBarLightContent - Determines if the status bar content should be light or dark.
+ * @param {boolean} SameColorBottom - Determines if the bottom of the view should have the same color as the status bar.
+ * @param {boolean} StatusBarMargin - Determines if a margin should be added to the top of the view to accommodate the status bar.
+ * @param {string} bgColor - The background color of the view.
+ * @param {boolean} StatusBarTranslucent - Determines if the status bar should be translucent.
+ *
+ * @returns {React.ReactNode} The rendered component.
+ */
+export class SaveViewWithColorStatusBar extends Component<{ children?: React.ReactNode, StatusBarColor?: string, StatusBarLightContent?: boolean, SameColorBottom?: boolean, StatusBarMargin?: boolean, bgColor?: string, StatusBarTranslucent?: boolean }> {
+    render() {
+        const { children, bgColor, SameColorBottom, StatusBarColor, StatusBarLightContent, StatusBarMargin, StatusBarTranslucent } = this.props;
+        let statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0
+        return (
+            <SafeAreaView style={[styles.flex1, { backgroundColor: SameColorBottom ? StatusBarColor : bgColor }]}>
+                {StatusBarColor ? <View style={[styles.w100vw, styles.h50vh, styles.positionAbsolute, { backgroundColor: StatusBarColor }]} /> : null}
+                <View>
+                    <StatusBar barStyle={StatusBarLightContent ? 'light-content' : 'dark-content'}
+                        backgroundColor={StatusBarColor ? StatusBarColor : 'rgba(0,0,0,0)'}
+                        translucent={StatusBarTranslucent ? true : false}
+                    />
+                    {StatusBarMargin ? <View style={{ width: vw(100), height: statusBarHeight }}></View> : null}
+                </View>
+                <View style={[styles.flex1, { backgroundColor: bgColor ? bgColor : 'rgb(242,242,242)' }]}>
+                    {children}
+                </View>
+            </SafeAreaView>
+        )
+    }
+}
 
 // FONT SECTION
 export class Pay32BlackLine40 extends Component<{ children: React.ReactNode, style?: any }> {
@@ -305,3 +361,20 @@ export class Lex8BoldAuto extends Component<{ children: React.ReactNode, style?:
         );
     }
 }
+
+// ____________________END OF FONT_______________________
+
+export class SSBar extends Component {
+    render(): React.ReactNode {
+        let statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0
+        return (
+            <>
+                <StatusBar
+                    barStyle='light-content'
+                    backgroundColor={'black'} />
+                {Platform.OS === 'android' ? <View style={{ height: statusBarHeight / 2 }}></View> : null}
+            </>
+        )
+    }
+}
+
