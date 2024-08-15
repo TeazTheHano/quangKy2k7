@@ -41,3 +41,6 @@ export interface Set {
     // card need memorize progress
     // inner set view: card need today / card all time / desk completed
 }
+
+export const setList: Set[] = [
+]

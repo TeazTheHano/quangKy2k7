@@ -30,7 +30,7 @@ export let demoSets: Set[] = [
             star: 5,
             total: 10,
         },
-        private: false,
+        private: true,
         isSaved: false,
         numberOfSaved: 6,
         isDone: false,

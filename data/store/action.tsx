@@ -9,6 +9,7 @@ export const CURRENT_REMOVE_FROM_CURRENT = `CURRENT_REMOVE_FROM_CURRENT`;
 export const CURRENT_SET_PUBLIC = `CURRENT_SET_PUBLIC`;
 export const CURRENT_SET_PRIVATE = `CURRENT_SET_PRIVATE`;
 export const CURRENT_SET_DONE = `CURRENT_SET_DONE`;
+export const CURRENT_SET_SAVED = `CURRENT_SET_SAVED`;
 
 export const saveTheSet = (item: Set) => {
     return {
@@ -38,23 +39,30 @@ export const removeFromCurrent = (item: Set) => {
     }
 }
 
-export const setPublic = (item: Set) => {
+export const setPublic = (item: Set[]) => {
     return {
         type: CURRENT_SET_PUBLIC,
         payload: item
     }
 }
 
-export const setPrivate = (item: Set) => {
+export const setPrivate = (item: Set[]) => {
     return {
         type: CURRENT_SET_PRIVATE,
         payload: item
     }
 }
 
-export const setDone = (item: Set) => {
+export const setDone = (item: Set[]) => {
     return {
         type: CURRENT_SET_DONE,
+        payload: item
+    }
+}
+
+export const setSaved = (item: Set[]) => {
+    return {
+        type: CURRENT_SET_SAVED,
         payload: item
     }
 }

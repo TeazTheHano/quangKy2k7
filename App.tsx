@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // screen import
 import OnBoarding from './screens/OnBoarding';
-// import Login from './screens/Login';
+import Login from './screens/Login';
 import Home from './screens/Home';
 import BottomTab from './assets/BottomTab';
 import Library from './screens/Library';
@@ -22,8 +22,8 @@ function App(): React.JSX.Element {
     <ProviderTotal>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {/* <Stack.Screen name="OnBoarding" component={OnBoarding} /> */}
-          {/* <Stack.Screen name="Login" component={Login} /> */}
+          <Stack.Screen name="OnBoarding" component={OnBoarding} />
+          <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="BottomTab" component={BottomTab} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Library" component={Library} />

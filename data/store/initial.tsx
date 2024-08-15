@@ -12,7 +12,7 @@ export interface CurrentSets {
 
 export interface Action {
     type: string;
-    payload: Set;
+    payload: Set | Set[];
 }
 
 export const initialState: CurrentSets = {

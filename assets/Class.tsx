@@ -2,7 +2,7 @@
 import React, { Component, useState } from 'react';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { View, Text, ScrollView, useColorScheme, TouchableOpacity, ImageBackground, Image, Animated, StatusBar, Platform, ImageStyle, } from 'react-native';
+import { View, Text, ScrollView, useColorScheme, TouchableOpacity, ImageBackground, Image, Animated, StatusBar, Platform, ImageStyle, TextInput, } from 'react-native';
 
 // style import
 import styles from './stylesheet';
@@ -14,6 +14,7 @@ import { marginBottomForScrollView } from './component';
 // svg import
 import { goldStar, lockIcon, noStar, peopleIcon, savedIcon, searchIcon, unSavedIcon } from './svgXml';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import clrStyle from './componentStyleSheet';
 
 // other import
 
@@ -378,3 +379,44 @@ export class SSBar extends Component {
     }
 }
 
+
+export class InputCardVer1 extends Component<{
+    style?: any
+    value: any
+    onChangeText: (input: any) => void
+    hideContent?: boolean,
+    hideContentFnc?: (value: boolean) => void,
+    textContentType?: string | undefined
+    title?: string
+    placeholder?: string
+}> {
+    render() {
+        const { style, onChangeText, value, hideContent, hideContentFnc, textContentType, title, placeholder } = this.props;
+        let type: string = textContentType ? textContentType : "none"
+
+        return (
+            <View
+                style={[styles.w100, styles.flexRow, styles.borderRadius2vw, styles.paddingH4vw, styles.marginBottom4vw, { borderWidth: 1, borderColor: 'rgba(0,0,0,1)' }, style]} >
+                {title ?
+                    <Lex10BoldAuto style={[styles.paddingH4vw, styles.marginBottom4vw, { color: clrStyle.grey3 }]}>{title}</Lex10BoldAuto>
+                    : null}
+                <TextInput
+                    value={value}
+                    onChangeText={onChangeText}
+                    autoCapitalize={'sentences'}
+                    placeholderTextColor={clrStyle.grey2}
+                    placeholder={placeholder ? placeholder : ''}
+                    secureTextEntry={hideContent ? hideContent : false}
+                    textContentType={type as "none"}
+                />
+                {hideContentFnc ?
+                    <TouchableOpacity
+                        onPress={() => { hideContentFnc && hideContentFnc(!hideContent) }}
+                        style={[styles.padding2vw,]}>
+                        <Lex10BoldAuto style={{ color: clrStyle.grey3 }}>{hideContent ? `Show ${type}` : `Hide ${type}`}</Lex10BoldAuto>
+                    </TouchableOpacity>
+                    : null}
+            </View>
+        )
+    }
+}

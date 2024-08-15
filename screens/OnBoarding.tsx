@@ -1,11 +1,11 @@
 // system import
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, SafeAreaView, ImageBackground, Image, TouchableOpacity, Animated, Easing, FlatList } from 'react-native';
+import { View, Text, SafeAreaView, ImageBackground, Image, TouchableOpacity, Animated, Easing, FlatList, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 // style import
 import styles from '../assets/stylesheet';
-import { Lex16RegAuto, Lex18RegAuto, Lex20BlackAuto, Pay32BlackLine40 } from '../assets/Class';
+import { Lex16RegAuto, Lex18RegAuto, Lex20BlackAuto, Pay32BlackLine40, SSBar } from '../assets/Class';
 import componentStyleSheet from '../assets/componentStyleSheet';
 
 import { SvgXml } from 'react-native-svg';
@@ -148,7 +148,7 @@ export default function OnBoarding() {
                                 <Animated.Image
                                     key={index}
                                     source={item}
-                                    style={[styles.w100vw, styles.h100vh, { transform: [{ translateX: imageTranslateX }] }]}
+                                    style={[styles.w100vw, styles.h100vh, { transform: [{ translateX: imageTranslateX }] }] as any}
                                     resizeMode='cover'
                                 />
                             ))
@@ -158,38 +158,40 @@ export default function OnBoarding() {
                     </View>
                 </View>
 
-                <View style={[styles.marginHorizontal8vw, styles.flexColBetweenCenter, styles.gap4vw, styles.positionAbsolute, styles.paddingTop4vw, { bottom: vw(4) }]}>
-                    <View style={[styles.flexRowBetweenCenter, styles.w100]}>
-                        <View style={[styles.flexRowCenter, styles.gap1vw]}>
-                            <Animated.View style={{ width: widthAnimation1, height: vw(2), borderRadius: vw(2), backgroundColor: backgroundColorAnimation1 }}>
-                            </Animated.View>
-                            <Animated.View style={{ width: widthAnimation2, height: vw(2), borderRadius: vw(2), backgroundColor: backgroundColorAnimation2 }}>
-                            </Animated.View>
-                            <Animated.View style={{ width: widthAnimation3, height: vw(2), borderRadius: vw(2), backgroundColor: backgroundColorAnimation3 }}>
-                            </Animated.View>
-                        </View>
-                        {/* TODO: navigation to login later */}
-                        <TouchableOpacity
-                            onPress={() => {
-                                currentOnboarding < 2 ? setCurrentOnboarding(currentOnboarding + 1) : navigation?.navigate('Tab' as never);
-                            }}
-                            style={[styles.flexRowCenter, styles.gap1vw, styles.paddingV4vw, styles.paddingH8vw, styles.borderRadius40, { backgroundColor: 'rgba(134, 223, 208, 1)' }]}>
-                            <Lex16RegAuto>Tiếp</Lex16RegAuto>
-                            <SvgXml xml={`<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M10.8228 4.44727L15.3753 8.99977L10.8228 13.5523" stroke="#0A0A0A" style="stroke:#0A0A0A;stroke:color(display-p3 0.0392 0.0392 0.0392);stroke-opacity:1;" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M2.625 9H15.2475" stroke="#0A0A0A" style="stroke:#0A0A0A;stroke:color(display-p3 0.0392 0.0392 0.0392);stroke-opacity:1;" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            `} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
+
             </View>
         );
     }
 
     return (
         <SafeAreaView style={[styles.flex1, { backgroundColor: '#0A0A0A' }]}>
+            <StatusBar barStyle='light-content' backgroundColor={'#0A0A0A'} />
             {gesture()}
+            <View style={[styles.marginHorizontal8vw, styles.flexColBetweenCenter, styles.gap4vw, styles.positionAbsolute, styles.paddingTop4vw, { bottom: vw(4) }]}>
+                <View style={[styles.flexRowBetweenCenter, styles.w100]}>
+                    <View style={[styles.flexRowCenter, styles.gap1vw]}>
+                        <Animated.View style={{ width: widthAnimation1, height: vw(2), borderRadius: vw(2), backgroundColor: backgroundColorAnimation1 }}>
+                        </Animated.View>
+                        <Animated.View style={{ width: widthAnimation2, height: vw(2), borderRadius: vw(2), backgroundColor: backgroundColorAnimation2 }}>
+                        </Animated.View>
+                        <Animated.View style={{ width: widthAnimation3, height: vw(2), borderRadius: vw(2), backgroundColor: backgroundColorAnimation3 }}>
+                        </Animated.View>
+                    </View>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            currentOnboarding < 2 ? setCurrentOnboarding(currentOnboarding + 1) : navigation?.navigate('Login' as never);
+                        }}
+                        style={[styles.flexRowCenter, styles.gap1vw, styles.paddingV4vw, styles.paddingH8vw, styles.borderRadius40, { backgroundColor: 'rgba(134, 223, 208, 1)' }]}>
+                        <Lex16RegAuto>Tiếp</Lex16RegAuto>
+                        <SvgXml xml={`<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10.8228 4.44727L15.3753 8.99977L10.8228 13.5523" stroke="#0A0A0A" style="stroke:#0A0A0A;stroke:color(display-p3 0.0392 0.0392 0.0392);stroke-opacity:1;" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M2.625 9H15.2475" stroke="#0A0A0A" style="stroke:#0A0A0A;stroke:color(display-p3 0.0392 0.0392 0.0392);stroke-opacity:1;" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            `} />
+                    </TouchableOpacity>
+                </View>
+            </View>
         </SafeAreaView>
     )
 }

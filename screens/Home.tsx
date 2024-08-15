@@ -12,15 +12,16 @@ import { Lex10BoldAuto, Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex14BlackAut
 import { goldStar, noStar, notiBellIcon, someFkCurvedIcon, weeklyAchiveIcon, weeklyAchivedIcon, weeklyAwaitAchieveIcon, lockIcon, peopleIcon, savedIcon, unSavedIcon } from '../assets/svgXml';
 import { marginBottomForScrollView, showSetCard } from '../assets/component';
 import clrStyle from '../assets/componentStyleSheet';
-import storage, { weeklyProgressData } from '../data/storageFunc';
+import storage, { getAllSets, loadAllSets, weeklyProgressData } from '../data/storageFunc';
 import { demoSets } from '../data/factoryData';
-import { RootContext } from '../data/store';
+import { CURRENT_SET_PUBLIC, RootContext, setDone, setPrivate, setPublic, setSaved } from '../data/store';
+import { Set, setList } from '../data/data';
 
 const Home = () => {
-    const [CURRENT_SETS, dispatch] = useContext(RootContext);
-
     const navigation = useNavigation();
     const [refreshing, setRefreshing] = useState(false);
+    const [CURRENT_SETS, dispatch] = useContext(RootContext);
+    const [isDataLoaded, setIsDataLoaded] = useState(false);
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -28,10 +29,43 @@ const Home = () => {
             setRefreshing(false);
             navigation.reset({
                 index: 0,
-                routes: [{ name: 'Home' }],
+                routes: [{ name: 'Home' as never }],
             });
         }, 1000);
     }, []);
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            const fetchData = async () => {
+                try {
+                    const res = await weeklyProgressData();
+                    setCheckInData(res);
+                    weeklyFnc(res);
+                    getAndAlignData();
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+
+            fetchData();
+        });
+        return unsubscribe;
+    }, [navigation]);
+
+    function getAndAlignData() {
+        getAllSets().then(sets => {
+            if (sets !== false) {
+                let publicSets = sets.filter((set: Set) => !set.private);
+                dispatch(setPublic(publicSets));
+                let privateSets = sets.filter((set: Set) => set.private);
+                dispatch(setPrivate(privateSets));
+                let savedSets = sets.filter((set: Set) => set.isSaved);
+                dispatch(setSaved(savedSets));
+                let doneSets = sets.filter((set: Set) => set.isDone);
+                dispatch(setDone(doneSets));
+            }
+        }).then(() => { setIsDataLoaded(true) });
+    }
 
     // WEEKLY PROGRESS SECTION
 
@@ -50,23 +84,6 @@ const Home = () => {
         collected: [],
         award: [],
     });
-
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            const fetchData = async () => {
-                try {
-                    const res = await weeklyProgressData();
-                    setCheckInData(res);
-                    weeklyFnc(res);
-                } catch (error) {
-                    console.log(error);
-                }
-            };
-
-            fetchData();
-        });
-        return unsubscribe;
-    }, [navigation]);
 
     const today = new Date();
     const todayWeekday = today.getDay();
@@ -156,7 +173,7 @@ const Home = () => {
     // DATA AND CARD SECTION
 
     // data set
-    const [setData, setSetData] = useState(demoSets)
+    const [setData, setSetData] = useState<Set[]>([]);
 
     const [switchSet, setSwitchSet] = useState(0);
     const [sellected, setSellected] = useState(0);
@@ -199,7 +216,7 @@ const Home = () => {
                 setSetData(CURRENT_SETS.public.concat(CURRENT_SETS.private, CURRENT_SETS.saved, CURRENT_SETS.done))
                 break;
         }
-    }, [switchSet, sellected])
+    }, [switchSet, sellected, isDataLoaded])
 
 
     function sellectData() {
@@ -307,6 +324,7 @@ const Home = () => {
         </SafeAreaView >
 
     )
+
 }
 
 export default Home;

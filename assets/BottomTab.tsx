@@ -4,9 +4,7 @@ import { createBottomTabNavigator, BottomTabBar } from '@react-navigation/bottom
 import { useNavigation } from '@react-navigation/native';
 
 // style import
-import Svg, { SvgUri, SvgXml } from 'react-native-svg';
 import { vw, vh, vmax, vmin } from './stylesheet';
-import clrStyle from '../assets/componentStyleSheet';
 
 // screen import
 import Home from '../screens/Home';
@@ -14,7 +12,6 @@ import Library from '../screens/Library';
 import NewFeed from '../screens/NewFeed';
 import Setting from '../screens/Setting';
 import Add from '../screens/Add';
-import styles from './stylesheet';
 import { AddIcon, AddIconInactive, HomeIcon, HomeIconInactive, LibraryIcon, LibraryIconInactive, NewFeedIcon, NewFeedIconInactive, SettingIcon, SettingIconInactive } from './svgXml';
 import { Platform } from 'react-native';
 

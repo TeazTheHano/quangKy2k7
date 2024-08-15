@@ -214,10 +214,14 @@ export function showSetCard(DATA: Set[]) {
         // }));
     };
 
-    return (
-        <View style={[styles.flexCol, styles.marginVertical4vw, styles.gap4vw]}>
-            {
-                DATA.length == 0 ? <Lex16RegAuto style={{ color: clrStyle.white }}>No set found</Lex16RegAuto> :
+    if (!DATA.length) {
+        return (
+            <Lex16RegAuto style={{ color: clrStyle.white }}>No set found</Lex16RegAuto>
+        )
+    } else {
+        return (
+            <View style={[styles.flexCol, styles.marginVertical4vw, styles.gap4vw]}>
+                {
                     DATA.map((set: any, index: number) => {
                         let DESK_NUMBER: number = set.deskList.length
                         let TOTAL_CARD_NEED_MEMORIZED_NUMBER: number = set.deskList.map((item: any) => item.cardList.length).reduce((a: number, b: number) => a + b)
@@ -292,8 +296,9 @@ export function showSetCard(DATA: Set[]) {
                             </View>
                         )
                     })
-            }
+                }
 
-        </View>
-    )
+            </View>
+        )
+    }
 }

@@ -2,8 +2,10 @@ import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import {Alert} from 'react-native';
-import {Set, User} from './data';
+import {Set, setList, User} from './data';
 import {demoSets} from './factoryData';
+import {useContext} from 'react';
+import {CURRENT_SET_PUBLIC, RootContext} from './store';
 
 const storage = new Storage({
   // maximum capacity, default 1000 key-ids
@@ -164,9 +166,9 @@ export const saveSetWithID = async (data: Set) => {
   }
 };
 
-export const loadSetWithID = async (id: string) => {
+export const getSetWithID = async (id: string) => {
   try {
-    const ret = await storage.load({
+    const ret: Set = await storage.load({
       key: 'set',
       id: id,
     });
@@ -188,9 +190,9 @@ export const removeSetWithID = async (id: string) => {
   }
 };
 
-export const loadAllSets = async () => {
+export const getAllSets = async () => {
   try {
-    const ret = await storage.getAllDataForKey('set');
+    const ret: Set[] = await storage.getAllDataForKey('set');
     return ret;
   } catch (error) {
     return false;
@@ -203,6 +205,31 @@ export const clearAllSets = async () => {
     return true;
   } catch (error) {
     return false;
+  }
+};
+
+export const loadAllSets = async (sets: Set[]) => {
+  try {
+    if (sets.length === 0) {
+      console.log('////////////////// NO SET TO LOAD //////////////////');
+      console.log(
+        '////////////////// Load demo sets instead //////////////////',
+      );
+      await loadAllDemoSets();
+    }
+    for (const set of sets) {
+      await storage.save({
+        key: 'set',
+        id: set.id,
+        data: set,
+      });
+    }
+    return true;
+  } catch (error) {
+    console.log(error);
+    console.log('Load demo sets instead');
+    await loadAllDemoSets();
+    return true;
   }
 };
 
@@ -246,20 +273,6 @@ export const saveUser = async (data: User) => {
     return true;
   } catch (error) {
     Alert.alert('Failed to save user');
-    return false;
-  }
-};
-
-export const loadDataInStartup = async () => {
-  const user = await storage.load({
-    key: 'user',
-    autoSync: false,
-    syncInBackground: false,
-  });
-
-  if (user !== null) {
-    return user;
-  } else {
     return false;
   }
 };
