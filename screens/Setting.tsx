@@ -1,7 +1,9 @@
 import { SafeAreaView, StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { SSBar } from '../assets/Class'
-import { clearAllDemoSets, clearAllSets, clearWeekly, loadAllDemoSets } from '../data/storageFunc'
+import { clearAllDemoSets, clearAllSets, clearWeekly, loadAllDemoSets, removeUser } from '../data/storageFunc'
+
+import { getAuth } from 'firebase/auth'
 
 export default function Setting() {
   return (
@@ -23,5 +25,13 @@ export default function Setting() {
         onPress={clearAllSets}>
         <Text>clear all sets</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          removeUser();
+
+        }}>
+        <Text>clear user aka log-out</Text>
+      </TouchableOpacity>
     </SafeAreaView>
-  )}
+  )
+}

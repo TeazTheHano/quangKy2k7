@@ -12,7 +12,7 @@ import { vw, vh } from './stylesheet';
 import { marginBottomForScrollView } from './component';
 
 // svg import
-import { goldStar, lockIcon, noStar, peopleIcon, savedIcon, searchIcon, unSavedIcon } from './svgXml';
+import { goldStar, inVisibilityIcon, leftArrow, lockIcon, noStar, peopleIcon, savedIcon, searchIcon, unSavedIcon, visibilityIcon } from './svgXml';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import clrStyle from './componentStyleSheet';
 
@@ -92,6 +92,18 @@ export class Pay20BlackLine122 extends Component<{ children: React.ReactNode, st
 
         return (
             <Text style={[{ fontFamily: 'PaytoneOne-Regular', fontSize: vw(5), lineHeight: vw(5 / 100 * 122), color: 'black' }, style]}>
+                {children}
+            </Text>
+        );
+    }
+}
+
+export class Pay28BlackLine122 extends Component<{ children: React.ReactNode, style?: any }> {
+    render() {
+        const { children, style } = this.props;
+
+        return (
+            <Text style={[{ fontFamily: 'PaytoneOne-Regular', fontSize: vw(7), lineHeight: vw(7 / 100 * 122), color: 'black' }, style]}>
                 {children}
             </Text>
         );
@@ -365,14 +377,14 @@ export class Lex8BoldAuto extends Component<{ children: React.ReactNode, style?:
 
 // ____________________END OF FONT_______________________
 
-export class SSBar extends Component {
+export class SSBar extends Component<{ color?: any }> {
     render(): React.ReactNode {
         let statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0
         return (
             <>
                 <StatusBar
                     barStyle='light-content'
-                    backgroundColor={'black'} />
+                    backgroundColor={this.props.color ? this.props.color : 'black'} />
                 {Platform.OS === 'android' ? <View style={{ height: statusBarHeight / 2 }}></View> : null}
             </>
         )
@@ -381,7 +393,7 @@ export class SSBar extends Component {
 
 
 export class InputCardVer1 extends Component<{
-    style?: any
+    customStyle?: any
     value: any
     onChangeText: (input: any) => void
     hideContent?: boolean,
@@ -389,34 +401,87 @@ export class InputCardVer1 extends Component<{
     textContentType?: string | undefined
     title?: string
     placeholder?: string
+    titleColor?: string
+    placeholderColor?: string
+    valueColor?: string
+    autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters' | undefined
 }> {
     render() {
-        const { style, onChangeText, value, hideContent, hideContentFnc, textContentType, title, placeholder } = this.props;
+        const { customStyle, onChangeText, value, hideContent, hideContentFnc, textContentType, title, placeholder, titleColor, placeholderColor, valueColor, autoCapitalize } = this.props;
         let type: string = textContentType ? textContentType : "none"
 
         return (
             <View
-                style={[styles.w100, styles.flexRow, styles.borderRadius2vw, styles.paddingH4vw, styles.marginBottom4vw, { borderWidth: 1, borderColor: 'rgba(0,0,0,1)' }, style]} >
+                style={[styles.w100, styles.padding2vw, styles.flexRow, styles.alignItemsCenter, styles.borderRadius2vw, styles.marginBottom4vw, { borderWidth: 1, borderColor: 'rgba(0,0,0,1)' }, customStyle]} >
                 {title ?
-                    <Lex10BoldAuto style={[styles.paddingH4vw, styles.marginBottom4vw, { color: clrStyle.grey3 }]}>{title}</Lex10BoldAuto>
+                    <Lex16MedAuto style={[styles.paddingH4vw, { color: titleColor ? titleColor : clrStyle.black }]}>{title}:</Lex16MedAuto>
                     : null}
                 <TextInput
-                    value={value}
                     onChangeText={onChangeText}
-                    autoCapitalize={'sentences'}
-                    placeholderTextColor={clrStyle.grey2}
+                    autoCapitalize={autoCapitalize ? autoCapitalize : 'none'}
                     placeholder={placeholder ? placeholder : ''}
+                    placeholderTextColor={placeholderColor ? placeholderColor : clrStyle.grey2}
                     secureTextEntry={hideContent ? hideContent : false}
+                    passwordRules={type === 'password' ? "minlength: 6; maxlength: 10" : ''}
                     textContentType={type as "none"}
-                />
+                    maxLength={type === 'password' ? 10 : 100}
+                    style={[styles.flex1, styles.padding1vw,]}
+                ><Lex16RegAuto style={[styles.flex1]}>{value}</Lex16RegAuto></TextInput>
                 {hideContentFnc ?
                     <TouchableOpacity
                         onPress={() => { hideContentFnc && hideContentFnc(!hideContent) }}
-                        style={[styles.padding2vw,]}>
-                        <Lex10BoldAuto style={{ color: clrStyle.grey3 }}>{hideContent ? `Show ${type}` : `Hide ${type}`}</Lex10BoldAuto>
+                        style={[{ paddingRight: vw(2) }]}>
+                        {hideContent ? inVisibilityIcon(vw(6), vw(6)) : visibilityIcon(vw(6), vw(6))}
                     </TouchableOpacity>
                     : null}
             </View>
+        )
+    }
+}
+
+export class TopNav1 extends Component<{
+    children?: React.ReactNode
+    title: string
+    leftIcon?: React.ReactNode
+    rightIcon?: React.ReactNode
+    leftIconFnc?: () => void
+    rightIconFnc?: () => void
+    returnPreScreen?: boolean
+    returnPreScreenFnc?: () => void
+    textCenter?: boolean
+}> {
+    render() {
+        let { title, leftIcon, rightIcon, returnPreScreen, rightIconFnc, leftIconFnc, returnPreScreenFnc, textCenter } = this.props
+        return (
+            <View style={[styles.w100, styles.padding4vw, styles.paddingH8vw, { backgroundColor: clrStyle.pur2, borderBottomLeftRadius: vw(6), borderBottomRightRadius: vw(6) }]}>
+                <View style={[styles.w100, styles.flexRowBetweenCenter]}>
+                    {returnPreScreen ?
+                        <TouchableOpacity
+                            style={[styles.padding2vw]}
+                            onPress={returnPreScreenFnc}>
+                            {leftArrow(vw(6), vw(6), 'black')}
+                        </TouchableOpacity>
+                        :
+                        leftIcon ?
+                            <TouchableOpacity
+                                style={[styles.padding2vw]}
+                                onPress={leftIconFnc}>
+                                {leftIcon}
+                            </TouchableOpacity>
+                            :
+                            <></>
+                    }
+                    <Pay28BlackLine122 style={[styles.flex1, textCenter ? styles.textCenter : null,]}>{title}</Pay28BlackLine122>
+                    {rightIcon ?
+                        <TouchableOpacity
+                            style={[styles.padding2vw]}
+                            onPress={rightIconFnc}>
+                            {rightIcon}
+                        </TouchableOpacity>
+                        : <></>
+                    }
+                </View>
+            </View >
         )
     }
 }

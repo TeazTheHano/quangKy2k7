@@ -1,11 +1,11 @@
 
-export interface User {
+export interface UserFormat {
     name: string;
     email: string;
     password: string;
-    savedSet: Set[];
-    doneSet: Set[];
-    createdSet: Set[];
+    savedSet: SetFormat[];
+    doneSet: SetFormat[];
+    createdSet: SetFormat[];
     imgAddress: string;
 }
 
@@ -23,10 +23,10 @@ export interface Desk {
     cardList: Card[];
 }
 
-export interface Set {
+export interface SetFormat {
     id: string;
     name: string;
-    author: User;
+    author: UserFormat;
     description: string;
     rate: {
         star: number;
@@ -42,5 +42,5 @@ export interface Set {
     // inner set view: card need today / card all time / desk completed
 }
 
-export const setList: Set[] = [
+export const setList: SetFormat[] = [
 ]

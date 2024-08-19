@@ -10,8 +10,20 @@ import componentStyleSheet from '../assets/componentStyleSheet';
 
 import { SvgXml } from 'react-native-svg';
 import { vw, vh } from '../assets/stylesheet';
+import { marginBottomForScrollView } from '../assets/component';
+import { getUser } from '../data/storageFunc';
 
 function useColorWidthAnimation() {
+    const navigation = useNavigation();
+    useEffect(() => {
+        getUser().then((user) => {
+            if (user !== false && user.email) {
+                console.log('User already signed in')
+                return navigation.navigate('BottomTab' as never)
+            }
+        })
+    }, [])
+
     const animation = useRef(new Animated.Value(0)).current;
 
     const backgroundColorAnimation = animation.interpolate({
@@ -93,23 +105,23 @@ export default function OnBoarding() {
 
     let onBoardingContent = (index: number) => {
         return (
-            index == 0 ?
+            index === 0 ? (
                 <View style={[styles.flexCol, styles.gap4vw, styles.w90, styles.alignSelfCenter, styles.positionAbsolute, { top: vh(60) }]}>
-                    <Pay32BlackLine40 style={[styles.textCenter, { color: componentStyleSheet.neu4 }]}>Ghi chú</Pay32BlackLine40>
-                    <Lex18RegAuto style={[styles.textCenter, { color: 'white' }]}>Ghi chú, take note lại tất cả những kiến thức muốn ghi nhớ của riêng bạn</Lex18RegAuto>
+                    <Pay32BlackLine40 style={[styles.textCenter, { color: componentStyleSheet.neu4 }]}>Note</Pay32BlackLine40>
+                    <Lex18RegAuto style={[styles.textCenter, { color: 'white' }]}>Take note of all the knowledge you want to remember</Lex18RegAuto>
                 </View>
-                :
-                index == 1 ?
-                    <View style={[styles.flexCol, styles.gap4vw, styles.w90, styles.alignSelfCenter, styles.positionAbsolute, { top: vh(60) }]}>
-                        <Pay32BlackLine40 style={[styles.textCenter, { color: componentStyleSheet.neu4 }]}>Học tập</Pay32BlackLine40>
-                        <Lex18RegAuto style={[styles.textCenter, { color: 'white' }]}>Nhắc nhở lặp lại, tự kiểm tra và theo dõi tiến độ, kết quả học tập</Lex18RegAuto>
-                    </View>
-                    :
-                    <View style={[styles.flexCol, styles.gap4vw, styles.w90, styles.alignSelfCenter, styles.positionAbsolute, { top: vh(60) }]}>
-                        <Lex18RegAuto style={[styles.textCenter, { color: 'white', fontSize: vw(8) }]}>Học tập, ghi nhớ
-                            <Lex20BlackAuto style={{ color: 'rgba(134, 223, 208, 1)', fontSize: vw(8) }}> dễ dàng</Lex20BlackAuto> hơn mỗi ngày với <Lex18RegAuto style={[styles.textCenter, { color: 'rgba(134, 223, 208, 1)', fontSize: vw(8) }]}>Flashcard</Lex18RegAuto></Lex18RegAuto>
-                    </View>
-        )
+            ) : index === 1 ? (
+                <View style={[styles.flexCol, styles.gap4vw, styles.w90, styles.alignSelfCenter, styles.positionAbsolute, { top: vh(60) }]}>
+                    <Pay32BlackLine40 style={[styles.textCenter, { color: componentStyleSheet.neu4 }]}>Study</Pay32BlackLine40>
+                    <Lex18RegAuto style={[styles.textCenter, { color: 'white' }]}>Remind, self-test, and track your learning progress and results</Lex18RegAuto>
+                </View>
+            ) : (
+                <View style={[styles.flexCol, styles.gap4vw, styles.w90, styles.alignSelfCenter, styles.positionAbsolute, { top: vh(60) }]}>
+                    <Lex18RegAuto style={[styles.textCenter, { color: 'white', fontSize: vw(8) }]}>Study, remember
+                        <Lex20BlackAuto style={{ color: 'rgba(134, 223, 208, 1)', fontSize: vw(8) }}> easily</Lex20BlackAuto> every day with <Lex18RegAuto style={[styles.textCenter, { color: 'rgba(134, 223, 208, 1)', fontSize: vw(8) }]}>Flashcards</Lex18RegAuto></Lex18RegAuto>
+                </View>
+            )
+        );
     }
 
     const gesture = () => {
@@ -167,7 +179,7 @@ export default function OnBoarding() {
         <SafeAreaView style={[styles.flex1, { backgroundColor: '#0A0A0A' }]}>
             <StatusBar barStyle='light-content' backgroundColor={'#0A0A0A'} />
             {gesture()}
-            <View style={[styles.marginHorizontal8vw, styles.flexColBetweenCenter, styles.gap4vw, styles.positionAbsolute, styles.paddingTop4vw, { bottom: vw(4) }]}>
+            <View style={[styles.marginHorizontal8vw, styles.flexColBetweenCenter, styles.gap4vw, styles.positionAbsolute, styles.paddingTop4vw, { bottom: vw(10) }]}>
                 <View style={[styles.flexRowBetweenCenter, styles.w100]}>
                     <View style={[styles.flexRowCenter, styles.gap1vw]}>
                         <Animated.View style={{ width: widthAnimation1, height: vw(2), borderRadius: vw(2), backgroundColor: backgroundColorAnimation1 }}>
@@ -183,7 +195,7 @@ export default function OnBoarding() {
                             currentOnboarding < 2 ? setCurrentOnboarding(currentOnboarding + 1) : navigation?.navigate('Login' as never);
                         }}
                         style={[styles.flexRowCenter, styles.gap1vw, styles.paddingV4vw, styles.paddingH8vw, styles.borderRadius40, { backgroundColor: 'rgba(134, 223, 208, 1)' }]}>
-                        <Lex16RegAuto>Tiếp</Lex16RegAuto>
+                        <Lex16RegAuto>Next</Lex16RegAuto>
                         <SvgXml xml={`<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M10.8228 4.44727L15.3753 8.99977L10.8228 13.5523" stroke="#0A0A0A" style="stroke:#0A0A0A;stroke:color(display-p3 0.0392 0.0392 0.0392);stroke-opacity:1;" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M2.625 9H15.2475" stroke="#0A0A0A" style="stroke:#0A0A0A;stroke:color(display-p3 0.0392 0.0392 0.0392);stroke-opacity:1;" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>

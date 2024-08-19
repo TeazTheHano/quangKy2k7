@@ -1,6 +1,6 @@
-import { Card, Set, User } from "./data";
+import { Card, SetFormat, UserFormat } from "./data";
 
-export const demoUser: User = {
+export const demoUser: UserFormat = {
     name: 'demo',
     email: 'demo@demo.com',
     password: 'demo',
@@ -10,7 +10,7 @@ export const demoUser: User = {
     imgAddress: 'https://owasp.org/assets/images/people/staff_andrew.jpg',
 }
 
-export const demoUser2: User = {
+export const demoUser2: UserFormat = {
     name: 'demo2222',
     email: 'demo@demo2222.com',
     password: 'demo',
@@ -20,7 +20,7 @@ export const demoUser2: User = {
     imgAddress: 'placeholder.jpeg',
 }
 
-export let demoSets: Set[] = [
+export let demoSets: SetFormat[] = [
     {
         id: 'B1',
         name: 'B1 Vocabularies',

@@ -10,12 +10,12 @@ import { vh, vw } from '../assets/stylesheet';
 // component import
 import { Lex10BoldAuto, Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex14BlackAuto, Lex14RegAuto, Lex16BlackAuto, Lex16MedAuto, Lex16RegAuto, Lex20BlackAuto, Lex8BoldAuto, Lex8LightAuto, Pay16RegAuto, Pay20BlackLine122, Pay32BlackLine40, SaveViewWithColorStatusBar, SSBar } from '../assets/Class';
 import { goldStar, noStar, notiBellIcon, someFkCurvedIcon, weeklyAchiveIcon, weeklyAchivedIcon, weeklyAwaitAchieveIcon, lockIcon, peopleIcon, savedIcon, unSavedIcon } from '../assets/svgXml';
-import { marginBottomForScrollView, showSetCard } from '../assets/component';
+import { imgSourceHandle, marginBottomForScrollView, showSetCard } from '../assets/component';
 import clrStyle from '../assets/componentStyleSheet';
-import storage, { getAllSets, loadAllSets, weeklyProgressData } from '../data/storageFunc';
+import storage, { getAllSets, getUser, loadAllSets, weeklyProgressData } from '../data/storageFunc';
 import { demoSets } from '../data/factoryData';
-import { CURRENT_SET_PUBLIC, RootContext, setDone, setPrivate, setPublic, setSaved } from '../data/store';
-import { Set, setList } from '../data/data';
+import { CURRENT_SET_PUBLIC, RootContext, saveUserInfo, setDone, setPrivate, setPublic, setSaved } from '../data/store';
+import { SetFormat, setList, UserFormat } from '../data/data';
 
 const Home = () => {
     const navigation = useNavigation();
@@ -41,6 +41,11 @@ const Home = () => {
                     const res = await weeklyProgressData();
                     setCheckInData(res);
                     weeklyFnc(res);
+                    getUser().then((user) => {
+                        if (user !== false && user.email) {
+                            dispatch(saveUserInfo(user));
+                        }
+                    })
                     getAndAlignData();
                 } catch (error) {
                     console.log(error);
@@ -55,13 +60,13 @@ const Home = () => {
     function getAndAlignData() {
         getAllSets().then(sets => {
             if (sets !== false) {
-                let publicSets = sets.filter((set: Set) => !set.private);
+                let publicSets = sets.filter((set: SetFormat) => !set.private);
                 dispatch(setPublic(publicSets));
-                let privateSets = sets.filter((set: Set) => set.private);
+                let privateSets = sets.filter((set: SetFormat) => set.private);
                 dispatch(setPrivate(privateSets));
-                let savedSets = sets.filter((set: Set) => set.isSaved);
+                let savedSets = sets.filter((set: SetFormat) => set.isSaved);
                 dispatch(setSaved(savedSets));
-                let doneSets = sets.filter((set: Set) => set.isDone);
+                let doneSets = sets.filter((set: SetFormat) => set.isDone);
                 dispatch(setDone(doneSets));
             }
         }).then(() => { setIsDataLoaded(true) });
@@ -173,7 +178,7 @@ const Home = () => {
     // DATA AND CARD SECTION
 
     // data set
-    const [setData, setSetData] = useState<Set[]>([]);
+    const [setData, setSetData] = useState<SetFormat[]>([]);
 
     const [switchSet, setSwitchSet] = useState(0);
     const [sellected, setSellected] = useState(0);
@@ -238,7 +243,8 @@ const Home = () => {
     }
 
 
-
+    console.log(CURRENT_SETS.userInfo?.imgAddress);
+    
     // END OF DATA AND CARD SECTION
 
     return (
@@ -246,9 +252,9 @@ const Home = () => {
             <SSBar />
             <View style={[styles.flexRowBetweenCenter, styles.paddingH8vw, styles.paddingBottom4vw, styles.bgcolorBlack,]}>
                 <View style={[styles.flexRowCenter, styles.gap2vw]}>
-                    <Image source={require('../assets/image/placeholder.jpeg')} style={[styles.borderRadius100, { width: vw(14), height: vw(14), borderColor: 'rgba(77, 131, 101, 1)', borderWidth: vw(0.5), }] as ImageStyle} />
+                    <Image source={imgSourceHandle(CURRENT_SETS.userInfo?.imgAddress ? CURRENT_SETS.userInfo.imgAddress : '')} style={[styles.borderRadius100, { width: vw(14), height: vw(14), borderColor: 'rgba(77, 131, 101, 1)', borderWidth: vw(0.5), }] as ImageStyle} />
                     <View>
-                        <Pay20BlackLine122 style={{ color: 'white' }}>Hi John Doe</Pay20BlackLine122>
+                        <Pay20BlackLine122 style={{ color: 'white' }}>{CURRENT_SETS.userInfo?.name ? CURRENT_SETS.userInfo.name : `User`}</Pay20BlackLine122>
                         <Lex16RegAuto style={{ color: 'white' }}>Let’s learn together!</Lex16RegAuto>
                     </View>
                 </View>

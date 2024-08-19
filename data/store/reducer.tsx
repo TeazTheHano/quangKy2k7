@@ -1,10 +1,10 @@
 //FIXME: NEED CHANGE IN NEW PJ: Add action types and action creators here
 
-import { Set } from "../data";
-import { initialState, Action, CurrentSets, CURRENT_SET_SAVED, } from "./index";
-import { CURRENT_SAVE_THE_SET, CURRENT_UNSAVE_THE_SET, CURRENT_SET_AS_CURRENT, CURRENT_REMOVE_FROM_CURRENT, CURRENT_SET_PUBLIC, CURRENT_SET_PRIVATE, CURRENT_SET_DONE } from "./index";
+import { SetFormat, UserFormat } from "../data";
+import { initialState, Action, CurrentSets, } from "./index";
+import { CURRENT_SET_SAVED, SAVE_USER_INFO, CURRENT_SAVE_THE_SET, CURRENT_UNSAVE_THE_SET, CURRENT_SET_AS_CURRENT, CURRENT_REMOVE_FROM_CURRENT, CURRENT_SET_PUBLIC, CURRENT_SET_PRIVATE, CURRENT_SET_DONE } from "./index";
 
-export default function treeReducer(state = initialState, action: Action): CurrentSets {
+export default function setReducer(state = initialState, action: Action): CurrentSets {
     switch (action.type) {
         //FIXME: NEED CHANGE IN NEW PJ: Add action types and action creators here
         case CURRENT_SAVE_THE_SET:
@@ -46,6 +46,11 @@ export default function treeReducer(state = initialState, action: Action): Curre
             return {
                 ...state,
                 saved: Array.isArray(action.payload) ? action.payload : [action.payload]
+            };
+        case SAVE_USER_INFO:
+            return {
+                ...state,
+                userInfo: action.payload as unknown as UserFormat
             };
         default:
             return state;

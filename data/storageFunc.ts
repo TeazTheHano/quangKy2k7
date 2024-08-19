@@ -2,7 +2,7 @@ import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import {Alert} from 'react-native';
-import {Set, setList, User} from './data';
+import {SetFormat, setList, UserFormat} from './data';
 import {demoSets} from './factoryData';
 import {useContext} from 'react';
 import {CURRENT_SET_PUBLIC, RootContext} from './store';
@@ -152,7 +152,7 @@ export const clearWeekly = async () => {
   });
 };
 
-export const saveSetWithID = async (data: Set) => {
+export const saveSetWithID = async (data: SetFormat) => {
   try {
     await storage.save({
       key: 'set',
@@ -168,7 +168,7 @@ export const saveSetWithID = async (data: Set) => {
 
 export const getSetWithID = async (id: string) => {
   try {
-    const ret: Set = await storage.load({
+    const ret: SetFormat = await storage.load({
       key: 'set',
       id: id,
     });
@@ -192,7 +192,7 @@ export const removeSetWithID = async (id: string) => {
 
 export const getAllSets = async () => {
   try {
-    const ret: Set[] = await storage.getAllDataForKey('set');
+    const ret: SetFormat[] = await storage.getAllDataForKey('set');
     return ret;
   } catch (error) {
     return false;
@@ -208,7 +208,7 @@ export const clearAllSets = async () => {
   }
 };
 
-export const loadAllSets = async (sets: Set[]) => {
+export const loadAllSets = async (sets: SetFormat[]) => {
   try {
     if (sets.length === 0) {
       console.log('////////////////// NO SET TO LOAD //////////////////');
@@ -264,7 +264,7 @@ export const clearAllDemoSets = async () => {
   }
 };
 
-export const saveUser = async (data: User) => {
+export const saveUser = async (data: UserFormat) => {
   try {
     await storage.save({
       key: 'user',
@@ -273,6 +273,28 @@ export const saveUser = async (data: User) => {
     return true;
   } catch (error) {
     Alert.alert('Failed to save user');
+    return false;
+  }
+};
+
+export const getUser = async () => {
+  try {
+    const ret: UserFormat = await storage.load({
+      key: 'user',
+    });
+    return ret;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const removeUser = async () => {
+  try {
+    await storage.remove({
+      key: 'user',
+    });
+    return true;
+  } catch (error) {
     return false;
   }
 };

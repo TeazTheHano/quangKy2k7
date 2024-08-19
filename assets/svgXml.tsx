@@ -23,7 +23,7 @@ export const searchIcon = (w?: any, h?: any, color?: any) => {
     );
 }
 
-export const leftArrow = (w = '100%', h = '100%', color?: any) => {
+export const leftArrow = (w: any = '100%', h: any = '100%', color?: any) => {
     const xml = `<svg width="100%" height="100%" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_118_911)">
     <path d="M9.785 16.25L16.49 22.955L14.7225 24.7225L5 15L14.7225 5.27747L16.49 7.04497L9.785 13.75L25 13.75L25 16.25L9.785 16.25Z" fill=${color}/>

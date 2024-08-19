@@ -186,6 +186,10 @@ export function formatNumber(num: number, changeToChar: boolean = true) {
 
 // card
 
+export function imgSourceHandle(address: string) {
+    return address.startsWith('http') ? { uri: address } : require(`../assets/image/placeholder.jpeg`)
+}
+
 export function showSetCard(DATA: Set[]) {
     function showRateStar(rate: number) {
         let rateStar = []
@@ -262,7 +266,7 @@ export function showSetCard(DATA: Set[]) {
                                         <View style={[styles.flexRowBetweenCenter, styles.marginTop4vw,]}>
                                             <View style={[styles.flexRowStartCenter, styles.gap2vw]}>
                                                 <Image
-                                                    source={AUTHOR_IMG_ADDRESS.startsWith('http') ? { uri: AUTHOR_IMG_ADDRESS } : require(`../assets/image/placeholder.jpeg`)}
+                                                    source={imgSourceHandle(AUTHOR_IMG_ADDRESS)}
                                                     style={[styles.borderRadius100, { width: vw(7), height: vw(7) }] as ImageStyle}
                                                 />
                                                 <View>
