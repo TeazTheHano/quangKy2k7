@@ -13,6 +13,7 @@ import firebase from 'firebase/compat/app';
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
+import Config from "react-native-config";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -20,7 +21,8 @@ import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyDlGyMCHumJCKhoFUTu8O3AuyAds2sE7o4",
+    // apiKey: "AIzaSyDlGyMCHumJCKhoFUTu8O3AuyAds2sE7o4",
+    apiKey: Config.ENV_FIREBASE_API_KEY,
     // TODO: use evn variable for this api
     authDomain: "quangky2k7.firebaseapp.com",
     projectId: "quangky2k7",

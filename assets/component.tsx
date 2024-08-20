@@ -16,7 +16,7 @@ import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex16RegAuto } from "./Class
 
 // other import
 import * as Progress from 'react-native-progress';
-import { Set } from "../data/data";
+import { SetFormat } from "../data/data";
 
 // font import 
 
@@ -190,7 +190,7 @@ export function imgSourceHandle(address: string) {
     return address.startsWith('http') ? { uri: address } : require(`../assets/image/placeholder.jpeg`)
 }
 
-export function showSetCard(DATA: Set[]) {
+export function showSetCard(DATA: SetFormat[]) {
     function showRateStar(rate: number) {
         let rateStar = []
         for (let index = 0; index < rate; index++) {

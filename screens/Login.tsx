@@ -17,6 +17,7 @@ export default function Login() {
     const [password, setPassword] = React.useState('')
     const [confirmPassword, setConfirmPassword] = React.useState('')
     const [userName, setUserName] = React.useState('')
+    // TODO: change and make fnc to upload image
     const [avtURL, setAvtURL] = React.useState("https://cdn.oneesports.gg/cdn-data/2024/07/ZenlessZoneZero_Agent_EllenJoe.jpg")
 
     const [isShowSignUp, setIsShowSignUp] = React.useState(true)
@@ -27,7 +28,12 @@ export default function Login() {
     }
 
 
-    async function signUpHandle() {
+    async function signUpHandle(email: string, password: string, confirmPassword: string, userName: string, avtURL: string) {
+        email = email.trim()
+        password = password.trim()
+        confirmPassword = confirmPassword.trim()
+        userName = userName.trim()
+
         if (password !== confirmPassword) {
             return Alert.alert('Password and Confirm Password not match')
         }
@@ -78,7 +84,10 @@ export default function Login() {
         }
     }
 
-    async function signInHandle() {
+    async function signInHandle(email: string, password: string) {
+        email = email.trim()
+        password = password.trim()
+
         try {
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
@@ -168,7 +177,7 @@ export default function Login() {
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        isShowSignUp ? signUpHandle() : signInHandle()
+                        isShowSignUp ? signUpHandle(email, password, confirmPassword, userName, avtURL) : signInHandle(email, password)
                     }}
                     style={[styles.flexRowCenter, styles.gap1vw, styles.paddingV4vw, styles.paddingH8vw, styles.borderRadius40, { backgroundColor: 'rgba(134, 223, 208, 1)' }]}>
                     <Lex16RegAuto>Next</Lex16RegAuto>

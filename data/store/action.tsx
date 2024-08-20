@@ -9,7 +9,15 @@ export const CURRENT_REMOVE_FROM_CURRENT = `CURRENT_REMOVE_FROM_CURRENT`;
 export const CURRENT_SET_PUBLIC = `CURRENT_SET_PUBLIC`;
 export const CURRENT_SET_PRIVATE = `CURRENT_SET_PRIVATE`;
 export const CURRENT_SET_DONE = `CURRENT_SET_DONE`;
+
 export const CURRENT_SET_SAVED = `CURRENT_SET_SAVED`;
+
+export const CURRENT_CLEAR_ALL_SET = `CURRENT_CLEAR_ALL_SET`;
+export const CURRENT_CLEAR_PUBLIC = `CURRENT_CLEAR_PUBLIC`;
+export const CURRENT_CLEAR_PRIVATE = `CURRENT_CLEAR_PRIVATE`;
+export const CURRENT_CLEAR_DONE = `CURRENT_CLEAR_DONE`;
+export const CURRENT_CLEAR_SAVED = `CURRENT_CLEAR_SAVED`;
+export const CURRENT_CLEAR_CURRENT = `CURRENT_CLEAR_CURRENT`;
 
 export const SAVE_USER_INFO = `SAVE_USER_INFO`;
 
@@ -73,5 +81,41 @@ export const saveUserInfo = (item: UserFormat) => {
     return {
         type: SAVE_USER_INFO,
         payload: item
+    }
+}
+
+export const currentClearAllSet = () => {
+    return {
+        type: CURRENT_CLEAR_ALL_SET,
+    }
+}
+
+export const currentClearPublic = () => {
+    return {
+        type: CURRENT_CLEAR_PUBLIC,
+    }
+}
+
+export const currentClearPrivate = () => {
+    return {
+        type: CURRENT_CLEAR_PRIVATE,
+    }
+}
+
+export const currentClearDone = () => {
+    return {
+        type: CURRENT_CLEAR_DONE,
+    }
+}
+
+export const currentClearSaved = () => {
+    return {
+        type: CURRENT_CLEAR_SAVED,
+    }
+}
+
+export const currentClearCurrent = () => {
+    return {
+        type: CURRENT_CLEAR_CURRENT,
     }
 }

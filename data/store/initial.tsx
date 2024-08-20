@@ -14,7 +14,7 @@ export interface CurrentSets {
 
 export interface Action {
     type: string;
-    payload: SetFormat | SetFormat[] | UserFormat;
+    payload?: SetFormat | SetFormat[] | UserFormat;
 }
 
 export const initialState: CurrentSets = {

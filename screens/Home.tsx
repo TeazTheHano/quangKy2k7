@@ -14,7 +14,7 @@ import { imgSourceHandle, marginBottomForScrollView, showSetCard } from '../asse
 import clrStyle from '../assets/componentStyleSheet';
 import storage, { getAllSets, getUser, loadAllSets, weeklyProgressData } from '../data/storageFunc';
 import { demoSets } from '../data/factoryData';
-import { CURRENT_SET_PUBLIC, RootContext, saveUserInfo, setDone, setPrivate, setPublic, setSaved } from '../data/store';
+import { CURRENT_SET_PUBLIC, currentClearAllSet, RootContext, saveUserInfo, setDone, setPrivate, setPublic, setSaved } from '../data/store';
 import { SetFormat, setList, UserFormat } from '../data/data';
 
 const Home = () => {
@@ -38,6 +38,7 @@ const Home = () => {
         const unsubscribe = navigation.addListener('focus', () => {
             const fetchData = async () => {
                 try {
+                    dispatch(currentClearAllSet());
                     const res = await weeklyProgressData();
                     setCheckInData(res);
                     weeklyFnc(res);
@@ -58,6 +59,7 @@ const Home = () => {
     }, [navigation]);
 
     function getAndAlignData() {
+
         getAllSets().then(sets => {
             if (sets !== false) {
                 let publicSets = sets.filter((set: SetFormat) => !set.private);
@@ -244,7 +246,7 @@ const Home = () => {
 
 
     console.log(CURRENT_SETS.userInfo?.imgAddress);
-    
+
     // END OF DATA AND CARD SECTION
 
     return (
