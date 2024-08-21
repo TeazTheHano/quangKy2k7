@@ -13,7 +13,8 @@ export interface Card {
     front: string;
     back: string;
     imgAddress: string;
-    isReviewed: boolean;
+    memorized: boolean,
+    repeatToday: boolean,
 }
 
 export interface Desk {

@@ -9,7 +9,7 @@ import styles from './stylesheet';
 import { vw, vh } from './stylesheet';
 
 // component import
-import { marginBottomForScrollView } from './component';
+import { imgSourceHandle, marginBottomForScrollView } from './component';
 
 // svg import
 import { goldStar, inVisibilityIcon, leftArrow, lockIcon, noStar, peopleIcon, savedIcon, searchIcon, unSavedIcon, visibilityIcon } from './svgXml';
@@ -440,7 +440,6 @@ export class InputCardVer1 extends Component<{
 }
 
 export class TopNav1 extends Component<{
-    children?: React.ReactNode
     title: string
     leftIcon?: React.ReactNode
     rightIcon?: React.ReactNode
@@ -481,7 +480,88 @@ export class TopNav1 extends Component<{
                         : <></>
                     }
                 </View>
-            </View >
+            </View>
+        )
+    }
+}
+
+
+/**
+ * Represents a custom top navigation component.
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <TopNav2
+ *   title="My Title"
+ *   subTitle="My Subtitle"
+ *   textColor="#000000"
+ *   leftIcon={<Icon name="left" />}
+ *   rightIcon={<Icon name="right" />}
+ *   leftIconFnc={() => handleLeftIconClick()}
+ *   rightIconFnc={() => handleRightIconClick()}
+ *   returnPreScreen={true}
+ *   returnPreScreenFnc={() => handleReturnPreScreen()}
+ *   textCenter={true}
+ *   containerStyle={customStyle}
+ * >
+ *   {children}
+ * </TopNav2>
+ * ```
+ */
+export class TopNav2 extends Component<{
+    children?: React.ReactNode
+    title?: string
+    subTitle?: string
+    textColor?: string
+    leftIcon?: React.JSX.Element
+    rightIcon?: React.JSX.Element
+    leftIconFnc?: () => void
+    rightIconFnc?: () => void
+    returnPreScreen?: boolean
+    returnPreScreenFnc?: () => void
+    textCenter?: boolean
+    containerStyle?: any
+    backGoundImage?: string
+    darken?: number
+}> {
+    render() {
+        let { title, leftIcon, rightIcon, returnPreScreen, rightIconFnc, leftIconFnc, returnPreScreenFnc, textCenter, children, subTitle, textColor, containerStyle, backGoundImage, darken } = this.props
+        darken = darken ? darken : 0
+        return (
+            <ImageBackground source={backGoundImage ? imgSourceHandle(backGoundImage) : null} style={[styles.overflowHidden, { borderBottomLeftRadius: vw(6), borderBottomRightRadius: vw(6), }]}>
+                <View style={[styles.w100, styles.padding4vw, styles.paddingH8vw, { backgroundColor: `rgba(0,0,0,${darken})` }, containerStyle]}>
+                    <View style={[styles.w100, styles.flexRowBetweenCenter]}>
+                        {returnPreScreen ?
+                            <TouchableOpacity
+                                style={[styles.padding2vw]}
+                                onPress={returnPreScreenFnc}>
+                                {leftArrow(vw(6), vw(6), textColor ? textColor : clrStyle.black)}
+                            </TouchableOpacity>
+                            :
+                            leftIcon ?
+                                <TouchableOpacity
+                                    style={[styles.padding2vw]}
+                                    onPress={leftIconFnc}>
+                                    {leftIcon}
+                                </TouchableOpacity>
+                                :
+                                <></>
+                        }
+                        <Pay24BlackLine122 style={[styles.flex1, textCenter ? styles.textCenter : null, { color: textColor ? textColor : clrStyle.black }]}>{title ? title : ''}</Pay24BlackLine122>
+                        {rightIcon ?
+                            <TouchableOpacity
+                                style={[styles.padding2vw]}
+                                onPress={rightIconFnc}>
+                                {rightIcon}
+                            </TouchableOpacity>
+                            : <></>
+                        }
+                    </View>
+                    {subTitle ? <Pay20BlackLine122 style={[styles.paddingV2vw, { color: textColor ? textColor : clrStyle.black }]}>{subTitle}</Pay20BlackLine122> : null}
+                    {children}
+                </View>
+            </ImageBackground>
         )
     }
 }

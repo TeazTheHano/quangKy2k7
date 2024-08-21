@@ -3,6 +3,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { ProviderTotal } from './data/store';
+
 // screen import
 import OnBoarding from './screens/OnBoarding';
 import Login from './screens/Login';
@@ -12,7 +14,11 @@ import Library from './screens/Library';
 import NewFeed from './screens/NewFeed';
 import Setting from './screens/Setting';
 import Add from './screens/Add';
-import { ProviderTotal } from './data/store';
+
+// inner-screen import
+import SetView from './screens/setScreen/SetView';
+import DeskView from './screens/setScreen/DeskView';
+import CardView from './screens/setScreen/CardView';
 
 // ____________________END OF IMPORT_______________________
 
@@ -31,6 +37,10 @@ function App(): React.JSX.Element {
           <Stack.Screen name="Setting" component={Setting} />
           <Stack.Screen name="Add" component={Add} />
 
+          {/* >>>>>>>>>>>>>>> */}
+          <Stack.Screen name="SetView" component={SetView} />
+          <Stack.Screen name="DeskView" component={DeskView} />
+          <Stack.Screen name="CardView" component={CardView} />
         </Stack.Navigator>
       </NavigationContainer>
     </ProviderTotal>

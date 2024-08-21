@@ -1,5 +1,5 @@
 // system imports
-import React, { Component, ComponentType, ReactElement, ReactNode, useEffect, useRef, useState } from "react";
+import React, { Component, ComponentType, ReactElement, ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { Text, View, TextInput, TouchableOpacity, Image, FlatList, ImageBackground, Alert, Share, StatusBar, ImageStyle } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { Dimensions } from "react-native";
@@ -17,6 +17,7 @@ import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex16RegAuto } from "./Class
 // other import
 import * as Progress from 'react-native-progress';
 import { SetFormat } from "../data/data";
+import { RootContext, setAsCurrent } from "../data/store";
 
 // font import 
 
@@ -191,6 +192,9 @@ export function imgSourceHandle(address: string) {
 }
 
 export function showSetCard(DATA: SetFormat[]) {
+    const navigation = useNavigation();
+    const [CURRENT_SETS, dispatch] = useContext(RootContext);
+
     function showRateStar(rate: number) {
         let rateStar = []
         for (let index = 0; index < rate; index++) {
@@ -229,9 +233,9 @@ export function showSetCard(DATA: SetFormat[]) {
                     DATA.map((set: any, index: number) => {
                         let DESK_NUMBER: number = set.deskList.length
                         let TOTAL_CARD_NEED_MEMORIZED_NUMBER: number = set.deskList.map((item: any) => item.cardList.length).reduce((a: number, b: number) => a + b)
-                        let MEMORIZED_CARD_NUMBER: number = set.deskList.map((item: any) => item.cardList.filter((item: any) => item.isReviewed).length).reduce((a: number, b: number) => a + b)
+                        let MEMORIZED_CARD_NUMBER: number = set.deskList.map((item: any) => item.cardList.filter((item: any) => item.repeatToday).length).reduce((a: number, b: number) => a + b)
                         let SET_TITLE: string = set.name
-                        let NEED_REPEAT_CARD_NUMBER: number = set.deskList.map((item: any) => item.cardList.filter((item: any) => item.isReviewed).length).reduce((a: number, b: number) => a + b)
+                        let NEED_REPEAT_CARD_NUMBER: number = set.deskList.map((item: any) => item.cardList.filter((item: any) => item.repeatToday).length).reduce((a: number, b: number) => a + b)
                         let AUTHOR: string = set.author.name
                         let AUTHOR_IMG_ADDRESS: string = set.author.imgAddress
                         let STAR_RATE: number = set.rate.star
@@ -241,7 +245,11 @@ export function showSetCard(DATA: SetFormat[]) {
                         let IS_SAVED: boolean = set.isSaved
 
                         return (
-                            <View key={index}>
+                            <TouchableOpacity key={index}
+                                onPress={() => {
+                                    dispatch(setAsCurrent(set));
+                                    navigation.navigate('SetView' as never);
+                                }}>
                                 <View style={[styles.flexRowStartCenter, styles.gap1vw, styles.wfit, styles.paddingH4vw, styles.paddingV2vw, { backgroundColor: 'rgba(79, 79, 79, 1)', borderTopLeftRadius: vw(4), borderTopRightRadius: vw(4), transform: [{ translateY: 1 }] }]}>
                                     <Lex12BoldAuto style={{ color: 'white' }}>{DESK_NUMBER} {DESK_NUMBER > 1 ? 'desks' : 'desk'}:</Lex12BoldAuto>
                                     <Progress.Circle
@@ -297,7 +305,7 @@ export function showSetCard(DATA: SetFormat[]) {
                                         </View>
                                     </View>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         )
                     })
                 }
