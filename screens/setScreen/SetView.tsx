@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, Image, ImageStyle, StatusBar, ScrollView } from 'react-native'
+import { View, Text, SafeAreaView, Image, ImageStyle, StatusBar, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useContext } from 'react'
 import { Lex10RegAuto, Lex12BoldAuto, Lex16RegAuto, Pay16RegAuto, Pay20BlackLine122, Pay24BlackLine122, SaveViewWithColorStatusBar, TopNav2 } from '../../assets/Class'
 import styles, { vw } from '../../assets/stylesheet'
@@ -9,12 +9,11 @@ import { deskAddIcon, deskCheckIcon, deskNaviIcon, deskYellowIcon, notiBellIcon,
 import clrStyle from '../../assets/componentStyleSheet'
 
 import * as Progress from 'react-native-progress';
+import { Desk } from '../../data/data'
 
 export default function SetView() {
   const navigation = useNavigation()
   const [CURRENT_SETS, dispatch] = useContext(RootContext)
-
-  console.log(CURRENT_SETS.current);
 
   function setPreView() {
     let ALL_REPEATED_TODAY = CURRENT_SETS.current?.deskList.map(desk => desk.cardList.filter(card => card.repeatToday).length).reduce((a, b) => a + b, 0)
@@ -46,11 +45,13 @@ export default function SetView() {
     if (CURRENT_SETS.current) {
       return (
         <View style={[styles.w100, styles.flexRowEvenlyCenter, styles.flexWrap, styles.marginTop8vw, { rowGap: vw(8) }]}>
-          {CURRENT_SETS.current.deskList.map((desk, index) => {
+          {CURRENT_SETS.current.deskList.map((desk: Desk, index: number) => {
             let process = desk.cardList.filter(card => card.repeatToday).length
             let bgColor = desk.cardList.length - process ? clrStyle.yellow : clrStyle.neu6;
             return (
-              <View key={index} style={[styles.flexColStartCenter, styles.borderRadius10, styles.positionRelative, styles.marginTop4vw, { width: vw(40), height: vw(50), backgroundColor: bgColor, }]}>
+              <TouchableOpacity
+                onPress={() => { navigation.navigate('DeskView', { deskItem: desk }) }}
+                key={index} style={[styles.flexColStartCenter, styles.borderRadius10, styles.positionRelative, styles.marginTop4vw, { width: vw(40), height: vw(50), backgroundColor: bgColor, }]}>
                 {/* head */}
                 <View style={[styles.positionAbsolute, { top: -vw(4) }]}>
                   {bgColor == clrStyle.yellow ?
@@ -72,14 +73,18 @@ export default function SetView() {
                   <Progress.Bar progress={process / desk.cardList.length} width={vw(19)} color={clrStyle.black} borderWidth={0} unfilledColor={clrStyle.neu3} />
                   <Lex10RegAuto>{process}/{desk.cardList.length}</Lex10RegAuto>
                 </View>
-              </View>
+              </TouchableOpacity>
             )
           })}
 
-          <View style={[styles.flexColCenter, styles.borderRadius10, styles.positionRelative, { width: vw(40), height: vw(50), borderWidth: 2, borderColor: clrStyle.neu6 }]}>
+          <TouchableOpacity
+            onPress={() => {
+              // TODO: add new desk
+            }}
+            style={[styles.flexColCenter, styles.borderRadius10, styles.positionRelative, { width: vw(40), height: vw(50), borderWidth: 2, borderColor: clrStyle.neu6 }]}>
             <Lex16RegAuto style={[styles.textCenter, styles.positionAbsolute, styles.top4vw, styles.w70]}>Create a new desk</Lex16RegAuto>
             {deskAddIcon(vw(14), vw(14))}
-          </View>
+          </TouchableOpacity>
 
           {CURRENT_SETS.current.deskList.length % 2 == 0 ?
             <View style={[{ width: vw(40), height: vw(50) }]}>
@@ -95,7 +100,7 @@ export default function SetView() {
     <View style={[styles.flex1, styles.bgcolorWhite]}>
       <StatusBar translucent={true} backgroundColor={'rgba(0,0,0,0)'} barStyle={'light-content'} />
       <TopNav2
-        title='Set'
+        title='Set View'
         subTitle={CURRENT_SETS.current?.name as string}
         textColor='white'
         backGoundImage={CURRENT_SETS.current?.author?.imgAddress}

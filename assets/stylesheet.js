@@ -1299,6 +1299,10 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
 
+    border2: {
+        borderWidth: 2,
+    },
+
     zIndex1: {
         zIndex: 1,
     },

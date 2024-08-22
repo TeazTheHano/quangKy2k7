@@ -122,12 +122,12 @@ export class Pay16BlackLine122 extends Component<{ children: React.ReactNode, st
     }
 }
 
-export class Pay24BlackLine122 extends Component<{ children: React.ReactNode, style?: any }> {
+export class Pay24BlackLine122 extends Component<{ children: React.ReactNode, style?: any, lineNum?: number }> {
     render() {
-        const { children, style } = this.props;
+        const { children, style, lineNum } = this.props;
 
         return (
-            <Text style={[{ fontFamily: 'PaytoneOne-Regular', fontSize: vw(6), lineHeight: vw(6 / 100 * 122), color: 'black' }, style]}>
+            <Text numberOfLines={lineNum} style={[{ fontFamily: 'PaytoneOne-Regular', fontSize: vw(6), lineHeight: vw(6 / 100 * 122), color: 'black' }, style]}>
                 {children}
             </Text>
         );
@@ -158,12 +158,12 @@ export class Lex16MedAuto extends Component<{ children: React.ReactNode, style?:
     }
 }
 
-export class Lex16RegAuto extends Component<{ children: React.ReactNode, style?: any }> {
+export class Lex16RegAuto extends Component<{ children: React.ReactNode, style?: any, lineNum?: number }> {
     render() {
-        const { children, style } = this.props;
+        const { children, style, lineNum } = this.props;
 
         return (
-            <Text style={[{ fontFamily: 'LexendDeca-Regular', fontSize: vw(4), color: 'black' }, style]}>
+            <Text numberOfLines={lineNum} style={[{ fontFamily: 'LexendDeca-Regular', fontSize: vw(4), color: 'black' }, style]}>
                 {children}
             </Text>
         );
@@ -392,6 +392,7 @@ export class SSBar extends Component<{ color?: any }> {
 }
 
 
+
 export class InputCardVer1 extends Component<{
     customStyle?: any
     value: any
@@ -548,7 +549,7 @@ export class TopNav2 extends Component<{
                                 :
                                 <></>
                         }
-                        <Pay24BlackLine122 style={[styles.flex1, textCenter ? styles.textCenter : null, { color: textColor ? textColor : clrStyle.black }]}>{title ? title : ''}</Pay24BlackLine122>
+                        <Pay24BlackLine122 lineNum={1} style={[styles.flex1, textCenter ? styles.textCenter : null, { color: textColor ? textColor : clrStyle.black }]}>{title ? title : ''}</Pay24BlackLine122>
                         {rightIcon ?
                             <TouchableOpacity
                                 style={[styles.padding2vw]}
