@@ -533,9 +533,21 @@ export const doneEditIcon = (w: number, h: number, color?: any) => {
     )
 }
 
-export const imgPlaceHolder = (w: number, h: number, color?: any) => {
+export const imgPickerIcon = (w: number, h: number, color?: any) => {
     const xml = `<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M11.1703 43.8297C14.0573 49.2885 19.8219 51.25 30 51.25C44.0637 51.25 49.7009 47.5049 50.9632 35.9633M11.1703 43.8297C9.44809 40.5731 8.75 36.0719 8.75 30C8.75 13.75 13.75 8.75 30 8.75C46.25 8.75 51.25 13.75 51.25 30C51.25 32.1863 51.1595 34.169 50.9632 35.9633M11.1703 43.8297L18.9645 36.0355C20.9171 34.0829 24.0829 34.0829 26.0355 36.0355L26.4645 36.4645C28.4171 38.4171 31.5829 38.4171 33.5355 36.4645L38.9645 31.0355C40.9171 29.0829 44.0829 29.0829 46.0355 31.0355L50.9632 35.9633M26.7275 22.115C26.7275 24.6625 24.66 26.73 22.1125 26.73C19.5675 26.73 17.5 24.6625 17.5 22.115C17.5 19.5675 19.5675 17.5 22.1125 17.5C24.66 17.5 26.7275 19.5675 26.7275 22.115Z" stroke="#A4A4A4" style="stroke:#A4A4A4;stroke:color(display-p3 0.6417 0.6417 0.6417);stroke-opacity:1;" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`
+    return (
+        <SvgXml xml={xml} width={w} height={h} />
+    )
+}
+
+export const cameraIcon = (w: number, h: number, color?: any) => {
+    const xml = `<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="1" y="1" width="42" height="42" rx="15" stroke="#A4A4A4" style="stroke:#A4A4A4;stroke:color(display-p3 0.6417 0.6417 0.6417);stroke-opacity:1;" stroke-width="2"/>
+<circle cx="21.5" cy="21.5" r="15.5" stroke="#A4A4A4" style="stroke:#A4A4A4;stroke:color(display-p3 0.6417 0.6417 0.6417);stroke-opacity:1;" stroke-width="2"/>
+<circle cx="21.5" cy="21.5" r="11.5" stroke="#A4A4A4" style="stroke:#A4A4A4;stroke:color(display-p3 0.6417 0.6417 0.6417);stroke-opacity:1;" stroke-width="2"/>
 </svg>
 `
     return (

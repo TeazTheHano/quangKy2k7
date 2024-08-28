@@ -1,4 +1,4 @@
-import { View, Text, StatusBar, ScrollView } from 'react-native'
+import { View, Text, StatusBar, ScrollView, Platform, PermissionsAndroid, Image, Alert } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { Card2line, Card2lineInput, Card3lineInputImg, Lex16MedAuto, Lex16RegAuto, Lex20RegAuto, TopNav3 } from '../../assets/Class'
 import styles, { vw } from '../../assets/stylesheet'
@@ -6,7 +6,9 @@ import { useNavigation } from '@react-navigation/native'
 import { RootContext } from '../../data/store'
 import clrStyle from '../../assets/componentStyleSheet'
 import { checkIcon, deskCardEditIcon, deskNaviIcon, doneEditIcon, sharpLeftArrow } from '../../assets/svgXml'
-import { marginBottomForScrollView } from '../../assets/component'
+import { marginBottomForScrollView, openCamera, openGallery } from '../../assets/component'
+
+import { CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 export default function AddCard({ route }: any) {
   const { deskItem } = route.params
@@ -19,8 +21,7 @@ export default function AddCard({ route }: any) {
   const [currentBack, setCurrentBack] = React.useState<string>('')
   const [deskNameEditable, setDeskNameEditable] = React.useState<boolean>(false)
 
-  const [image, setImage] = useState<string | null>(null);
-
+  const [image, setImage] = useState<any>(null);
 
   return (
     <View style={[styles.flex1, { backgroundColor: clrStyle.white }]}>
@@ -41,6 +42,7 @@ export default function AddCard({ route }: any) {
         }}
       />
       <ScrollView style={[styles.flex1, styles.padding4vw,]} contentContainerStyle={[styles.flexColCenter, styles.gap8vw]}>
+
         <Card2lineInput
           text1='Desk name'
           value2={deskName}
@@ -75,6 +77,22 @@ export default function AddCard({ route }: any) {
           border
           borderClr={clrStyle.neu6}
           placeholder2='Max 100 characters'
+          photoAddress={image}
+          onPress1={() => openGallery(setImage)}
+          onPress2={() => openCamera(setImage)}
+          onPress3={() =>
+            Alert.alert('Retake image', 'Are you sure you want to delete and retake this image?', [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'Delete',
+                style: 'destructive',
+                onPress: () => setImage(null),
+              },
+            ])
+          }
         />
         {marginBottomForScrollView()}
       </ScrollView>

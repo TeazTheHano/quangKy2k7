@@ -1,6 +1,6 @@
 // system imports
 import React, { Component, ComponentType, ReactElement, ReactNode, useContext, useEffect, useRef, useState } from "react";
-import { Text, View, TextInput, TouchableOpacity, Image, FlatList, ImageBackground, Alert, Share, StatusBar, ImageStyle } from "react-native";
+import { Text, View, TextInput, TouchableOpacity, Image, FlatList, ImageBackground, Alert, Share, StatusBar, ImageStyle, Platform, PermissionsAndroid } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { Dimensions } from "react-native";
 
@@ -23,6 +23,8 @@ import { RootContext, setAsCurrent } from "../data/store";
 
 // ____________________END OF IMPORT_______________________
 
+
+// UNIVERSE FUNCTION________________________________________
 
 export const marginBottomForScrollView = (time?: number) => {
     return (
@@ -190,6 +192,78 @@ export function formatNumber(num: number, changeToChar: boolean = true) {
 export function imgSourceHandle(address: string) {
     return address.startsWith('http') ? { uri: address } : require(`../assets/image/placeholder.jpeg`)
 }
+
+// img picker and camera.
+// require >>>> react-native-image-picker <<<< package
+import { CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
+
+const defaultCameraOptions: CameraOptions = {
+    mediaType: 'photo',
+    quality: 1,
+};
+
+export const requestCameraPermission = async () => {
+    if (Platform.OS === 'android') {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+                {
+                    title: 'Camera Permission',
+                    message: 'This app needs camera access to take pictures',
+                    buttonNeutral: 'Ask Me Later',
+                    buttonNegative: 'Cancel',
+                    buttonPositive: 'OK',
+                },
+            );
+            return granted === PermissionsAndroid.RESULTS.GRANTED;
+        } catch (err) {
+            console.warn(err);
+            return false;
+        }
+    } else {
+        return true;
+    }
+};
+
+export const openCamera = async (saveImgFnc: any, options = defaultCameraOptions) => {
+    const hasPermission = await requestCameraPermission();
+    if (!hasPermission) {
+        console.log('Camera permission denied');
+        return;
+    }
+
+    launchCamera(options, (response) => {
+        console.log('Response = ', response);
+
+        if (response.didCancel) {
+            console.log('User cancelled image picker');
+        } else if (response.errorCode) {
+            console.log('ImagePicker Error: ', response.errorMessage);
+            Alert.alert('Error', response.errorMessage || response.errorCode);
+        } else if (response.assets && response.assets.length > 0) {
+            saveImgFnc(response.assets[0].uri);
+        }
+    });
+};
+
+export const openGallery = async (saveImgFnc: any, options = defaultCameraOptions) => {
+    launchImageLibrary(options, (response) => {
+        console.log('Response = ', response);
+
+        if (response.didCancel) {
+            console.log('User cancelled image picker');
+        } else if (response.errorCode) {
+            console.log('ImagePicker Error: ', response.errorMessage);
+            Alert.alert('Error', response.errorMessage || response.errorCode);
+        } else if (response.assets && response.assets.length > 0) {
+            saveImgFnc(response.assets[0].uri);
+        }
+    });
+}
+
+// END OF UNIVERSE FUNCTION________________________________________
+
+
 
 export function showSetCard(DATA: SetFormat[]) {
     const navigation = useNavigation();

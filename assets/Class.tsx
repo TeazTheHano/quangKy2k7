@@ -1,8 +1,6 @@
 // system import
-import React, { Component, useState } from 'react';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { View, Text, ScrollView, useColorScheme, TouchableOpacity, ImageBackground, Image, Animated, StatusBar, Platform, ImageStyle, TextInput, } from 'react-native';
+import React, { Component } from 'react';
+import { ImageBackground, Platform, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View, Image, ImageStyle } from 'react-native';
 
 // style import
 import styles from './stylesheet';
@@ -12,7 +10,7 @@ import { vw, vh } from './stylesheet';
 import { imgSourceHandle, marginBottomForScrollView } from './component';
 
 // svg import
-import { goldStar, imgPlaceHolder, inVisibilityIcon, leftArrow, lockIcon, noStar, peopleIcon, savedIcon, searchIcon, unSavedIcon, visibilityIcon } from './svgXml';
+import { cameraIcon, goldStar, imgPickerIcon, inVisibilityIcon, leftArrow, lockIcon, noStar, peopleIcon, savedIcon, searchIcon, unSavedIcon, visibilityIcon } from './svgXml';
 import clrStyle from './componentStyleSheet';
 
 // other import
@@ -727,11 +725,14 @@ export class Card3lineInputImg extends Component<{
     bgColor?: string
     border?: boolean
     borderClr?: string
-    onPress?: () => void
+    onPress1?: () => void
+    onPress2?: () => void
+    onPress3?: () => void
     isEdit?: boolean
+    photoAddress?: string
 }> {
     render() {
-        const { customStyle, text1, value2, onChangeText2, onPress, textColor1, textColor2, TextClass1, TextClass2, bgColor, border, borderClr, isEdit, placeholder2, textLimit2 } = this.props;
+        const { customStyle, text1, value2, onChangeText2, onPress1, onPress2, onPress3, textColor1, textColor2, TextClass1, TextClass2, bgColor, border, borderClr, isEdit, placeholder2, textLimit2, photoAddress } = this.props;
         let Text1 = TextClass1 ? TextClass1 : Lex16RegAuto
         let Text2 = TextClass2 ? TextClass2 : Pay20BlackLine122
 
@@ -750,11 +751,33 @@ export class Card3lineInputImg extends Component<{
                 </TextInput>
                 <Text1 style={[styles.paddingH1vw, styles.flex1, { color: textColor1 ? textColor1 : clrStyle.black }]}>Add photo</Text1>
                 <TouchableOpacity
-                    onPress={() => { onPress && onPress() }}
-                    disabled={onPress ? false : true}
-                    style={[styles.paddingV4vw, styles.borderRadius10, styles.flexRowCenter, styles.h30vh, { backgroundColor: '#86DFD033' }]}
+                    onPress={() => { onPress3 && onPress3() }}
+                    disabled={onPress3 && photoAddress ? false : true}
+                    style={[styles.borderRadius10, styles.flexRowCenter, styles.h30vh, styles.overflowHidden, { backgroundColor: '#86DFD033' }]}
                 >
-                    {imgPlaceHolder(vw(20), vw(20))}
+                    {photoAddress ?
+                        <Image
+                            style={[styles.w100, styles.h100] as ImageStyle}
+                            source={{ uri: photoAddress }}
+                        />
+                        :
+                        <View
+                            style={[styles.w100, styles.h100, styles.flexRowCenter, styles.gap1vw]}
+                        >
+                            <TouchableOpacity
+                                onPress={() => { onPress1 && onPress1() }}
+                                disabled={onPress1 ? false : true}
+                                style={[styles.flexRowCenter, styles.w40, styles.h50]}>
+                                {imgPickerIcon(vw(20), vw(20))}
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => { onPress2 && onPress2() }}
+                                disabled={onPress2 ? false : true}
+                                style={[styles.flexRowCenter, styles.w40, styles.h50]}>
+                                {cameraIcon(vw(15), vw(15))}
+                            </TouchableOpacity>
+                        </View>
+                    }
                 </TouchableOpacity>
             </View>
         );
