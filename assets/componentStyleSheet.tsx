@@ -16,7 +16,8 @@ const clrStyle = StyleSheet.create<any>({
     redP: '#A84035',
     pur1: '#8E83E0',
     pur2: '#C3BBF3',
-    you: '#0083FF'
+    you: '#0083FF',
+    neu1: `#2F2F2F`,
 });
 
 export default clrStyle;

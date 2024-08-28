@@ -14,16 +14,6 @@ import { marginBottomForScrollView } from '../assets/component';
 import { getUser } from '../data/storageFunc';
 
 function useColorWidthAnimation() {
-    const navigation = useNavigation();
-    useEffect(() => {
-        getUser().then((user) => {
-            if (user !== false && user.email) {
-                console.log('User already signed in')
-                return navigation.navigate('BottomTab' as never)
-            }
-        })
-    }, [])
-
     const animation = useRef(new Animated.Value(0)).current;
 
     const backgroundColorAnimation = animation.interpolate({

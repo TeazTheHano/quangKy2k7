@@ -1,5 +1,5 @@
 // system imports
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createBottomTabNavigator, BottomTabBar } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 
@@ -14,10 +14,19 @@ import Setting from '../screens/Setting';
 import Add from '../screens/Add';
 import { AddIcon, AddIconInactive, HomeIcon, HomeIconInactive, LibraryIcon, LibraryIconInactive, NewFeedIcon, NewFeedIconInactive, SettingIcon, SettingIconInactive } from './svgXml';
 import { Platform } from 'react-native';
+import { getUser } from '../data/storageFunc';
 
 // ____________________END OF IMPORT_______________________
 
 export default function BottomTab() {
+    const navigation = useNavigation()
+    useEffect(() => {
+        getUser().then((user) => {
+            if (!user) {
+                return navigation.navigate('OnBoarding' as never)
+            }
+        })
+    }, [])
     const Tab = createBottomTabNavigator();
     return (
         <Tab.Navigator

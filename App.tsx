@@ -19,6 +19,7 @@ import Add from './screens/Add';
 import SetView from './screens/setScreen/SetView';
 import DeskView from './screens/setScreen/DeskView';
 import CardView from './screens/setScreen/CardView';
+import AddCard from './screens/setScreen/AddCard';
 
 // ____________________END OF IMPORT_______________________
 
@@ -28,9 +29,9 @@ function App(): React.JSX.Element {
     <ProviderTotal>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="BottomTab" component={BottomTab} />
           <Stack.Screen name="OnBoarding" component={OnBoarding} />
           <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="BottomTab" component={BottomTab} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Library" component={Library} />
           <Stack.Screen name="NewFeed" component={NewFeed} />
@@ -41,6 +42,8 @@ function App(): React.JSX.Element {
           <Stack.Screen name="SetView" component={SetView} />
           <Stack.Screen name="DeskView" component={DeskView} />
           <Stack.Screen name="CardView" component={CardView} />
+          <Stack.Screen name="AddCard" component={AddCard} />
+          {/* <<<<<<<<<<<<<<<< */}
         </Stack.Navigator>
       </NavigationContainer>
     </ProviderTotal>

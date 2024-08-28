@@ -12,8 +12,7 @@ import { vw, vh } from './stylesheet';
 import { imgSourceHandle, marginBottomForScrollView } from './component';
 
 // svg import
-import { goldStar, inVisibilityIcon, leftArrow, lockIcon, noStar, peopleIcon, savedIcon, searchIcon, unSavedIcon, visibilityIcon } from './svgXml';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { goldStar, imgPlaceHolder, inVisibilityIcon, leftArrow, lockIcon, noStar, peopleIcon, savedIcon, searchIcon, unSavedIcon, visibilityIcon } from './svgXml';
 import clrStyle from './componentStyleSheet';
 
 // other import
@@ -566,3 +565,199 @@ export class TopNav2 extends Component<{
         )
     }
 }
+
+export class TopNav3 extends Component<{
+    children?: React.ReactNode
+    title?: string
+    subTitle?: string
+    textColor?: string
+    leftText?: string
+    rightText?: string
+    leftFnc?: () => void
+    rightFnc?: () => void
+    TextClass?: React.ComponentType<any>
+    sideColor?: string
+    containerStyle?: any
+    backGoundImage?: string
+    darken?: number
+}> {
+    render() {
+        let { title, leftText, rightText, sideColor, TextClass, rightFnc, leftFnc, children, subTitle, textColor, containerStyle, backGoundImage, darken } = this.props
+        darken = darken ? darken : 0
+        return (
+            <ImageBackground source={backGoundImage ? imgSourceHandle(backGoundImage) : null} style={[styles.overflowHidden, { borderBottomLeftRadius: vw(6), borderBottomRightRadius: vw(6), }]}>
+                <View style={[styles.w100, styles.padding4vw, styles.paddingH8vw, { backgroundColor: `rgba(0,0,0,${darken})` }, containerStyle]}>
+                    <View style={[styles.w100, styles.flexRowBetweenCenter]}>
+                        <TouchableOpacity
+                            style={[styles.paddingV2vw]}
+                            onPress={leftFnc}>
+                            {TextClass ?
+                                <TextClass style={{ color: sideColor ? sideColor : 'white' }}>{leftText}</TextClass>
+                                : <Text style={{ color: sideColor ? sideColor : 'white' }}>{leftText}</Text>
+                            }
+                        </TouchableOpacity>
+                        <Pay24BlackLine122 lineNum={1} style={[styles.flex1, styles.textCenter, { color: textColor ? textColor : clrStyle.black }]}>{title ? title : ''}</Pay24BlackLine122>
+                        <TouchableOpacity
+                            style={[styles.paddingV2vw]}
+                            onPress={rightFnc}>
+                            {TextClass ?
+                                <TextClass style={{ color: sideColor ? sideColor : 'white' }}>{rightText}</TextClass>
+                                : <Text style={{ color: sideColor ? sideColor : 'white' }}>{rightText}</Text>
+                            }
+                        </TouchableOpacity>
+                    </View>
+                    {subTitle ? <Pay20BlackLine122 style={[styles.paddingV2vw, { color: textColor ? textColor : clrStyle.black }]}>{subTitle}</Pay20BlackLine122> : null}
+                    {children}
+                </View>
+            </ImageBackground>
+        )
+    }
+}
+
+export class Card2line extends Component<{
+    customStyle?: any
+    text1: string
+    text2: string
+    textColor1?: string
+    textColor2?: string
+    TextClass1?: React.ComponentType<any>
+    TextClass2?: React.ComponentType<any>
+    bgColor?: string
+    border?: boolean
+    borderClr?: string
+    onPress?: () => void
+    rightIcon?: React.JSX.Element
+    rightIconFnc?: () => void
+}> {
+    render() {
+        const { customStyle, text1, text2, textColor1, textColor2, TextClass1, TextClass2, bgColor, border, borderClr, onPress, rightIcon, rightIconFnc } = this.props;
+        let Text1 = TextClass1 ? TextClass1 : Lex16RegAuto
+        let Text2 = TextClass2 ? TextClass2 : Pay20BlackLine122
+
+        return (
+            <TouchableOpacity
+                onPress={() => { onPress && onPress() }}
+                disabled={onPress ? false : true}
+                style={[styles.paddingV3vw, styles.paddingH4vw, styles.flexRowBetweenCenter, styles.borderRadius2vw, { backgroundColor: bgColor, borderWidth: border ? 1 : 0, borderColor: borderClr ? borderClr : 'black' }, customStyle]}>
+                <View style={[styles.flexCol, styles.gap1vw, styles.flex1]}>
+                    <Text1 style={[{ color: textColor1 ? textColor1 : clrStyle.black }]}>{text1}</Text1>
+                    <Text2 style={[{ color: textColor2 ? textColor2 : clrStyle.black }]}>{text2}</Text2>
+                </View>
+                {rightIcon ?
+                    <TouchableOpacity
+                        style={[styles.paddingLeft2vw]}
+                        disabled={rightIconFnc ? false : true}
+                        onPress={() => { rightIconFnc && rightIconFnc() }}>
+                        {rightIcon}
+                    </TouchableOpacity>
+                    : <></>
+                }
+            </TouchableOpacity>
+        );
+    }
+}
+
+export class Card2lineInput extends Component<{
+    customStyle?: any
+    text1: string
+    textColor1?: string
+    textColor2?: string
+    TextClass1?: React.ComponentType<any>
+    TextClass2?: React.ComponentType<any>
+    value2?: string
+    placeholder2?: string
+    textLimit2?: number
+    onChangeText2?: (input: any) => void
+    bgColor?: string
+    border?: boolean
+    borderClr?: string
+    onPress?: () => void
+    rightIcon?: React.JSX.Element
+    rightIconFnc?: () => void
+    isEdit?: boolean
+}> {
+    render() {
+        const { customStyle, text1, value2, onChangeText2, textColor1, textColor2, TextClass1, TextClass2, bgColor, border, borderClr, onPress, rightIcon, rightIconFnc, isEdit, placeholder2, textLimit2 } = this.props;
+        let Text1 = TextClass1 ? TextClass1 : Lex16RegAuto
+        let Text2 = TextClass2 ? TextClass2 : Pay20BlackLine122
+
+        return (
+            <TouchableOpacity
+                onPress={() => { onPress && onPress() }}
+                disabled={onPress ? false : true}
+                style={[styles.padding3vw, styles.flexRowBetweenCenter, styles.borderRadius2vw, { backgroundColor: bgColor, borderWidth: border ? 1 : 0, borderColor: borderClr ? borderClr : 'black' }, customStyle]}>
+                <View style={[styles.flexCol, styles.gap1vw, styles.flex1]}>
+                    <Text1 style={[styles.paddingH1vw, { color: textColor1 ? textColor1 : clrStyle.black }]}>{text1}</Text1>
+                    <TextInput
+                        editable={isEdit !== undefined ? isEdit : true}
+                        onChangeText={onChangeText2}
+                        placeholder={placeholder2 ? placeholder2 : ''}
+                        placeholderTextColor={clrStyle.neu3}
+                        multiline
+                        maxLength={textLimit2 ? textLimit2 : 10000}
+                        style={[styles.flex1, styles.borderRadius10, styles.padding1vw, { borderColor: isEdit === true ? clrStyle.neu3 : 'rgba(0,0,0,0)', borderWidth: 1, backgroundColor: isEdit === true ? clrStyle.white : 'rgba(0,0,0,0)' }]}>
+                        <Text2 style={[styles.flex1, styles.flexWrap, { color: textColor2 ? textColor2 : clrStyle.black, }]}>{value2}</Text2>
+                    </TextInput>
+                </View>
+                {rightIcon ?
+                    <TouchableOpacity
+                        style={[styles.padding2vw]}
+                        disabled={rightIconFnc ? false : true}
+                        onPress={() => { rightIconFnc && rightIconFnc() }}>
+                        {rightIcon}
+                    </TouchableOpacity>
+                    : <></>
+                }
+            </TouchableOpacity>
+        );
+    }
+}
+
+export class Card3lineInputImg extends Component<{
+    customStyle?: any
+    text1: string
+    textColor1?: string
+    textColor2?: string
+    TextClass1?: React.ComponentType<any>
+    TextClass2?: React.ComponentType<any>
+    value2?: string
+    placeholder2?: string
+    textLimit2?: number
+    onChangeText2?: (input: any) => void
+    bgColor?: string
+    border?: boolean
+    borderClr?: string
+    onPress?: () => void
+    isEdit?: boolean
+}> {
+    render() {
+        const { customStyle, text1, value2, onChangeText2, onPress, textColor1, textColor2, TextClass1, TextClass2, bgColor, border, borderClr, isEdit, placeholder2, textLimit2 } = this.props;
+        let Text1 = TextClass1 ? TextClass1 : Lex16RegAuto
+        let Text2 = TextClass2 ? TextClass2 : Pay20BlackLine122
+
+        return (
+            <View style={[styles.padding3vw, styles.flexCol, styles.gap2vw, styles.borderRadius2vw, styles.w100, { backgroundColor: bgColor, borderWidth: border ? 1 : 0, borderColor: borderClr ? borderClr : 'black' }, customStyle]}>
+                <Text1 style={[styles.paddingH1vw, styles.flex1, { color: textColor1 ? textColor1 : clrStyle.black }]}>{text1}</Text1>
+                <TextInput
+                    editable={isEdit !== undefined ? isEdit : true}
+                    onChangeText={onChangeText2}
+                    placeholder={placeholder2 ? placeholder2 : ''}
+                    placeholderTextColor={clrStyle.neu3}
+                    multiline
+                    maxLength={textLimit2 ? textLimit2 : 10000}
+                    style={[styles.flex1, styles.borderRadius10, styles.padding1vw, { borderColor: isEdit === true ? clrStyle.neu3 : 'rgba(0,0,0,0)', borderWidth: 1, backgroundColor: isEdit === true ? clrStyle.white : 'rgba(0,0,0,0)' }]}>
+                    <Text2 style={[{ color: textColor2 ? textColor2 : clrStyle.black }]}>{value2}</Text2>
+                </TextInput>
+                <Text1 style={[styles.paddingH1vw, styles.flex1, { color: textColor1 ? textColor1 : clrStyle.black }]}>Add photo</Text1>
+                <TouchableOpacity
+                    onPress={() => { onPress && onPress() }}
+                    disabled={onPress ? false : true}
+                    style={[styles.paddingV4vw, styles.borderRadius10, styles.flexRowCenter, styles.h30vh, { backgroundColor: '#86DFD033' }]}
+                >
+                    {imgPlaceHolder(vw(20), vw(20))}
+                </TouchableOpacity>
+            </View>
+        );
+    }
+}
+
