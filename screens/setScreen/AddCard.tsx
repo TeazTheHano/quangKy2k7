@@ -3,16 +3,16 @@ import React, { useContext, useState } from 'react'
 import { Card2line, Card2lineInput, Card3lineInputImg, Lex16MedAuto, Lex16RegAuto, Lex20RegAuto, TopNav3 } from '../../assets/Class'
 import styles, { vw } from '../../assets/stylesheet'
 import { useNavigation } from '@react-navigation/native'
-import { RootContext } from '../../data/store'
+import { RootContext, setAsCurrent } from '../../data/store'
 import clrStyle from '../../assets/componentStyleSheet'
 import { checkIcon, deskCardEditIcon, deskNaviIcon, doneEditIcon, sharpLeftArrow } from '../../assets/svgXml'
 import { marginBottomForScrollView, openCamera, openGallery } from '../../assets/component'
 
 import { CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { getSetWithID, saveCardInDesk } from '../../data/storageFunc'
 
 export default function AddCard({ route }: any) {
   const { deskItem } = route.params
-  console.log(deskItem);
 
   const navigation = useNavigation()
   const [CURRENT_SETS, dispatch] = useContext(RootContext)
@@ -21,7 +21,34 @@ export default function AddCard({ route }: any) {
   const [currentBack, setCurrentBack] = React.useState<string>('')
   const [deskNameEditable, setDeskNameEditable] = React.useState<boolean>(false)
 
-  const [image, setImage] = useState<any>(null);
+  const [image, setImage] = useState<string | null>(null);
+
+  const saveCard = () => {
+    if (currentFront !== '' && currentBack !== '') {
+      const newCard = {
+        front: currentFront,
+        back: currentBack,
+        imgAddress: image,
+        memorized: false,
+        repeatToday: false,
+      };
+      if (CURRENT_SETS.current) {
+        const id = CURRENT_SETS.current.id;
+        saveCardInDesk(id, deskItem.title, newCard).then(() => {
+          getSetWithID(id).then((ret) => {
+            if (ret && ret.id) {
+              setAsCurrent(ret);
+              navigation.goBack();
+            } else {
+              Alert.alert('Error', 'Failed to save card');
+            }
+          });
+        });
+      }
+    } else {
+      Alert.alert('Error', 'Please fill in all fields');
+    }
+  };
 
   return (
     <View style={[styles.flex1, { backgroundColor: clrStyle.white }]}>
@@ -37,9 +64,7 @@ export default function AddCard({ route }: any) {
         rightText='Done'
         sideColor={clrStyle.neu5}
         TextClass={Lex16RegAuto}
-        rightFnc={() => {
-          console.log('done');
-        }}
+        rightFnc={() => { saveCard() }}
       />
       <ScrollView style={[styles.flex1, styles.padding4vw,]} contentContainerStyle={[styles.flexColCenter, styles.gap8vw]}>
 

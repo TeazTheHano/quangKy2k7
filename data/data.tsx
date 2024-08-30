@@ -12,7 +12,7 @@ export interface UserFormat {
 export interface Card {
     front: string;
     back: string;
-    imgAddress: string;
+    imgAddress: string | null;
     memorized: boolean,
     repeatToday: boolean,
 }

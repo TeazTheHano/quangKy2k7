@@ -1,3 +1,4 @@
+
 import { View, Text, StatusBar, ScrollView, TouchableOpacity, Alert, Pressable, Vibration, Animated, Easing } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import styles, { vh, vw } from '../../assets/stylesheet'
@@ -7,18 +8,50 @@ import { RootContext } from '../../data/store'
 import { useNavigation } from '@react-navigation/native'
 import clrStyle from '../../assets/componentStyleSheet'
 import * as Progress from 'react-native-progress';
-import { Card } from '../../data/data'
+import { Card, Desk, SetFormat } from '../../data/data'
 import { marginBottomForScrollView } from '../../assets/component'
 import { SvgXml } from 'react-native-svg'
+import { getDeskWithID, getSetWithID } from '../../data/storageFunc'
 
 export default function DeskView({ route }: any) {
   const navigation = useNavigation()
-  const [CURRENT_SETS, dispatch] = useContext(RootContext)
-  const [showEdit, setShowEdit] = useState<string>('')
 
   const { deskItem } = route.params
-  let Desk_ALL_REPEATED_TODAY = deskItem.cardList.filter((card: any) => card.repeatToday == false).length
-  let Desk_ALL_MEMORIZED = deskItem.cardList.filter((card: any) => card.memorized == true).length
+  const [CURRENT_SETS, dispatch] = useContext(RootContext)
+  const [theSet, setTheSet] = React.useState<SetFormat | null>(null)
+  const [currentDesk, setCurrentDesk] = useState<Desk>(deskItem)
+
+  const [showEdit, setShowEdit] = useState<string>('')
+
+  const [Desk_ALL_REPEATED_TODAY, setDesk_ALL_REPEATED_TODAY] = useState<number>(0)
+  const [Desk_ALL_MEMORIZED, setDesk_ALL_MEMORIZED] = useState<number>(0)
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+      try {
+        const ret = await getSetWithID(CURRENT_SETS.current?.id as string);
+        if (ret && ret.id) {
+          setTheSet(ret);
+        } else {
+          console.log('error at SetView.tsx');
+          setTheSet(CURRENT_SETS.current);
+        }
+        const updatedSet = ret && ret.id ? ret : CURRENT_SETS.current;
+        const desk = updatedSet?.deskList.find(desk => desk.title === deskItem.title);
+        if (desk) {
+          setCurrentDesk(desk);
+          setDesk_ALL_REPEATED_TODAY(desk.cardList.filter(card => card.repeatToday).length);
+          setDesk_ALL_MEMORIZED(desk.cardList.filter(card => card.memorized).length);
+        }
+      } catch (error) {
+        console.error('Error fetching set:', error);
+      }
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  // let Desk_ALL_REPEATED_TODAY = currentDesk.cardList.filter(card => card.repeatToday).length
+  // let Desk_ALL_MEMORIZED = currentDesk.cardList.filter(card => card.memorized).length
 
   function markAsMemorized(item: Card) {
     console.log('Mark as memorized')
@@ -27,9 +60,9 @@ export default function DeskView({ route }: any) {
 
 
   function renderCard() {
-    if (deskItem.cardList.length > 0) {
+    if (currentDesk.cardList.length > 0) {
       return (
-        deskItem.cardList.map((cardItem: Card, index: number) => {
+        currentDesk.cardList.map((cardItem: Card, index: number) => {
           return (
             <Pressable
               key={index}
@@ -76,7 +109,7 @@ export default function DeskView({ route }: any) {
       <StatusBar translucent={true} backgroundColor={'rgba(0,0,0,0)'} barStyle={'light-content'} />
       <TopNav2
         title={CURRENT_SETS.current?.name as string}
-        subTitle={deskItem.title}
+        subTitle={currentDesk.title}
         textColor='white'
         backGoundImage={CURRENT_SETS.current?.author?.imgAddress}
         leftIcon={sharpLeftArrow(vw(8), vw(8), 'white')}
@@ -126,7 +159,7 @@ export default function DeskView({ route }: any) {
           </View>
 
           <View style={[styles.marginBottom2vw]}>
-            <Progress.Bar progress={Desk_ALL_MEMORIZED / deskItem.cardList.length} width={vw(84)} height={vw(2)} color={Desk_ALL_MEMORIZED / deskItem.cardList.length == 1 ? clrStyle.yellow : clrStyle.black} borderWidth={1} borderColor={clrStyle.black} unfilledColor={'#D9D9D9'} />
+            <Progress.Bar progress={Desk_ALL_MEMORIZED / currentDesk.cardList.length} width={vw(84)} height={vw(2)} color={Desk_ALL_MEMORIZED / currentDesk.cardList.length == 1 ? clrStyle.yellow : clrStyle.black} borderWidth={1} borderColor={clrStyle.black} unfilledColor={'#D9D9D9'} />
           </View>
           {renderCard()}
           {marginBottomForScrollView(2)}

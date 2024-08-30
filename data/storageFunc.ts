@@ -2,7 +2,7 @@ import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import {Alert} from 'react-native';
-import {SetFormat, setList, UserFormat} from './data';
+import {Card, Desk, SetFormat, setList, UserFormat} from './data';
 import {demoSets} from './factoryData';
 import {useContext} from 'react';
 import {CURRENT_SET_PUBLIC, RootContext} from './store';
@@ -297,4 +297,161 @@ export const removeUser = async () => {
   } catch (error) {
     return false;
   }
+};
+
+export const saveDeskInSet = async (setID: string, desk: Desk) => {
+  getSetWithID(setID).then((set: false | SetFormat) => {
+    if (set && set.name) {
+      let newSet = set;
+      if (
+        newSet.deskList.filter(item => item.title === desk.title).length === 0
+      ) {
+        newSet.deskList.push(desk);
+        saveSetWithID(newSet).then(res => {
+          if (res) {
+            console.log('Desk saved');
+            return res;
+          } else {
+            return Alert.alert('Failed to save desk');
+          }
+        });
+      } else {
+        return Alert.alert('Desk already exists', 'Please choose another name');
+      }
+    } else {
+      return Alert.alert('Failed to save desk');
+    }
+  });
+};
+
+export const removeDeskInSet = async (setID: string, deskTitle: string) => {
+  getSetWithID(setID).then((set: false | SetFormat) => {
+    if (set && set.name) {
+      let newSet = set;
+      newSet.deskList = newSet.deskList.filter(
+        item => item.title !== deskTitle,
+      );
+      saveSetWithID(newSet).then(res => {
+        if (res) {
+          console.log('Desk removed');
+          return res;
+        } else {
+          return Alert.alert('Failed to remove desk');
+        }
+      });
+    } else {
+      return Alert.alert('Failed to remove desk');
+    }
+  });
+};
+
+export const saveCardInDesk = async (
+  setID: string,
+  deskTitle: string,
+  card: Card,
+) => {
+  getSetWithID(setID).then((set: false | SetFormat) => {
+    // console.log('set', set);
+
+    if (set && set.name) {
+      let newSet = set;
+      newSet.deskList.forEach(desk => {
+        if (desk.title === deskTitle) {
+          desk.cardList.push(card);
+          saveSetWithID(newSet).then(res => {
+            if (res) {
+              console.log('Card saved');
+              return res;
+            } else {
+              return Alert.alert('Failed to save card');
+            }
+          });
+        }
+      });
+    } else {
+      return Alert.alert('Failed to save card');
+    }
+  });
+};
+
+export const removeCardInDesk = async (
+  setID: string,
+  deskTitle: string,
+  cardFront: string,
+) => {
+  getSetWithID(setID).then((set: false | SetFormat) => {
+    if (set && set.name) {
+      let newSet = set;
+      newSet.deskList.forEach(desk => {
+        if (desk.title === deskTitle) {
+          desk.cardList = desk.cardList.filter(
+            item => item.front !== cardFront,
+          );
+          saveSetWithID(newSet).then(res => {
+            if (res) {
+              console.log('Card removed');
+              return res;
+            } else {
+              return Alert.alert('Failed to remove card');
+            }
+          });
+        }
+      });
+    } else {
+      return Alert.alert('Failed to remove card');
+    }
+  });
+};
+
+export const saveCardInDeskWithInfo = async (
+  setID: string,
+  deskTitle: string,
+  cardFront: string,
+  cardBack: string,
+  cardImg: string,
+  cardMemo: boolean,
+  cardRepeatToday: boolean,
+) => {
+  getSetWithID(setID).then((set: false | SetFormat) => {
+    if (set && set.name) {
+      let newSet = set;
+      let card: Card = {
+        front: cardFront,
+        back: cardBack,
+        imgAddress: cardImg,
+        memorized: cardMemo,
+        repeatToday: cardRepeatToday,
+      };
+      newSet.deskList.forEach(desk => {
+        if (desk.title === deskTitle) {
+          desk.cardList.push(card);
+          saveSetWithID(newSet).then(res => {
+            if (res) {
+              console.log('Card saved');
+              return res;
+            } else {
+              return Alert.alert('Failed to save card');
+            }
+          });
+        }
+      });
+    } else {
+      return Alert.alert('Failed to save card');
+    }
+  });
+};
+
+export const getDeskWithID = async (setID: string, deskTitle: string) => {
+  getSetWithID(setID).then((set: false | SetFormat) => {
+    if (set && set.name) {
+      set.deskList.find(desk => {
+        if (desk.title === deskTitle) {
+          return desk as Desk;
+        }
+      });
+    } else {
+      Alert.alert('Failed to get desk');
+      return false;
+    }
+  });
 };

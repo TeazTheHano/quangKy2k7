@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, Image, ImageStyle, StatusBar, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Lex10RegAuto, Lex12BoldAuto, Lex16RegAuto, Pay16RegAuto, Pay20BlackLine122, Pay24BlackLine122, SaveViewWithColorStatusBar, TopNav2 } from '../../assets/Class'
 import styles, { vw } from '../../assets/stylesheet'
 import { useNavigation } from '@react-navigation/native'
@@ -9,22 +9,38 @@ import { deskAddIcon, deskCheckIcon, deskNaviIcon, deskYellowIcon, notiBellIcon,
 import clrStyle from '../../assets/componentStyleSheet'
 
 import * as Progress from 'react-native-progress';
-import { Desk } from '../../data/data'
+import { Desk, SetFormat } from '../../data/data'
+import { getSetWithID } from '../../data/storageFunc'
 
 export default function SetView() {
   const navigation = useNavigation()
   const [CURRENT_SETS, dispatch] = useContext(RootContext)
+  const [theSet, setTheSet] = React.useState<SetFormat | null>(null)
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getSetWithID(CURRENT_SETS.current?.id as string).then((ret) => {
+        ret && ret.id ? setTheSet(ret) : () => { console.log('error at SetView.tsx'); setTheSet(CURRENT_SETS.current) }
+      });
+    }
+    );
+    return unsubscribe;
+  }, [navigation]);
 
   function setPreView() {
-    let ALL_REPEATED_TODAY = CURRENT_SETS.current?.deskList.map(desk => desk.cardList.filter(card => card.repeatToday).length).reduce((a, b) => a + b, 0)
-    let ALL_MEMORIZED = CURRENT_SETS.current?.deskList.map(desk => desk.cardList.filter(card => card.memorized).length).reduce((a, b) => a + b, 0)
-    let ALL_DESK_COMPLETE = CURRENT_SETS.current?.deskList.filter(desk => desk.cardList.filter(card => card.repeatToday).length == desk.cardList.length).length
-    let ALL_CARD = CURRENT_SETS.current?.deskList.map(desk => desk.cardList.length).reduce((a, b) => a + b, 0)
+    if (!theSet) {
+      return null
+    }
+
+    let ALL_REPEATED_TODAY = theSet.deskList.map(desk => desk.cardList.filter(card => card.repeatToday).length).reduce((a, b) => a + b, 0)
+    let ALL_MEMORIZED = theSet.deskList.map(desk => desk.cardList.filter(card => card.memorized).length).reduce((a, b) => a + b, 0)
+    let ALL_DESK_COMPLETE = theSet.deskList.filter(desk => desk.cardList.filter(card => card.repeatToday).length == desk.cardList.length).length
+    let ALL_CARD = theSet.deskList.map(desk => desk.cardList.length).reduce((a, b) => a + b, 0)
 
     let data = [
       [ALL_REPEATED_TODAY, ALL_CARD, clrStyle.neu6, <Lex10RegAuto style={[styles.textCenter, styles.w100, styles.marginTop1vw, { color: clrStyle.white }]}>cards of this set need to <Lex10RegAuto style={{ color: clrStyle.neu6 }}>repeat today</Lex10RegAuto></Lex10RegAuto>],
       [ALL_MEMORIZED, ALL_CARD, clrStyle.orange, <Lex10RegAuto style={[styles.textCenter, styles.w100, styles.marginTop1vw, { color: clrStyle.white }]}>cards <Lex10RegAuto style={{ color: clrStyle.orange }}>memorized</Lex10RegAuto> for all time</Lex10RegAuto>],
-      [ALL_DESK_COMPLETE, CURRENT_SETS.current?.deskList.length, clrStyle.yellow, <Lex10RegAuto style={[styles.textCenter, styles.w100, styles.marginTop1vw, { color: clrStyle.white }]}>desks <Lex10RegAuto style={{ color: clrStyle.yellow }}>completed</Lex10RegAuto></Lex10RegAuto>],
+      [ALL_DESK_COMPLETE, theSet?.deskList.length, clrStyle.yellow, <Lex10RegAuto style={[styles.textCenter, styles.w100, styles.marginTop1vw, { color: clrStyle.white }]}>desks <Lex10RegAuto style={{ color: clrStyle.yellow }}>completed</Lex10RegAuto></Lex10RegAuto>],
     ]
     return (
       <View style={[styles.flexRowBetweenCenter, styles.gap1vw]}>
@@ -42,10 +58,10 @@ export default function SetView() {
   }
 
   function deskPreview() {
-    if (CURRENT_SETS.current) {
+    if (theSet) {
       return (
         <View style={[styles.w100, styles.flexRowEvenlyCenter, styles.flexWrap, styles.marginTop8vw, { rowGap: vw(8) }]}>
-          {CURRENT_SETS.current.deskList.map((desk: Desk, index: number) => {
+          {theSet.deskList.map((desk: Desk, index: number) => {
             let process = desk.cardList.filter(card => card.repeatToday).length
             let bgColor = desk.cardList.length - process ? clrStyle.yellow : clrStyle.neu6;
             return (
@@ -86,7 +102,7 @@ export default function SetView() {
             {deskAddIcon(vw(14), vw(14))}
           </TouchableOpacity>
 
-          {CURRENT_SETS.current.deskList.length % 2 == 0 ?
+          {theSet.deskList.length % 2 == 0 ?
             <View style={[{ width: vw(40), height: vw(50) }]}>
             </View> : null}
         </View>
@@ -101,9 +117,9 @@ export default function SetView() {
       <StatusBar translucent={true} backgroundColor={'rgba(0,0,0,0)'} barStyle={'light-content'} />
       <TopNav2
         title='Set View'
-        subTitle={CURRENT_SETS.current?.name as string}
+        subTitle={theSet?.name as string}
         textColor='white'
-        backGoundImage={CURRENT_SETS.current?.author?.imgAddress}
+        backGoundImage={theSet?.author.imgAddress}
         leftIcon={sharpLeftArrow(vw(8), vw(8), 'white')}
         leftIconFnc={() => navigation.goBack()}
         rightIcon={notiBellIcon(vw(8), vw(8), 'white')}

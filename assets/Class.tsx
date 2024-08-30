@@ -729,7 +729,7 @@ export class Card3lineInputImg extends Component<{
     onPress2?: () => void
     onPress3?: () => void
     isEdit?: boolean
-    photoAddress?: string
+    photoAddress?: string | null
 }> {
     render() {
         const { customStyle, text1, value2, onChangeText2, onPress1, onPress2, onPress3, textColor1, textColor2, TextClass1, TextClass2, bgColor, border, borderClr, isEdit, placeholder2, textLimit2, photoAddress } = this.props;

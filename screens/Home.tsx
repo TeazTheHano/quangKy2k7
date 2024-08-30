@@ -36,6 +36,7 @@ const Home = () => {
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
+            setIsDataLoaded(false);
             const fetchData = async () => {
                 try {
                     dispatch(currentClearAllSet());
@@ -243,9 +244,6 @@ const Home = () => {
             </ScrollView>
         )
     }
-
-
-    console.log(CURRENT_SETS.userInfo?.imgAddress);
 
     // END OF DATA AND CARD SECTION
 
