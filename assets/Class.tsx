@@ -752,7 +752,7 @@ export class Card3lineInputImg extends Component<{
                 <Text1 style={[styles.paddingH1vw, styles.flex1, { color: textColor1 ? textColor1 : clrStyle.black }]}>Add photo</Text1>
                 <TouchableOpacity
                     onPress={() => { onPress3 && onPress3() }}
-                    disabled={onPress3 && photoAddress ? false : true}
+                    disabled={onPress3 && photoAddress && isEdit ? false : true}
                     style={[styles.borderRadius10, styles.flexRowCenter, styles.h30vh, styles.overflowHidden, { backgroundColor: '#86DFD033' }]}
                 >
                     {photoAddress ?
@@ -766,13 +766,13 @@ export class Card3lineInputImg extends Component<{
                         >
                             <TouchableOpacity
                                 onPress={() => { onPress1 && onPress1() }}
-                                disabled={onPress1 ? false : true}
+                                disabled={onPress1 && isEdit ? false : true}
                                 style={[styles.flexRowCenter, styles.w40, styles.h50]}>
                                 {imgPickerIcon(vw(20), vw(20))}
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => { onPress2 && onPress2() }}
-                                disabled={onPress2 ? false : true}
+                                disabled={onPress2 && isEdit ? false : true}
                                 style={[styles.flexRowCenter, styles.w40, styles.h50]}>
                                 {cameraIcon(vw(15), vw(15))}
                             </TouchableOpacity>

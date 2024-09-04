@@ -27,7 +27,7 @@ export let demoSets: SetFormat[] = [
         author: demoUser,
         description: 'This set is for B1 level English learners',
         rate: {
-            star: 5,
+            star: 4.35,
             total: 10,
         },
         private: true,

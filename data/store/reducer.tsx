@@ -1,8 +1,10 @@
 //FIXME: NEED CHANGE IN NEW PJ: Add action types and action creators here
 
-import { SetFormat, UserFormat } from "../data";
-import { initialState, Action, } from "./index";
-import { CURRENT_SET_SAVED, SAVE_USER_INFO, CURRENT_SAVE_THE_SET, CURRENT_UNSAVE_THE_SET, CURRENT_SET_AS_CURRENT, CURRENT_REMOVE_FROM_CURRENT, CURRENT_SET_PUBLIC, CURRENT_SET_PRIVATE, CURRENT_SET_DONE, CurrentSets, CURRENT_CLEAR_ALL_SET, CURRENT_CLEAR_PUBLIC, CURRENT_CLEAR_PRIVATE, CURRENT_CLEAR_DONE, CURRENT_CLEAR_SAVED, CURRENT_CLEAR_CURRENT, } from "./index";
+import { Desk, SetFormat, UserFormat } from "../data";
+import {
+    initialState, Action,
+    CURRENT_SET_SAVED, SAVE_USER_INFO, CURRENT_SAVE_THE_SET, CURRENT_UNSAVE_THE_SET, CURRENT_SET_AS_CURRENT, CURRENT_REMOVE_FROM_CURRENT, CURRENT_SET_PUBLIC, CURRENT_SET_PRIVATE, CURRENT_SET_DONE, CurrentSets, CURRENT_CLEAR_ALL_SET, CURRENT_CLEAR_PUBLIC, CURRENT_CLEAR_PRIVATE, CURRENT_CLEAR_DONE, CURRENT_CLEAR_SAVED, CURRENT_CLEAR_CURRENT, CURRENT_CLEAR_CURRENT_DESK, CURRENT_SET_CURRENT_DESK
+} from "./index";
 
 export default function setReducer(state = initialState, action: Action): CurrentSets {
     switch (action.type) {
@@ -85,6 +87,16 @@ export default function setReducer(state = initialState, action: Action): Curren
             return {
                 ...state,
                 current: null
+            };
+        case CURRENT_CLEAR_CURRENT_DESK:
+            return {
+                ...state,
+                currentDesk: null
+            };
+        case CURRENT_SET_CURRENT_DESK:
+            return {
+                ...state,
+                currentDesk: action.payload as Desk
             };
         default:
             return state;

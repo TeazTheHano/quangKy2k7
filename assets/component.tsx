@@ -270,6 +270,7 @@ export function showSetCard(DATA: SetFormat[]) {
     const [CURRENT_SETS, dispatch] = useContext(RootContext);
 
     function showRateStar(rate: number) {
+        rate = Math.round(rate)
         let rateStar = []
         for (let index = 0; index < rate; index++) {
             rateStar.push(goldStar(vw(3), vw(3)))

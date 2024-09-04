@@ -1,23 +1,29 @@
 //FIXME: NEED CHANGE IN NEW PJ: Add action types and action creators here
 
-import { SetFormat, UserFormat } from "../data";
+import { Desk, SetFormat, UserFormat } from "../data";
 
 export const CURRENT_SAVE_THE_SET = `CURRENT_SAVE_THE_SET`;
 export const CURRENT_UNSAVE_THE_SET = `CURRENT_UNSAVE_THE_SET`;
+
 export const CURRENT_SET_AS_CURRENT = `CURRENT_SET_AS_CURRENT`;
 export const CURRENT_REMOVE_FROM_CURRENT = `CURRENT_REMOVE_FROM_CURRENT`;
+
 export const CURRENT_SET_PUBLIC = `CURRENT_SET_PUBLIC`;
 export const CURRENT_SET_PRIVATE = `CURRENT_SET_PRIVATE`;
 export const CURRENT_SET_DONE = `CURRENT_SET_DONE`;
-
 export const CURRENT_SET_SAVED = `CURRENT_SET_SAVED`;
 
+
 export const CURRENT_CLEAR_ALL_SET = `CURRENT_CLEAR_ALL_SET`;
+
 export const CURRENT_CLEAR_PUBLIC = `CURRENT_CLEAR_PUBLIC`;
 export const CURRENT_CLEAR_PRIVATE = `CURRENT_CLEAR_PRIVATE`;
 export const CURRENT_CLEAR_DONE = `CURRENT_CLEAR_DONE`;
 export const CURRENT_CLEAR_SAVED = `CURRENT_CLEAR_SAVED`;
 export const CURRENT_CLEAR_CURRENT = `CURRENT_CLEAR_CURRENT`;
+
+export const CURRENT_CLEAR_CURRENT_DESK = `CURRENT_CLEAR_CURRENT_DESK`;
+export const CURRENT_SET_CURRENT_DESK = `CURRENT_SET_CURRENT_DESK`;
 
 export const SAVE_USER_INFO = `SAVE_USER_INFO`;
 
@@ -117,5 +123,18 @@ export const currentClearSaved = () => {
 export const currentClearCurrent = () => {
     return {
         type: CURRENT_CLEAR_CURRENT,
+    }
+}
+
+export const currentClearCurrentDesk = () => {
+    return {
+        type: CURRENT_CLEAR_CURRENT_DESK,
+    }
+}
+
+export const currentSetCurrentDesk = (item: Desk) => {
+    return {
+        type: CURRENT_SET_CURRENT_DESK,
+        payload: item
     }
 }

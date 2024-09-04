@@ -89,11 +89,11 @@ export default function Login() {
         password = password.trim()
 
         try {
-            signInWithEmailAndPassword(auth, email, password)
+            await signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     // Signed in 
                     const user = userCredential;
-                    console.log(user);
+
                     if (user.user.email) {
                         saveUser({
                             email: user.user.email,
@@ -104,12 +104,15 @@ export default function Login() {
                             createdSet: [],
                             imgAddress: user.user.photoURL ? user.user.photoURL : ''
                         })
+                    } else {
+                        return Alert.alert('Email or Password is incorrect')
                     }
                 }).then(() => {
                     return navigation.navigate('BottomTab' as never)
                 })
         } catch (error) {
             console.log(error)
+            return Alert.alert('Email or Password is incorrect')
         }
     }
 

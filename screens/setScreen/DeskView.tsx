@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import styles, { vh, vw } from '../../assets/stylesheet'
 import { Lex10RegAuto, Lex12BoldAuto, Lex14RegAuto, Lex16BlackAuto, Lex16RegAuto, Lex20BoldAuto, Pay24BlackLine122, TopNav2 } from '../../assets/Class'
 import { AddCardIcon, AddIconInactive, deskCardEditIcon, deskMiniBlackCheckIcon, deskNaviIcon, deskPracticeIcon, deskReviewIcon, notiBellIcon, sharpLeftArrow } from '../../assets/svgXml'
-import { RootContext } from '../../data/store'
+import { currentSetCurrentDesk, RootContext } from '../../data/store'
 import { useNavigation } from '@react-navigation/native'
 import clrStyle from '../../assets/componentStyleSheet'
 import * as Progress from 'react-native-progress';
@@ -40,6 +40,7 @@ export default function DeskView({ route }: any) {
         const desk = updatedSet?.deskList.find(desk => desk.title === deskItem.title);
         if (desk) {
           setCurrentDesk(desk);
+          dispatch(currentSetCurrentDesk(desk));
           setDesk_ALL_REPEATED_TODAY(desk.cardList.filter(card => card.repeatToday).length);
           setDesk_ALL_MEMORIZED(desk.cardList.filter(card => card.memorized).length);
         }
@@ -67,7 +68,7 @@ export default function DeskView({ route }: any) {
             <Pressable
               key={index}
               onPress={() => {
-                console.log('press card');
+                navigation.navigate('AddCard', { cardIndex: index, type: 'view' })
               }}
               onLongPress={() => {
                 setShowEdit(index.toString())
@@ -166,7 +167,7 @@ export default function DeskView({ route }: any) {
         </View>
       </ScrollView>
       <TouchableOpacity
-        onPress={() => { navigation.navigate('AddCard', { deskItem: deskItem }) }}
+        onPress={() => { navigation.navigate('AddCard' as never) }}
         style={[styles.positionAbsolute, { bottom: 0, right: 0, zIndex: 2 }]}>
         {AddCardIcon(vw(30), vw(30))}
       </TouchableOpacity>
