@@ -51,15 +51,6 @@ export default function DeskView({ route }: any) {
     return unsubscribe;
   }, [navigation]);
 
-  // let Desk_ALL_REPEATED_TODAY = currentDesk.cardList.filter(card => card.repeatToday).length
-  // let Desk_ALL_MEMORIZED = currentDesk.cardList.filter(card => card.memorized).length
-
-  function markAsMemorized(item: Card) {
-    console.log('Mark as memorized')
-    let newCardItem: Card = item
-  }
-
-
   function renderCard() {
     if (currentDesk.cardList.length > 0) {
       return (
@@ -87,7 +78,8 @@ export default function DeskView({ route }: any) {
                   style={[styles.overflowHidden, { width: showEdit == index.toString() ? vw(6) : 0.1, opacity: showEdit == index.toString() ? 1 : 0 }]}
                   disabled={showEdit == index.toString() ? false : true}
                   onPress={() => {
-                    console.log('edit card');
+                    setShowEdit('')
+                    navigation.navigate('AddCard', { cardIndex: index, type: 'edit' })
                   }}>
                   {deskCardEditIcon(vw(6), vw(6))}
                 </TouchableOpacity>
@@ -123,7 +115,7 @@ export default function DeskView({ route }: any) {
         {/* yellow */}
         <View style={[styles.w100, styles.flexRowEvenlyCenter, styles.paddingV8vw]}>
           <TouchableOpacity
-            onPress={() => { }}
+            onPress={() => { navigation.navigate('CardReview' as never) }}
             style={[styles.flexColStartCenter, styles.borderRadius10, styles.border2, styles.overflowHidden, { width: vw(40), height: vw(50), backgroundColor: clrStyle.white, }]}>
             {/* head */}
             <View style={[styles.borderRadius100, styles.paddingH1vw, styles.flexRowCenter, styles.margin2vw, { backgroundColor: clrStyle.redP, minWidth: vw(8), height: vw(8), }]}>

@@ -18,7 +18,7 @@ import Add from './screens/Add';
 // inner-screen import
 import SetView from './screens/setScreen/SetView';
 import DeskView from './screens/setScreen/DeskView';
-import CardView from './screens/setScreen/CardView';
+import CardReview from './screens/setScreen/CardReview';
 import AddCard from './screens/setScreen/AddCard';
 
 // ____________________END OF IMPORT_______________________
@@ -41,7 +41,7 @@ function App(): React.JSX.Element {
           {/* >>>>>>>>>>>>>>> */}
           <Stack.Screen name="SetView" component={SetView} />
           <Stack.Screen name="DeskView" component={DeskView} />
-          <Stack.Screen name="CardView" component={CardView} />
+          <Stack.Screen name="CardReview" component={CardReview} />
           <Stack.Screen name="AddCard" component={AddCard} />
           {/* <<<<<<<<<<<<<<<< */}
         </Stack.Navigator>

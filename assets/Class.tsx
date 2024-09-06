@@ -76,7 +76,7 @@ export class Pay32BlackLine40 extends Component<{ children: React.ReactNode, sty
         const { children, style } = this.props;
 
         return (
-            <Text style={[{ fontFamily: 'PaytoneOne-Regular', fontSize: vw(8), lineHeight: vw(10), color: 'black' }, style]}>
+            <Text style={[{ fontFamily: 'PaytoneOne-Regular', fontSize: vw(8), lineHeight: vw(10), }, style]}>
                 {children}
             </Text>
         );

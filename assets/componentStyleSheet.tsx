@@ -14,10 +14,12 @@ const clrStyle = StyleSheet.create<any>({
     grey: '#656565',
     redA: '#DA2900',
     redP: '#A84035',
+    green: '#6DC394',
     pur1: '#8E83E0',
     pur2: '#C3BBF3',
     you: '#0083FF',
     neu1: `#2F2F2F`,
+    saoUnav: `#E9FFFC`,
 });
 
 export default clrStyle;

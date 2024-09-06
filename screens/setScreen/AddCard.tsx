@@ -52,6 +52,12 @@ export default function AddCard({ route }: any) {
     }
   }, [cardItem]);
 
+  function markAsMemorized(item: Card) {
+    console.log('Mark as memorized')
+    let newCardItem: Card = item
+    // TODO: update card memorized status
+  }
+
   const saveCard = () => {
     const createCard = async (newCard: Card) => {
       if (CURRENT_SETS.current) {
@@ -186,7 +192,38 @@ export default function AddCard({ route }: any) {
 
         {cardIndex != undefined ?
           <TouchableOpacity
-            onPress={() => { }}
+            onPress={() => {
+              if (isViewing) {
+                markAsMemorized(cardItem as Card)
+              } else {
+                Alert.alert('Delete card', 'Are you sure you want to delete this card?', [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Delete',
+                    style: 'destructive',
+                    onPress: () => {
+                      if (CURRENT_SETS.current) {
+                        const id = CURRENT_SETS.current.id;
+                        removeCardInDesk(id, deskItem.title, originalFront)
+                          .then(() => {
+                            getSetWithID(id).then((ret) => {
+                              if (ret && ret.id) {
+                                setAsCurrent(ret);
+                                navigation.goBack();
+                              } else {
+                                Alert.alert('Error', 'Failed to save card');
+                              }
+                            });
+                          });
+                      }
+                    },
+                  },
+                ])
+              }
+            }}
             style={[styles.flexRowCenter, styles.gap2vw, styles.paddingV2vw, styles.paddingH4vw, styles.borderRadius2vw, styles.border1, { backgroundColor: isViewing ? clrStyle.black : clrStyle.redA }]}>
             {isViewing ?
               deskMiniBlackCheckIcon(vw(6), vw(6), clrStyle.white)
