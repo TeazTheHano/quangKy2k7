@@ -9,7 +9,7 @@ import { cardDeleteIcon, checkIcon, deskCardEditIcon, deskMiniBlackCheckIcon, de
 import { marginBottomForScrollView, openCamera, openGallery } from '../../assets/component'
 
 import { CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { getSetWithID, removeCardInDesk, saveCardInDesk } from '../../data/storageFunc'
+import { createCardFnc, editCardFnc, getSetWithID, removeCardFnc, removeCardInDesk, saveCardInDesk } from '../../data/storageFunc'
 import { Card, Desk } from '../../data/data'
 
 export default function AddCard({ route }: any) {
@@ -26,6 +26,7 @@ export default function AddCard({ route }: any) {
 
   const [currentFront, setCurrentFront] = React.useState<string>('')
   const [currentBack, setCurrentBack] = React.useState<string>('')
+  const [currentMemorized, setCurrentMemorized] = React.useState<boolean>(false)
   const [deskNameEditable, setDeskNameEditable] = React.useState<boolean>(false)
 
   const [originalDeskName, setOriginalDeskName] = React.useState<string>(deskItem.title)
@@ -49,56 +50,18 @@ export default function AddCard({ route }: any) {
       setOriginalFront(cardItem.front);
       setCurrentBack(cardItem.back);
       setImage(cardItem.imgAddress);
+      setCurrentMemorized(cardItem.memorized);
     }
   }, [cardItem]);
 
   function markAsMemorized(item: Card) {
     console.log('Mark as memorized')
     let newCardItem: Card = item
-    // TODO: update card memorized status
+    newCardItem.memorized = !newCardItem.memorized
+    editCardFnc(newCardItem, CURRENT_SETS.current?.id as string, deskItem, cardIndex as number, originalFront, currentFront, setAsCurrent, navigation.goBack)
   }
 
   const saveCard = () => {
-    const createCard = async (newCard: Card) => {
-      if (CURRENT_SETS.current) {
-        const id = CURRENT_SETS.current.id;
-        saveCardInDesk(id, deskItem.title, newCard).then(() => {
-          getSetWithID(id).then((ret) => {
-            if (ret && ret.id) {
-              setAsCurrent(ret);
-              navigation.goBack();
-            } else {
-              Alert.alert('Error', 'Failed to save card');
-            }
-          });
-        });
-      }
-    }
-
-    const editCard = async (newCard: Card) => {
-      if (CURRENT_SETS.current) {
-        const id = CURRENT_SETS.current.id;
-        const newDesk = { ...deskItem };
-        newDesk.cardList[cardIndex] = newCard;
-        removeCardInDesk(id, deskItem.title, originalFront)
-          .then(() => {
-            if (currentFront == originalFront) {
-              saveCardInDesk(id, deskItem.title, newCard)
-            }
-          })
-          .then(() => {
-            getSetWithID(id).then((ret) => {
-              if (ret && ret.id) {
-                setAsCurrent(ret);
-                navigation.goBack();
-              } else {
-                Alert.alert('Error', 'Failed to save card');
-              }
-            });
-          });
-      }
-    }
-
     if (currentFront !== '' && currentBack !== '') {
       const newCard: Card = {
         front: currentFront,
@@ -108,9 +71,9 @@ export default function AddCard({ route }: any) {
         repeatToday: false,
       };
       if (cardIndex !== undefined) {
-        editCard(newCard);
+        editCardFnc(newCard, CURRENT_SETS.current?.id as string, deskItem, cardIndex, originalFront, currentFront, setAsCurrent, navigation.goBack);
       } else {
-        createCard(newCard);
+        createCardFnc(newCard, CURRENT_SETS.current?.id as string, deskItem.title, setAsCurrent, navigation.goBack);
       }
     } else {
       Alert.alert('Error', 'Please fill in all fields');
@@ -204,31 +167,16 @@ export default function AddCard({ route }: any) {
                   {
                     text: 'Delete',
                     style: 'destructive',
-                    onPress: () => {
-                      if (CURRENT_SETS.current) {
-                        const id = CURRENT_SETS.current.id;
-                        removeCardInDesk(id, deskItem.title, originalFront)
-                          .then(() => {
-                            getSetWithID(id).then((ret) => {
-                              if (ret && ret.id) {
-                                setAsCurrent(ret);
-                                navigation.goBack();
-                              } else {
-                                Alert.alert('Error', 'Failed to save card');
-                              }
-                            });
-                          });
-                      }
-                    },
+                    onPress: () => { CURRENT_SETS.current ? removeCardFnc(CURRENT_SETS.current.id, deskItem.title, originalFront, setAsCurrent, navigation.goBack) : null },
                   },
                 ])
               }
             }}
-            style={[styles.flexRowCenter, styles.gap2vw, styles.paddingV2vw, styles.paddingH4vw, styles.borderRadius2vw, styles.border1, { backgroundColor: isViewing ? clrStyle.black : clrStyle.redA }]}>
-            {isViewing ?
+            style={[styles.flexRowCenter, styles.gap2vw, styles.paddingV2vw, styles.paddingH4vw, styles.borderRadius2vw, styles.border1, { backgroundColor: isViewing ? currentMemorized ? clrStyle.yellow : clrStyle.black : clrStyle.redA }]}>
+            {isViewing ? currentMemorized ? deskMiniBlackCheckIcon(vw(6), vw(6), clrStyle.black) :
               deskMiniBlackCheckIcon(vw(6), vw(6), clrStyle.white)
               : cardDeleteIcon(vw(6), vw(6), clrStyle.white)}
-            <Lex16RegAuto style={{ color: clrStyle.white }}>{isViewing ? `Mark as memorized` : `Delete card`}</Lex16RegAuto>
+            <Lex16RegAuto style={{ color: currentMemorized ? clrStyle.black : clrStyle.white }}>{isViewing ? currentMemorized ? `Un-mark as momorized` : `Mark as memorized` : `Delete card`}</Lex16RegAuto>
           </TouchableOpacity> : null}
 
         {marginBottomForScrollView()}
