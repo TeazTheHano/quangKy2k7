@@ -2,10 +2,10 @@ import { View, Text, Platform, Alert, TouchableOpacity, Image, ImageStyle } from
 import React, { useContext, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { RootContext } from '../../data/store'
-import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex14BoldAuto, Lex16BoldAuto, Lex16RegAuto, Lex20BlackAuto, Lex20BoldAuto, Lex20RegAuto, Pay32BlackLine40, SaveViewWithColorStatusBar } from '../../assets/Class'
+import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex14BoldAuto, Lex16BoldAuto, Lex16RegAuto, Lex20BlackAuto, Lex20BoldAuto, Lex20RegAuto, Pay32BlackLine40, RoundBtn, SaveViewWithColorStatusBar } from '../../assets/Class'
 import styles, { vh, vw } from '../../assets/stylesheet'
 import clrStyle from '../../assets/componentStyleSheet'
-import { afterReviewIcon, againColorIcon, againIcon, easyColorIcon, easyIcon, goodColorIcon, goodIcon, hardColorIcon, hardIcon, reviewIcon, reviewNextIcon, xIcon } from '../../assets/svgXml'
+import { afterReviewBackToSetIcon, afterReviewIcon, afterReviewPractiveIcon, againColorIcon, againIcon, easyColorIcon, easyIcon, goodColorIcon, goodIcon, hardColorIcon, hardIcon, reviewIcon, reviewNextIcon, xIcon } from '../../assets/svgXml'
 
 export default function CardReview({ route }: any) {
   const navigation = useNavigation()
@@ -199,6 +199,13 @@ export default function CardReview({ route }: any) {
     const icon = [againColorIcon(vw(11), vw(11)), hardColorIcon(vw(11), vw(11)), goodColorIcon(vw(11), vw(11)), easyColorIcon(vw(11), vw(11))];
     let num = [againNumber, hardNumber, goodNumber, easyNumber];
     let txt = ['Again', 'Hard', 'Good', 'Easy'];
+    function theMost(index: number) {
+      if (num[index] == Math.max(...num) && num[index] != 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
     return (
       <>
         <View style={[styles.flexRowBetweenCenter, styles.paddingH5vw, styles.paddingBottom5vw, styles.gap3vw, { paddingTop: Platform.OS == 'android' ? vw(2) : 0, backgroundColor: clrStyle.saoUnav }]}>
@@ -214,10 +221,10 @@ export default function CardReview({ route }: any) {
             <View style={[styles.paddingV6vw, styles.borderRadius20, styles.paddingH8vw, styles.w100, styles.marginVertical4vw, styles.flexCol, styles.gap6vw, { backgroundColor: clrStyle.black }]}>
               <View style={[styles.flexRowBetweenCenter]}>
                 {icon.map((icon, index) => (
-                  <View key={index} style={[styles.flexColStartCenter, styles.gap1vw, styles.padding2vw, styles.borderRadius3vw, { backgroundColor: num[index] == Math.max(...num) ? clrStyle.neu6 : null }]}>
+                  <View key={index} style={[styles.flexColStartCenter, styles.gap1vw, styles.padding2vw, styles.borderRadius3vw, { backgroundColor: theMost(index) ? clrStyle.neu6 : null }]}>
                     {icon}
-                    <Lex16BoldAuto style={{ color: num[index] == Math.max(...num) ? clrStyle.black : clrStyle.white }}>{num[index]}</Lex16BoldAuto>
-                    <Lex12RegAuto style={{ color: num[index] == Math.max(...num) ? clrStyle.black : clrStyle.white }}>{txt[index]}</Lex12RegAuto>
+                    <Lex16BoldAuto style={{ color: theMost(index) ? clrStyle.black : clrStyle.white }}>{num[index]}</Lex16BoldAuto>
+                    <Lex12RegAuto style={{ color: theMost(index) ? clrStyle.black : clrStyle.white }}>{txt[index]}</Lex12RegAuto>
                   </View>
                 ))}
               </View>
@@ -229,6 +236,10 @@ export default function CardReview({ route }: any) {
             </View>
 
             <Lex16RegAuto style={[styles.textCenter, styles.paddingH4vw]}>We’ll start showing them again from the beggining to make sure all of them are <Lex20BlackAuto>EASY</Lex20BlackAuto> to you!</Lex16RegAuto>
+            <View style={[styles.w100, styles.flexRowBetweenCenter, styles.gap4vw, styles.marginTop4vw]}>
+              <RoundBtn title='Back to Desk' icon={afterReviewBackToSetIcon(vw(6), vw(6))} border={true} onPress={() => { navigation.goBack(); setCurrentCardIndex(0) }} />
+              <RoundBtn title='Practice' icon={afterReviewPractiveIcon(vw(6), vw(6))} bgColor={clrStyle.black} textColor={clrStyle.white} onPress={() => { Alert.alert('Practice', 'This feature is not available yet') }} />
+            </View>
           </View>
         </View>
       </>

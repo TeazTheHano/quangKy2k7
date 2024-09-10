@@ -18,7 +18,7 @@ import clrStyle from './componentStyleSheet';
 
 // ____________________END OF IMPORT_______________________
 
-// UNIVESAL CLASS SECTION
+// ____________________START OF UNIVERSAL CLASS_______________________
 
 
 /**
@@ -70,7 +70,9 @@ export class SaveViewWithColorStatusBar extends Component<{ children?: React.Rea
     }
 }
 
-// FONT SECTION
+// ____________________END OF UNIVERSAL CLASS_______________________
+
+// ____________________START OF FONT_______________________
 export class Pay32BlackLine40 extends Component<{ children: React.ReactNode, style?: any }> {
     render() {
         const { children, style } = this.props;
@@ -389,7 +391,6 @@ export class SSBar extends Component<{ color?: any }> {
 }
 
 
-
 export class InputCardVer1 extends Component<{
     customStyle?: any
     value: any
@@ -612,6 +613,62 @@ export class TopNav3 extends Component<{
     }
 }
 
+export class TopNavLib extends Component<{
+    children?: React.ReactNode
+    title?: string
+    subTitle?: string
+    textColor?: string
+    leftIcon?: React.JSX.Element
+    rightIcon?: React.JSX.Element
+    leftIconFnc?: () => void
+    rightIconFnc?: () => void
+    returnPreScreen?: boolean
+    returnPreScreenFnc?: () => void
+    textCenter?: boolean
+    containerStyle?: any
+    darken?: number
+}> {
+    render() {
+        let { title, leftIcon, rightIcon, returnPreScreen, rightIconFnc, leftIconFnc, returnPreScreenFnc, textCenter, children, subTitle, textColor, containerStyle, darken } = this.props
+        darken = darken ? darken : 0
+        return (
+            <ImageBackground source={require(`../assets/image/topNav.png`)} style={[styles.overflowHidden, { borderBottomLeftRadius: vw(6), borderBottomRightRadius: vw(6), }]}>
+                <View style={[styles.w100, styles.padding4vw, styles.paddingH8vw, { backgroundColor: `rgba(0,0,0,${darken})` }, containerStyle]}>
+                    <View style={[styles.w100, styles.flexRowBetweenCenter]}>
+                        {returnPreScreen ?
+                            <TouchableOpacity
+                                style={[styles.padding2vw]}
+                                onPress={returnPreScreenFnc}>
+                                {leftArrow(vw(6), vw(6), textColor ? textColor : clrStyle.black)}
+                            </TouchableOpacity>
+                            :
+                            leftIcon ?
+                                <TouchableOpacity
+                                    style={[styles.padding2vw]}
+                                    onPress={leftIconFnc}>
+                                    {leftIcon}
+                                </TouchableOpacity>
+                                :
+                                <></>
+                        }
+                        <Pay24BlackLine122 lineNum={1} style={[styles.flex1, textCenter ? styles.textCenter : null, { color: textColor ? textColor : clrStyle.black }]}>{title ? title : ''}</Pay24BlackLine122>
+                        {rightIcon ?
+                            <TouchableOpacity
+                                style={[styles.padding2vw]}
+                                onPress={rightIconFnc}>
+                                {rightIcon}
+                            </TouchableOpacity>
+                            : <></>
+                        }
+                    </View>
+                    {subTitle ? <Pay20BlackLine122 style={[styles.paddingV2vw, { color: textColor ? textColor : clrStyle.black }]}>{subTitle}</Pay20BlackLine122> : null}
+                    {children}
+                </View>
+            </ImageBackground>
+        )
+    }
+}
+
 export class Card2line extends Component<{
     customStyle?: any
     text1: string
@@ -784,3 +841,28 @@ export class Card3lineInputImg extends Component<{
     }
 }
 
+export class RoundBtn extends Component<{
+    icon?: React.ReactNode
+    title?: string
+    onPress: () => void
+    bgColor?: string
+    textClass?: React.ComponentType<any>
+    textColor?: string
+    iconColor?: string
+    border?: boolean
+    borderColor?: string
+    customStyle?: any
+}> {
+    render() {
+        const { icon, title, onPress, bgColor, textClass, textColor, iconColor, border, borderColor, customStyle } = this.props;
+        let TextClass = textClass ? textClass : Lex16RegAuto
+        return (
+            <TouchableOpacity
+                onPress={onPress}
+                style={[styles.flex1, styles.flexRowCenter, styles.paddingV3vw, styles.paddingH4vw, styles.borderRadius10, styles.overflowHidden, { backgroundColor: bgColor ? bgColor : undefined, borderWidth: border ? 1 : 0 }]}>
+                {icon ? icon : null}
+                <TextClass style={[styles.padding2vw, { color: textColor ? textColor : clrStyle.black }]}>{title}</TextClass>
+            </TouchableOpacity>
+        );
+    }
+}

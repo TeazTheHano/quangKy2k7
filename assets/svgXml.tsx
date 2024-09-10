@@ -781,3 +781,22 @@ export const afterReviewIcon = (w: number, h: number) => {
     )
 }
 
+export const afterReviewBackToSetIcon = (w: number, h: number, color?: string) => {
+    const xml = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M9 13H13M9 17H15M13.0714 2.52927V6.83334C13.0714 7.93791 13.9668 8.83334 15.0714 8.83334H19.3494M13.0714 2.52927C12.7307 2.5095 12.3738 2.5 12 2.5C6.26471 2.5 4.5 4.73529 4.5 12C4.5 19.2647 6.26471 21.5 12 21.5C17.7353 21.5 19.5 19.2647 19.5 12C19.5 10.8146 19.453 9.76307 19.3494 8.83334M13.0714 2.52927L19.3494 8.83334" stroke=${color ? color : "#2F2F2F"} style="stroke:#2F2F2F;stroke:color(display-p3 0.1843 0.1843 0.1843);stroke-opacity:1;" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`
+    return (
+        <SvgXml xml={xml} width={w} height={h} />
+    )
+}
+
+export const afterReviewPractiveIcon = (w: number, h: number, color?: string) => {
+    const xml = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8 14C8 14 9.5 16 12 16C14.5 16 16 14 16 14M15 9H15.01M9 9H9.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke=${color ? color : "#FBF8F2"} style="stroke:#FBF8F2;stroke:color(display-p3 0.9843 0.9725 0.9490);stroke-opacity:1;" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`
+    return (
+        <SvgXml xml={xml} width={w} height={h} />
+    )
+}

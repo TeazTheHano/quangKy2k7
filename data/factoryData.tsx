@@ -38,17 +38,17 @@ export let demoSets: SetFormat[] = [
             {
                 title: 'Desk 1',
                 isDone: false,
-                repeatSchedule: {},
+                repeatSchedule: ['all'],
                 cardList: [
                     {
-                        front: 'front 1',
+                        front: 'b1 d1 front 1',
                         back: 'back 1',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: true,
                         repeatToday: true,
                     },
                     {
-                        front: 'front 2',
+                        front: 'b1 d1 front 2',
                         back: 'back 2',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: true,
@@ -59,17 +59,17 @@ export let demoSets: SetFormat[] = [
             {
                 title: 'Desk 2',
                 isDone: false,
-                repeatSchedule: {},
+                repeatSchedule: ['all'],
                 cardList: [
                     {
-                        front: 'front 1',
+                        front: 'b1 d2 front 1',
                         back: 'back 1',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: true,
                         repeatToday: true,
                     },
                     {
-                        front: 'front 2',
+                        front: 'b1 d2 front 2',
                         back: 'back 2',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: true,
@@ -80,17 +80,17 @@ export let demoSets: SetFormat[] = [
             {
                 title: 'Desk 3',
                 isDone: false,
-                repeatSchedule: {},
+                repeatSchedule: ['M'],
                 cardList: [
                     {
-                        front: 'front 1',
+                        front: 'b1 d3 front 1',
                         back: 'back 1',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: false,
                         repeatToday: false,
                     },
                     {
-                        front: 'front 2',
+                        front: 'b1 d3 front 2',
                         back: 'back 2',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: false,
@@ -117,17 +117,17 @@ export let demoSets: SetFormat[] = [
             {
                 title: 'Desk 1',
                 isDone: false,
-                repeatSchedule: {},
+                repeatSchedule: ['T'],
                 cardList: [
                     {
-                        front: 'front 1',
+                        front: 'b1 pro d1 front 1',
                         back: 'back 1',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: false,
                         repeatToday: false,
                     },
                     {
-                        front: 'front 2',
+                        front: 'b1 pro d1 front 2',
                         back: 'back 2',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: false,
@@ -138,17 +138,17 @@ export let demoSets: SetFormat[] = [
             {
                 title: 'Desk 2',
                 isDone: false,
-                repeatSchedule: {},
+                repeatSchedule: ['all'],
                 cardList: [
                     {
-                        front: 'front 1',
+                        front: 'b1 pro d2 front 1',
                         back: 'back 1',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: false,
                         repeatToday: false,
                     },
                     {
-                        front: 'front 2',
+                        front: 'b1 pro d2 front 2',
                         back: 'back 2',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: false,
@@ -159,17 +159,17 @@ export let demoSets: SetFormat[] = [
             {
                 title: 'Desk 3',
                 isDone: false,
-                repeatSchedule: {},
+                repeatSchedule: ['all'],
                 cardList: [
                     {
-                        front: 'front 1',
+                        front: 'b1 pro d3 front 1',
                         back: 'back 1',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: false,
                         repeatToday: false,
                     },
                     {
-                        front: 'front 2',
+                        front: 'b1 pro d3 front 2',
                         back: 'back 2',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: false,

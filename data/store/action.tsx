@@ -27,6 +27,11 @@ export const CURRENT_SET_CURRENT_DESK = `CURRENT_SET_CURRENT_DESK`;
 
 export const SAVE_USER_INFO = `SAVE_USER_INFO`;
 
+export const SAVE_NUMBER_OF_CARDS_NEED_TO_REVIEW_TODAY = `SAVE_NUMBER_OF_CARDS_NEED_TO_REVIEW_TODAY`;
+export const SAVE_NUMBER_OF_CARDS_NEED_TO_MEMORIZE = `SAVE_NUMBER_OF_CARDS_NEED_TO_MEMORIZE`;
+export const SAVE_NUMBER_OF_CARDS_REVIEWED_TODAY = `SAVE_NUMBER_OF_CARDS_REVIEWED_TODAY`;
+export const SAVE_NUMBER_OF_CARDS_MEMORIZED = `SAVE_NUMBER_OF_CARDS_MEMORIZED`;
+
 export const saveTheSet = (item: SetFormat) => {
     return {
         type: CURRENT_SAVE_THE_SET,
@@ -135,6 +140,34 @@ export const currentClearCurrentDesk = () => {
 export const currentSetCurrentDesk = (item: Desk) => {
     return {
         type: CURRENT_SET_CURRENT_DESK,
+        payload: item
+    }
+}
+
+export const saveNumberOfcardsNeedToReviewToday = (item: number) => {
+    return {
+        type: SAVE_NUMBER_OF_CARDS_NEED_TO_REVIEW_TODAY,
+        payload: item
+    }
+}
+
+export const saveNumberOfCardsNeedToMemorize = (item: number) => {
+    return {
+        type: SAVE_NUMBER_OF_CARDS_NEED_TO_MEMORIZE,
+        payload: item
+    }
+}
+
+export const saveNumberOfcardsReviewedToday = (item: number) => {
+    return {
+        type: SAVE_NUMBER_OF_CARDS_REVIEWED_TODAY,
+        payload: item
+    }
+}
+
+export const saveNumberOfCardsMemorized = (item: number) => {
+    return {
+        type: SAVE_NUMBER_OF_CARDS_MEMORIZED,
         payload: item
     }
 }

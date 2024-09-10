@@ -20,7 +20,7 @@ export interface Card {
 export interface Desk {
     title: string;
     isDone: boolean;
-    repeatSchedule: {};
+    repeatSchedule: Array<'M' | 'T' | 'W' | 'TH' | 'F' | 'S' | 'SU' | 'all' | null>
     cardList: Card[];
 }
 

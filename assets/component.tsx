@@ -264,7 +264,6 @@ export const openGallery = async (saveImgFnc: any, options = defaultCameraOption
 // END OF UNIVERSE FUNCTION________________________________________
 
 
-
 export function showSetCard(DATA: SetFormat[]) {
     const navigation = useNavigation();
     const [CURRENT_SETS, dispatch] = useContext(RootContext);
