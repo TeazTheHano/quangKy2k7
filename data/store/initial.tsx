@@ -4,6 +4,7 @@ import User from "../../screens/User";
 import { Desk, SetFormat, UserFormat } from "../data";
 
 export interface CurrentSets {
+    all: SetFormat[];
     public: SetFormat[];
     private: SetFormat[];
     saved: SetFormat[];
@@ -23,6 +24,7 @@ export interface Action {
 }
 
 export const initialState: CurrentSets = {
+    all: [],
     public: [],
     private: [],
     saved: [],

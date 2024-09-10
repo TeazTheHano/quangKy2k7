@@ -179,4 +179,41 @@ export let demoSets: SetFormat[] = [
             },
         ]
     },
+    {
+        id: 'B2 pro',
+        name: 'B2 Vocabularies vip pro',
+        author: demoUser2,
+        description: 'This set is for B1 level English learners',
+        rate: {
+            star: 5,
+            total: 10,
+        },
+        private: true,
+        isSaved: true,
+        numberOfSaved: 6,
+        isDone: true,
+        deskList: [
+            {
+                title: 'Desk 1',
+                isDone: false,
+                repeatSchedule: ['W'],
+                cardList: [
+                    {
+                        front: 'b2 pro d1 front 1',
+                        back: 'back 1',
+                        imgAddress: 'assets/image/placeholder.jpeg',
+                        memorized: false,
+                        repeatToday: false,
+                    },
+                    {
+                        front: 'b2 pro d1 front 2',
+                        back: 'back 2',
+                        imgAddress: 'assets/image/placeholder.jpeg',
+                        memorized: false,
+                        repeatToday: false,
+                    },
+                ],
+            },
+        ]
+    },
 ]

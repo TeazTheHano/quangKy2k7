@@ -13,7 +13,7 @@ export const CURRENT_SET_PRIVATE = `CURRENT_SET_PRIVATE`;
 export const CURRENT_SET_DONE = `CURRENT_SET_DONE`;
 export const CURRENT_SET_SAVED = `CURRENT_SET_SAVED`;
 
-
+export const CURRENT_SET_ALL_SET = `CURRENT_SET_ALL_SET`;
 export const CURRENT_CLEAR_ALL_SET = `CURRENT_CLEAR_ALL_SET`;
 
 export const CURRENT_CLEAR_PUBLIC = `CURRENT_CLEAR_PUBLIC`;
@@ -91,6 +91,13 @@ export const setSaved = (item: SetFormat[]) => {
 export const saveUserInfo = (item: UserFormat) => {
     return {
         type: SAVE_USER_INFO,
+        payload: item
+    }
+}
+
+export const currentSetAllSet = (item: SetFormat[]) => {
+    return {
+        type: CURRENT_SET_ALL_SET,
         payload: item
     }
 }
