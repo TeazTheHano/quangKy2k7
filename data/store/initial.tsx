@@ -6,8 +6,11 @@ import { Desk, SetFormat, UserFormat } from "../data";
 export interface CurrentSets {
     all: SetFormat[];
     public: SetFormat[];
+    rePublic: SetFormat[];
     private: SetFormat[];
+    rePrivate: SetFormat[];
     saved: SetFormat[];
+    reSaved: SetFormat[];
     done: SetFormat[];
     current: SetFormat | null;
     userInfo: UserFormat | null;
@@ -26,14 +29,17 @@ export interface Action {
 export const initialState: CurrentSets = {
     all: [],
     public: [],
+    rePublic: [],
     private: [],
+    rePrivate: [],
     saved: [],
+    reSaved: [],
     done: [],
     current: null,
     userInfo: null,
     currentDesk: null,
     cardsNeedToReviewToday: 0,
     cardsNeedToMemorize: 0,
-    cardsReviewedToday: 0,   
+    cardsReviewedToday: 0,
     cardsMemorized: 0,
 };

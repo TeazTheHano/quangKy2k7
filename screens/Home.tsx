@@ -14,7 +14,7 @@ import { imgSourceHandle, marginBottomForScrollView, showSetCard } from '../asse
 import clrStyle from '../assets/componentStyleSheet';
 import storage, { getAllSets, getUser, loadAllSets, weeklyProgressData } from '../data/storageFunc';
 import { demoSets } from '../data/factoryData';
-import { CURRENT_SET_PUBLIC, currentClearAllSet, currentSetAllSet, RootContext, saveNumberOfCardsMemorized, saveNumberOfCardsNeedToMemorize, saveNumberOfcardsNeedToReviewToday, saveNumberOfcardsReviewedToday, saveUserInfo, setDone, setPrivate, setPublic, setSaved } from '../data/store';
+import { CURRENT_SET_PUBLIC, currentClearAllSet, currentSetAllSet, RootContext, saveNumberOfCardsMemorized, saveNumberOfCardsNeedToMemorize, saveNumberOfcardsNeedToReviewToday, saveNumberOfcardsReviewedToday, saveUserInfo, setDone, setPrivate, setPublic, setRePrivate, setRePublic, setReSaved, setSaved } from '../data/store';
 import { SetFormat, setList, UserFormat } from '../data/data';
 
 const Home = () => {
@@ -22,6 +22,8 @@ const Home = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [CURRENT_SETS, dispatch] = useContext(RootContext);
     const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+    const [setsHaveRepeatToday, setSetsHaveRepeatToday] = useState<SetFormat[]>([]);
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -92,6 +94,23 @@ const Home = () => {
                 dispatch(saveNumberOfcardsReviewedToday(sets.map((set: SetFormat) => set.deskList.map((desk) => desk.cardList.filter((card) => card.repeatToday).length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0)));
                 dispatch(saveNumberOfCardsMemorized(sets.map((set: SetFormat) => set.deskList.map((desk) => desk.cardList.filter((card) => card.memorized).length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0)));
 
+                // re - section
+                const setReToday: SetFormat[] = [];
+                for (const set of sets) {
+                    for (const desk of set.deskList) {
+                        if (desk.repeatSchedule.includes('all') || desk.repeatSchedule.includes(currentDay)) {
+                            setReToday.push(set);
+                            break;
+                        }
+                    }
+                }
+                setSetsHaveRepeatToday(setReToday);
+
+                dispatch(setRePublic(setsHaveRepeatToday.filter((set: SetFormat) => !set.private)));
+                dispatch(setRePrivate(setsHaveRepeatToday.filter((set: SetFormat) => set.private)));
+                dispatch(setReSaved(setsHaveRepeatToday.filter((set: SetFormat) => set.isSaved)));
+
+                // clear repeatToday
                 if (new Date().getHours() === 0 && new Date().getMinutes() === 0) {
                     sets.forEach((set: SetFormat) => {
                         set.deskList.forEach((desk) => {
@@ -233,25 +252,15 @@ const Home = () => {
 
     useEffect(() => {
         doSwitchAnimation();
-        const setsHaveRepeatToday: SetFormat[] = [];
-        for (const set of CURRENT_SETS.all) {
-            for (const desk of set.deskList) {
-                if (desk.repeatSchedule.includes('all') || desk.repeatSchedule.includes(currentDay)) {
-                    setsHaveRepeatToday.push(set);
-                    break;
-                }
-            }
-        }
-
         switch (sellected) {
             case 1:
-                setSetData(setsHaveRepeatToday.filter((set: SetFormat) => !set.private))
+                setSetData(CURRENT_SETS.rePublic)
                 break;
             case 2:
-                setSetData(setsHaveRepeatToday.filter((set: SetFormat) => set.private))
+                setSetData(CURRENT_SETS.rePrivate)
                 break;
             case 3:
-                setSetData(setsHaveRepeatToday.filter((set: SetFormat) => set.isSaved))
+                setSetData(CURRENT_SETS.reSaved)
                 break;
             case 4:
                 setSetData(CURRENT_SETS.done)
