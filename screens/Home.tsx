@@ -90,9 +90,19 @@ const Home = () => {
                         return 0;
                     }
                 }).reduce((a: number, b: number) => a + b, 0) as number).reduce((a: number, b: number) => a + b, 0) as number));
-                dispatch(saveNumberOfCardsNeedToMemorize(sets.map((set: SetFormat) => set.deskList.map((desk) => desk.cardList.filter((card) => !card.memorized).length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0)));
+                dispatch(saveNumberOfCardsNeedToMemorize(sets.flatMap((set: SetFormat) => set.deskList.flatMap((desk) => desk.cardList.filter((card) => card.memorized != undefined))).length));
                 dispatch(saveNumberOfcardsReviewedToday(sets.map((set: SetFormat) => set.deskList.map((desk) => desk.cardList.filter((card) => card.repeatToday).length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0)));
                 dispatch(saveNumberOfCardsMemorized(sets.map((set: SetFormat) => set.deskList.map((desk) => desk.cardList.filter((card) => card.memorized).length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0)));
+
+                if (isDataLoaded && new Date().getHours() === 0 && new Date().getMinutes() === 0) {
+                    sets.forEach((set: SetFormat) => {
+                        set.deskList.forEach((desk) => {
+                            desk.cardList.forEach((card) => {
+                                card.repeatToday = false;
+                            });
+                        });
+                    });
+                }
             }
         }).then(() => { setIsDataLoaded(true) });
     }
