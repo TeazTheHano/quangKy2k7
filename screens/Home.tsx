@@ -15,7 +15,7 @@ import clrStyle from '../assets/componentStyleSheet';
 import storage, { getAllSets, getUser, loadAllSets, weeklyProgressData } from '../data/storageFunc';
 import { demoSets } from '../data/factoryData';
 import { CURRENT_SET_PUBLIC, currentClearAllSet, currentSetAllSet, RootContext, saveNumberOfCardsMemorized, saveNumberOfCardsNeedToMemorize, saveNumberOfcardsNeedToReviewToday, saveNumberOfcardsReviewedToday, saveUserInfo, setDone, setPrivate, setPublic, setRePrivate, setRePublic, setReSaved, setSaved } from '../data/store';
-import { SetFormat, setList, UserFormat } from '../data/data';
+import { currentDay, SetFormat, setList, UserFormat } from '../data/data';
 
 const Home = () => {
     const navigation = useNavigation();
@@ -61,14 +61,6 @@ const Home = () => {
         return unsubscribe;
     }, [navigation]);
 
-    function getDayOfWeek() {
-        let today = new Date();
-        let day = today.getDay();
-        let days = ['SU', 'M', 'T', 'W', 'TH', 'F', 'S'];
-        return days[day] as 'SU' | 'M' | 'T' | 'W' | 'TH' | 'F' | 'S';
-    }
-    let currentDay: 'SU' | 'M' | 'T' | 'W' | 'TH' | 'F' | 'S' = getDayOfWeek();
-
     function getAndAlignData() {
         getAllSets().then(sets => {
             if (sets !== false) {
@@ -77,7 +69,8 @@ const Home = () => {
                 dispatch(setPrivate(sets.filter((set: SetFormat) => set.private)));
                 dispatch(setSaved(sets.filter((set: SetFormat) => set.isSaved)));
                 dispatch(setDone(sets.filter((set: SetFormat) => set.isDone)));
-                dispatch(saveNumberOfcardsNeedToReviewToday(sets.map((set: SetFormat) => set.deskList.map((desk) => {
+                dispatch(saveNumberOfcardsNeedToReviewToday(
+                    sets.map((set: SetFormat) => set.deskList.map((desk) => {
                     if (desk.repeatSchedule.includes('all') || desk.repeatSchedule.includes(currentDay) ? 1 : 0) {
                         return desk.cardList.map((card) => {
                             if (!card.memorized) {
@@ -90,8 +83,20 @@ const Home = () => {
                         return 0;
                     }
                 }).reduce((a: number, b: number) => a + b, 0) as number).reduce((a: number, b: number) => a + b, 0) as number));
+                dispatch(saveNumberOfcardsReviewedToday(sets.map((set: SetFormat) => set.deskList.map((desk) => {
+                    if (desk.repeatSchedule.includes('all') || desk.repeatSchedule.includes(currentDay)? 1 : 0) {
+                        return desk.cardList.map((card) => {
+                            if (card.repeatToday && !card.memorized) {
+                                return 1;
+                            } else {
+                                return 0;
+                            }
+                        }).reduce((a: number, b: number) => a + b, 0) as number;
+                    } else {
+                        return 0;
+                    }
+                }).reduce((a: number, b: number) => a + b, 0) as number).reduce((a: number, b: number) => a + b, 0) as number));
                 dispatch(saveNumberOfCardsNeedToMemorize(sets.flatMap((set: SetFormat) => set.deskList.flatMap((desk) => desk.cardList.filter((card) => card.memorized != undefined))).length));
-                dispatch(saveNumberOfcardsReviewedToday(sets.map((set: SetFormat) => set.deskList.map((desk) => desk.cardList.filter((card) => card.repeatToday).length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0)));
                 dispatch(saveNumberOfCardsMemorized(sets.map((set: SetFormat) => set.deskList.map((desk) => desk.cardList.filter((card) => card.memorized).length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0)));
 
                 // re - section
@@ -337,8 +342,8 @@ const Home = () => {
                     <View style={[styles.bgcolorWhite, styles.paddingTop4vw, { borderTopLeftRadius: vw(4), borderTopRightRadius: vw(4) }]}>
                         <View style={[styles.paddingBottom8vw, styles.paddingH8vw, styles.flexRowEvenlyCenter,]}>
                             <View style={[styles.flex1, styles.paddingH2vw]}>
-                                <Pay16RegAuto style={[styles.textCenter, { color: clrStyle.neu4, fontSize: vw(15) }]}>{CURRENT_SETS.cardsReviewedToday}</Pay16RegAuto>
-                                <Lex16RegAuto style={[styles.textCenter, { color: clrStyle.neu3 }]}>cards need to
+                                <Pay16RegAuto style={[styles.textCenter, { color: clrStyle.neu4, fontSize: vw(15) }]}>{CURRENT_SETS.cardsReviewedToday}<Pay16RegAuto style={{ fontSize: vw(5), color: clrStyle.neu3 }}> /{CURRENT_SETS.cardsNeedToReviewToday}</Pay16RegAuto></Pay16RegAuto>
+                                <Lex16RegAuto style={[styles.textCenter, { color: clrStyle.neu3 }]}>cards did
                                     <Lex16BlackAuto style={{ color: clrStyle.neu4 }}> repeat</Lex16BlackAuto> today</Lex16RegAuto>
                             </View>
                             <View style={[styles.flex1, styles.paddingH2vw]}>

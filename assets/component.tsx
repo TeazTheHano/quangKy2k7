@@ -307,7 +307,7 @@ export function showSetCard(DATA: SetFormat[]) {
                     DATA.map((set: any, index: number) => {
                         let DESK_NUMBER: number = set.deskList.length
                         let TOTAL_CARD_NEED_MEMORIZED_NUMBER: number = set.deskList.map((item: any) => item.cardList.length).reduce((a: number, b: number) => a + b)
-                        let MEMORIZED_CARD_NUMBER: number = set.deskList.map((item: any) => item.cardList.filter((item: any) => item.repeatToday).length).reduce((a: number, b: number) => a + b)
+                        let MEMORIZED_CARD_NUMBER: number = set.deskList.map((item: any) => item.cardList.filter((item: any) => item.memorized).length).reduce((a: number, b: number) => a + b)
                         let SET_TITLE: string = set.name
                         let NEED_REPEAT_CARD_NUMBER: number = set.deskList.map((item: any) => item.cardList.filter((item: any) => item.repeatToday).length).reduce((a: number, b: number) => a + b)
                         let AUTHOR: string = set.author.name

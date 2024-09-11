@@ -1,11 +1,13 @@
 import { View, Text, Platform, Alert, TouchableOpacity, Image, ImageStyle } from 'react-native'
 import React, { useContext, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { RootContext } from '../../data/store'
+import { RootContext, setAsCurrent } from '../../data/store'
 import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex14BoldAuto, Lex16BoldAuto, Lex16RegAuto, Lex20BlackAuto, Lex20BoldAuto, Lex20RegAuto, Pay32BlackLine40, RoundBtn, SaveViewWithColorStatusBar } from '../../assets/Class'
 import styles, { vh, vw } from '../../assets/stylesheet'
 import clrStyle from '../../assets/componentStyleSheet'
 import { afterReviewBackToSetIcon, afterReviewIcon, afterReviewPractiveIcon, againColorIcon, againIcon, easyColorIcon, easyIcon, goodColorIcon, goodIcon, hardColorIcon, hardIcon, reviewIcon, reviewNextIcon, xIcon } from '../../assets/svgXml'
+import { editDeskFnc, editSetFnc } from '../../data/storageFunc'
+import { Card, Desk, SetFormat } from '../../data/data'
 
 export default function CardReview({ route }: any) {
   const navigation = useNavigation()
@@ -128,6 +130,8 @@ export default function CardReview({ route }: any) {
             let newStatus = currentCardStatus;
             newStatus[currentCardIndex] = index + 1 as 1 | 2 | 3 | 4 | 5;
             setCurrentCardStatus(newStatus);
+            console.log(newStatus);
+
             setCurrentCardIndex(currentCardIndex + 1);
           }}
           style={[styles.flexColCenter, styles.flex1, styles.h80]}>
@@ -206,9 +210,24 @@ export default function CardReview({ route }: any) {
         return false;
       }
     }
+    let newCardList = currentDesk?.cardList;
+    currentCardStatus.map((status, index) => {
+      if (newCardList && status != 5) {
+        newCardList[index].repeatToday = true;
+      }
+    })
+    function saveProgress() {
+      let newDesk = currentDesk as Desk;
+      newDesk.cardList = newCardList as Card[];
+      let newSet = CURRENT_SETS.current as SetFormat;
+      newSet.deskList = newSet.deskList.map(desk => desk.title === currentDesk?.title ? newDesk : desk);
+      // editSetFnc(newSet, newSet.id, setAsCurrent, null);
+      editDeskFnc(newDesk, newSet.id, newDesk, setAsCurrent, null);
+    }
+    saveProgress();
     return (
       <>
-        <View style={[styles.flexRowBetweenCenter, styles.paddingH5vw, styles.paddingBottom5vw, styles.gap3vw, { paddingTop: Platform.OS == 'android' ? vw(2) : 0, backgroundColor: clrStyle.saoUnav }]}>
+        <View style={[styles.flexRowStartCenter, styles.paddingH5vw, styles.paddingBottom5vw, styles.gap3vw, { paddingTop: Platform.OS == 'android' ? vw(2) : 0, backgroundColor: clrStyle.saoUnav }]}>
           <TouchableOpacity onPress={() => { navigation.goBack(); setCurrentCardIndex(0) }}>
             {xIcon(vw(9), vw(9))}
           </TouchableOpacity>

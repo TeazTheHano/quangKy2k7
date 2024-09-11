@@ -45,3 +45,11 @@ export interface SetFormat {
 
 export const setList: SetFormat[] = [
 ]
+
+function getDayOfWeek() {
+    let today = new Date();
+    let day = today.getDay();
+    let days = ['SU', 'M', 'T', 'W', 'TH', 'F', 'S'];
+    return days[day] as 'SU' | 'M' | 'T' | 'W' | 'TH' | 'F' | 'S';
+}
+export const currentDay: 'SU' | 'M' | 'T' | 'W' | 'TH' | 'F' | 'S' = getDayOfWeek();

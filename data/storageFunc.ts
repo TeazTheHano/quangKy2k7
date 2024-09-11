@@ -411,7 +411,7 @@ export const editCardFnc = async (
   originalFront: string,
   currentFront: string,
   fncDispatchSetCurrent: any,
-  goBack: any,
+  goBack?: any,
 ) => {
   const newDesk = {...currentDesk};
   newDesk.cardList[cardIndex] = newCard;
@@ -425,7 +425,7 @@ export const editCardFnc = async (
       getSetWithID(setID).then(ret => {
         if (ret && ret.id) {
           fncDispatchSetCurrent(ret);
-          goBack();
+          goBack ? goBack() : null;
         } else {
           Alert.alert('Error', 'Failed to save card');
         }
@@ -438,13 +438,13 @@ export const createCardFnc = async (
   setID: string,
   deskTitle: string,
   setAsCurrent: any,
-  goBack: any,
+  goBack?: any,
 ) => {
   saveCardInDesk(setID, deskTitle, newCard).then(() => {
     getSetWithID(setID).then(ret => {
       if (ret && ret.id) {
         setAsCurrent(ret);
-        goBack();
+        goBack ? goBack() : null;
       } else {
         Alert.alert('Error', 'Failed to save card');
       }
@@ -457,13 +457,13 @@ export const removeCardFnc = async (
   deskTitle: string,
   cardFront: string,
   setAsCurrent: any,
-  goBack: any,
+  goBack?: any,
 ) => {
   removeCardInDesk(setID, deskTitle, cardFront).then(() => {
     getSetWithID(setID).then(ret => {
       if (ret && ret.id) {
         setAsCurrent(ret);
-        goBack();
+        goBack ? goBack() : null;
       } else {
         Alert.alert('Error', 'Failed to remove card');
       }
@@ -522,4 +522,48 @@ export const getDeskWithID = async (setID: string, deskTitle: string) => {
       return false;
     }
   });
+};
+
+export const editSetFnc = async (
+  newSet: SetFormat,
+  setID: string,
+  fncDispatchSetCurrent: any,
+  goBack?: any,
+) => {
+  removeSetWithID(setID).then(() => {
+    saveSetWithID(newSet).then(() => {
+      getSetWithID(setID).then(ret => {
+        if (ret && ret.id) {
+          fncDispatchSetCurrent(ret);
+          goBack ? goBack() : null;
+        } else {
+          Alert.alert('Error', 'Failed to save set');
+        }
+      });
+    });
+  });
+};
+
+export const editDeskFnc = async (
+  newDesk: Desk,
+  setID: string,
+  currentDesk: Desk,
+  fncDispatchSetCurrent: any,
+  goBack?: any,
+) => {
+  try {
+    getSetWithID(setID).then((set: false | SetFormat) => {
+      console.log(set);
+      if (set !== false) {
+        let newSet = set;
+        newSet.deskList = newSet.deskList.map(desk =>
+          desk.title === currentDesk?.title ? newDesk : desk,
+        );
+        editSetFnc(newSet, setID, fncDispatchSetCurrent, goBack);
+      }
+    });
+  } catch (error) {
+    Alert.alert('Error', 'Failed to save desk');
+    console.log(error);
+  }
 };

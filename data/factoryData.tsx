@@ -37,7 +37,7 @@ export let demoSets: SetFormat[] = [
         deskList: [
             {
                 title: 'Desk 1',
-                isDone: false,
+                isDone: true,
                 repeatSchedule: ['all'],
                 cardList: [
                     {
@@ -73,7 +73,7 @@ export let demoSets: SetFormat[] = [
                         back: 'back 2',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: true,
-                        repeatToday: false,
+                        repeatToday: true,
                     },
                 ],
             },
