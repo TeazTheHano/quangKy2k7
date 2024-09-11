@@ -61,6 +61,14 @@ const Home = () => {
         return unsubscribe;
     }, [navigation]);
 
+    useEffect(() => {
+        if (setsHaveRepeatToday) {
+            dispatch(setRePublic(setsHaveRepeatToday.filter((set: SetFormat) => !set.private)));
+            dispatch(setRePrivate(setsHaveRepeatToday.filter((set: SetFormat) => set.private)));
+            dispatch(setReSaved(setsHaveRepeatToday.filter((set: SetFormat) => set.isSaved)));
+        }
+    }, [setsHaveRepeatToday]);
+
     function getAndAlignData() {
         getAllSets().then(sets => {
             if (sets !== false) {
@@ -71,20 +79,20 @@ const Home = () => {
                 dispatch(setDone(sets.filter((set: SetFormat) => set.isDone)));
                 dispatch(saveNumberOfcardsNeedToReviewToday(
                     sets.map((set: SetFormat) => set.deskList.map((desk) => {
-                    if (desk.repeatSchedule.includes('all') || desk.repeatSchedule.includes(currentDay) ? 1 : 0) {
-                        return desk.cardList.map((card) => {
-                            if (!card.memorized) {
-                                return 1;
-                            } else {
-                                return 0;
-                            }
-                        }).reduce((a: number, b: number) => a + b, 0) as number;
-                    } else {
-                        return 0;
-                    }
-                }).reduce((a: number, b: number) => a + b, 0) as number).reduce((a: number, b: number) => a + b, 0) as number));
+                        if (desk.repeatSchedule.includes('all') || desk.repeatSchedule.includes(currentDay) ? 1 : 0) {
+                            return desk.cardList.map((card) => {
+                                if (!card.memorized) {
+                                    return 1;
+                                } else {
+                                    return 0;
+                                }
+                            }).reduce((a: number, b: number) => a + b, 0) as number;
+                        } else {
+                            return 0;
+                        }
+                    }).reduce((a: number, b: number) => a + b, 0) as number).reduce((a: number, b: number) => a + b, 0) as number));
                 dispatch(saveNumberOfcardsReviewedToday(sets.map((set: SetFormat) => set.deskList.map((desk) => {
-                    if (desk.repeatSchedule.includes('all') || desk.repeatSchedule.includes(currentDay)? 1 : 0) {
+                    if (desk.repeatSchedule.includes('all') || desk.repeatSchedule.includes(currentDay) ? 1 : 0) {
                         return desk.cardList.map((card) => {
                             if (card.repeatToday && !card.memorized) {
                                 return 1;
@@ -110,11 +118,6 @@ const Home = () => {
                     }
                 }
                 setSetsHaveRepeatToday(setReToday);
-
-                dispatch(setRePublic(setsHaveRepeatToday.filter((set: SetFormat) => !set.private)));
-                dispatch(setRePrivate(setsHaveRepeatToday.filter((set: SetFormat) => set.private)));
-                dispatch(setReSaved(setsHaveRepeatToday.filter((set: SetFormat) => set.isSaved)));
-
                 // clear repeatToday
                 if (new Date().getHours() === 0 && new Date().getMinutes() === 0) {
                     sets.forEach((set: SetFormat) => {
