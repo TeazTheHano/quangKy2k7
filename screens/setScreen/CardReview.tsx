@@ -2,7 +2,7 @@ import { View, Text, Platform, Alert, TouchableOpacity, Image, ImageStyle } from
 import React, { useContext, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { RootContext, setAsCurrent } from '../../data/store'
-import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex14BoldAuto, Lex16BoldAuto, Lex16RegAuto, Lex20BlackAuto, Lex20BoldAuto, Lex20RegAuto, Pay32BlackLine40, RoundBtn, SaveViewWithColorStatusBar } from '../../assets/Class'
+import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex14BoldAuto, Lex16BoldAuto, Lex16RegAuto, Lex20BlackAuto, Lex20BoldAuto, Lex20RegAuto, Pay32BlackLine40, RoundBtn, SaveViewWithColorStatusBar, SSBar } from '../../assets/Class'
 import styles, { vh, vw } from '../../assets/stylesheet'
 import clrStyle from '../../assets/componentStyleSheet'
 import { afterReviewBackToSetIcon, afterReviewIcon, afterReviewPractiveIcon, againColorIcon, againIcon, easyColorIcon, easyIcon, goodColorIcon, goodIcon, hardColorIcon, hardIcon, reviewIcon, reviewNextIcon, xIcon } from '../../assets/svgXml'

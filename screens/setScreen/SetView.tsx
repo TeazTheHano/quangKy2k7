@@ -1,6 +1,6 @@
 import { View, Text, SafeAreaView, Image, ImageStyle, StatusBar, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect } from 'react'
-import { Lex10RegAuto, Lex12BoldAuto, Lex16RegAuto, Pay16RegAuto, Pay20BlackLine122, Pay24BlackLine122, SaveViewWithColorStatusBar, TopNav2 } from '../../assets/Class'
+import { Lex10RegAuto, Lex12BoldAuto, Lex16RegAuto, Pay16RegAuto, Pay20BlackLine122, Pay24BlackLine122, SaveViewWithColorStatusBar, SSBar, TopNav2 } from '../../assets/Class'
 import styles, { vw } from '../../assets/stylesheet'
 import { useNavigation } from '@react-navigation/native'
 import { CURRENT_SET_DONE, RootContext, setAsCurrent, setDone } from '../../data/store'
@@ -130,8 +130,7 @@ export default function SetView() {
   }
 
   return (
-    <View style={[styles.flex1, styles.bgcolorWhite]}>
-      <StatusBar translucent={true} backgroundColor={'rgba(0,0,0,0)'} barStyle={'light-content'} />
+    <SSBar barContentStyle='light-content' trans barColor={'rgba(0,0,0,0)'} notMargin>
       <TopNav2
         title='Set View'
         subTitle={theSet?.name as string}
@@ -148,6 +147,6 @@ export default function SetView() {
       <ScrollView style={[styles.flex1,]}>
         {deskPreview()}
       </ScrollView>
-    </View >
+    </SSBar>
   )
 }

@@ -4,11 +4,12 @@ import { SSBar } from '../assets/Class'
 import { clearAllDemoSets, clearAllSets, clearWeekly, loadAllDemoSets, removeUser } from '../data/storageFunc'
 
 import { getAuth } from 'firebase/auth'
+import styles from '../assets/stylesheet'
 
 export default function Setting() {
   return (
-    <SafeAreaView>
-      <SSBar />
+    <View style={[styles.flex1]}>
+      <SSBar trans/>
       <TouchableOpacity
         onPress={clearWeekly}>
         <Text>Clear Weekly</Text>
@@ -32,6 +33,6 @@ export default function Setting() {
         }}>
         <Text>clear user aka log-out</Text>
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   )
 }

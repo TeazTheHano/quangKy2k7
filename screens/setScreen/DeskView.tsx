@@ -2,7 +2,7 @@
 import { View, Text, StatusBar, ScrollView, TouchableOpacity, Alert, Pressable, Vibration, Animated, Easing } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import styles, { vh, vw } from '../../assets/stylesheet'
-import { Lex10RegAuto, Lex12BoldAuto, Lex14RegAuto, Lex16BlackAuto, Lex16RegAuto, Lex20BoldAuto, Pay24BlackLine122, TopNav2 } from '../../assets/Class'
+import { Lex10RegAuto, Lex12BoldAuto, Lex14RegAuto, Lex16BlackAuto, Lex16RegAuto, Lex20BoldAuto, Pay24BlackLine122, SSBar, TopNav2 } from '../../assets/Class'
 import { AddCardIcon, AddIconInactive, deskCardEditIcon, deskMiniBlackCheckIcon, deskNaviIcon, deskPracticeIcon, deskReviewIcon, notiBellIcon, sharpLeftArrow } from '../../assets/svgXml'
 import { currentSetCurrentDesk, RootContext } from '../../data/store'
 import { useNavigation } from '@react-navigation/native'
@@ -98,8 +98,7 @@ export default function DeskView({ route }: any) {
   }
 
   return (
-    <View style={[styles.flex1, { backgroundColor: clrStyle.yellow }]}>
-      <StatusBar translucent={true} backgroundColor={'rgba(0,0,0,0)'} barStyle={'light-content'} />
+    <SSBar barContentStyle='light-content' trans barColor={'rgba(0,0,0,0)'} notMargin bgColor={clrStyle.yellow}>
       <TopNav2
         title={CURRENT_SETS.current?.name as string}
         subTitle={currentDesk.title}
@@ -163,6 +162,6 @@ export default function DeskView({ route }: any) {
         style={[styles.positionAbsolute, { bottom: 0, right: 0, zIndex: 2 }]}>
         {AddCardIcon(vw(30), vw(30))}
       </TouchableOpacity>
-    </View >
+    </SSBar>
   )
 }

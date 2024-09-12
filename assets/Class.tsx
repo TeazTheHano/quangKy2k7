@@ -1,6 +1,6 @@
 // system import
 import React, { Component } from 'react';
-import { ImageBackground, Platform, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View, Image, ImageStyle } from 'react-native';
+import { ImageBackground, Platform, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View, Image, ImageStyle, StatusBarStyle } from 'react-native';
 
 // style import
 import styles from './stylesheet';
@@ -66,6 +66,105 @@ export class SaveViewWithColorStatusBar extends Component<{ children?: React.Rea
                     {children}
                 </View>
             </SafeAreaView>
+        )
+    }
+}
+
+export class ViewRow extends Component<{ children?: React.ReactNode, customStyle?: any }> {
+    render() {
+        const { children, customStyle } = this.props;
+        return (
+            <View style={[styles.flexRow, customStyle]}>
+                {children}
+            </View>
+        )
+    }
+}
+
+export class ViewCol extends Component<{ children?: React.ReactNode, customStyle?: any }> {
+    render() {
+        const { children, customStyle } = this.props;
+        return (
+            <View style={[styles.flexCol, customStyle]}>
+                {children}
+            </View>
+        )
+    }
+}
+
+export class ViewRowCenter extends Component<{ children?: React.ReactNode, customStyle?: any }> {
+    render() {
+        const { children, customStyle } = this.props;
+        return (
+            <View style={[styles.flexRowCenter, customStyle]}>
+                {children}
+            </View>
+        )
+    }
+}
+
+export class ViewColCenter extends Component<{ children?: React.ReactNode, customStyle?: any }> {
+    render() {
+        const { children, customStyle } = this.props;
+        return (
+            <View style={[styles.flexColCenter, customStyle]}>
+                {children}
+            </View>
+        )
+    }
+}
+
+export class ViewRowBetweenCenter extends Component<{ children?: React.ReactNode, customStyle?: any }> {
+    render() {
+        const { children, customStyle } = this.props;
+        return (
+            <View style={[styles.flexRowBetweenCenter, customStyle]}>
+                {children}
+            </View>
+        )
+    }
+}
+
+export class ViewColBetweenCenter extends Component<{ children?: React.ReactNode, customStyle?: any }> {
+    render() {
+        const { children, customStyle } = this.props;
+        return (
+            <View style={[styles.flexColBetweenCenter, customStyle]}>
+                {children}
+            </View>
+        )
+    }
+}
+
+export class ViewRowEvenlyCenter extends Component<{ children?: React.ReactNode, customStyle?: any }> {
+    render() {
+        const { children, customStyle } = this.props;
+        return (
+            <View style={[styles.flexRowEvenlyCenter, customStyle]}>
+                {children}
+            </View>
+        )
+    }
+}
+
+export class ViewColEvenlyCenter extends Component<{ children?: React.ReactNode, customStyle?: any }> {
+    render() {
+        const { children, customStyle } = this.props;
+        return (
+            <View style={[styles.flexColEvenlyCenter, customStyle]}>
+                {children}
+            </View>
+        )
+    }
+}
+
+export class ViewColEndCenter extends Component<{ children?: React.ReactNode, customStyle?: any }> {
+    render() {
+        const { children, customStyle } = this.props;
+        return (
+            <View style={[styles.flexColEndCenter, customStyle]}>
+                {children}
+            </View>
         )
     }
 }
@@ -376,16 +475,20 @@ export class Lex8BoldAuto extends Component<{ children: React.ReactNode, style?:
 
 // ____________________END OF FONT_______________________
 
-export class SSBar extends Component<{ color?: any }> {
+export class SSBar extends Component<{ barColor?: any, trans?: boolean, children?: React.ReactNode, bgColor?: any, barContentStyle?: StatusBarStyle, notMargin?: boolean }> {
     render(): React.ReactNode {
         let statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0
         return (
-            <>
-                <StatusBar
-                    barStyle='light-content'
-                    backgroundColor={this.props.color ? this.props.color : 'black'} />
-                {Platform.OS === 'android' ? <View style={{ height: statusBarHeight / 2 }}></View> : null}
-            </>
+            <View style={[styles.flex1, { backgroundColor: this.props.bgColor ? this.props.bgColor : clrStyle.white }]}>
+                <>
+                    <StatusBar
+                        barStyle={this.props.barContentStyle ? this.props.barContentStyle : 'dark-content'}
+                        translucent={this.props.trans ? true : false}
+                        backgroundColor={this.props.barColor ? this.props.barColor : 'black'} />
+                    {Platform.OS === 'android' && !this.props.notMargin ? <View style={{ height: statusBarHeight * 1.5 }}></View> : null}
+                </>
+                {this.props.children}
+            </View>
         )
     }
 }
@@ -627,13 +730,14 @@ export class TopNavLib extends Component<{
     textCenter?: boolean
     containerStyle?: any
     darken?: number
+    lighten?: number
 }> {
     render() {
-        let { title, leftIcon, rightIcon, returnPreScreen, rightIconFnc, leftIconFnc, returnPreScreenFnc, textCenter, children, subTitle, textColor, containerStyle, darken } = this.props
+        let { title, leftIcon, rightIcon, returnPreScreen, rightIconFnc, leftIconFnc, returnPreScreenFnc, textCenter, children, subTitle, textColor, containerStyle, darken, lighten } = this.props
         darken = darken ? darken : 0
         return (
             <ImageBackground source={require(`../assets/image/topNav.png`)} style={[styles.overflowHidden, { borderBottomLeftRadius: vw(6), borderBottomRightRadius: vw(6), }]}>
-                <View style={[styles.w100, styles.padding4vw, styles.paddingH8vw, { backgroundColor: `rgba(0,0,0,${darken})` }, containerStyle]}>
+                <View style={[styles.w100, styles.padding4vw, styles.paddingH8vw, { backgroundColor: darken ? `rgba(0,0,0,${darken})` : lighten ? `rgba(255,255,255, ${lighten})` : undefined }, containerStyle]}>
                     <View style={[styles.w100, styles.flexRowBetweenCenter]}>
                         {returnPreScreen ?
                             <TouchableOpacity
