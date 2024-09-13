@@ -239,6 +239,7 @@ const Home = () => {
 
     // data set
     const [setData, setSetData] = useState<SetFormat[]>([]);
+    const [isSetSaved, setIsSetSaved] = useState<boolean[]>([]);
 
     const [switchSet, setSwitchSet] = useState(0);
     const [sellected, setSellected] = useState(0);
@@ -263,21 +264,27 @@ const Home = () => {
         switch (sellected) {
             case 1:
                 setSetData(CURRENT_SETS.rePublic)
+                setIsSetSaved(CURRENT_SETS.rePublic.map((set: SetFormat) => set.isSaved));
                 break;
             case 2:
                 setSetData(CURRENT_SETS.rePrivate)
+                setIsSetSaved(CURRENT_SETS.rePrivate.map((set: SetFormat) => set.isSaved));
                 break;
             case 3:
                 setSetData(CURRENT_SETS.reSaved)
+                setIsSetSaved(CURRENT_SETS.reSaved.map((set: SetFormat) => set.isSaved));
                 break;
             case 4:
                 setSetData(CURRENT_SETS.done)
+                setIsSetSaved(CURRENT_SETS.done.map((set: SetFormat) => set.isSaved));
                 break;
             case 5:
                 setSetData(CURRENT_SETS.all)
+                setIsSetSaved(CURRENT_SETS.all.map((set: SetFormat) => set.isSaved));
                 break;
             default:
                 setSetData(setsHaveRepeatToday)
+                setIsSetSaved(setsHaveRepeatToday.map((set: SetFormat) => set.isSaved));
                 break;
         }
     }, [switchSet, sellected, isDataLoaded])
@@ -377,7 +384,7 @@ const Home = () => {
 
                                 {/* card set*/}
                                 {switchSet ? null : sellectData()}
-                                {showSetCard(setData)}
+                                {showSetCard(setData, isSetSaved, setIsSetSaved)}
                                 {marginBottomForScrollView()}
                             </View>
                         </View>

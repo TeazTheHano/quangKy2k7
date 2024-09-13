@@ -29,6 +29,7 @@ export interface SetFormat {
     name: string;
     author: UserFormat;
     description: string;
+    category?: string;
     rate: {
         star: number;
         total: number;

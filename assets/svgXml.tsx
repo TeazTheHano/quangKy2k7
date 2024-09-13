@@ -51,6 +51,16 @@ export const sharpLeftArrow = (w: any = '100%', h: any = '100%', color?: any) =>
     );
 }
 
+export const sharpRightArrow = (w: any = '100%', h: any = '100%', color?: any) => {
+    const xml = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6.75 15L12.75 9L6.75 3" stroke="#656565" style="stroke:#656565;stroke:color(display-p3 0.3958 0.3942 0.3942);stroke-opacity:1;" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`
+    return (
+        <SvgXml xml={xml} width={w} height={h} />
+    );
+}
+
 export const shareIcon = (w = '100%', h = '100%', color?: any) => {
     const xml = `
     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -246,7 +256,7 @@ export const peopleIcon = (w?: any, h?: any, color?: any) => {
 
 export const savedIcon = (w?: any, h?: any, color?: any) => {
     const xml = `<svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M4.5 6.27148C4.5 4.16051 6 3.27148 9 3.27148C12 3.27148 13.5 4.16051 13.5 6.27148V14.5858C13.5 15.254 12.6921 15.5886 12.2197 15.1162L9.53033 12.4268C9.23744 12.1339 8.76256 12.1339 8.46967 12.4268L5.78033 15.1162C5.30786 15.5886 4.5 15.254 4.5 14.5858V6.27148Z" fill="${color ? color : `#FBF8F2`}" stroke="white" style="fill:${color ? color : `#FBF8F2`};fill:color(display-p3 0.9843 0.9725 0.9490);fill-opacity:1;stroke:white;stroke-opacity:1;" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M4.5 6.27148C4.5 4.16051 6 3.27148 9 3.27148C12 3.27148 13.5 4.16051 13.5 6.27148V14.5858C13.5 15.254 12.6921 15.5886 12.2197 15.1162L9.53033 12.4268C9.23744 12.1339 8.76256 12.1339 8.46967 12.4268L5.78033 15.1162C5.30786 15.5886 4.5 15.254 4.5 14.5858V6.27148Z" fill="${color ? color : `#FBF8F2`}" stroke="${color ? color : `#FBF8F2`}" style="fill:${color ? color : `#FBF8F2`};fill:color(display-p3 0.9843 0.9725 0.9490);fill-opacity:1;stroke:white;stroke-opacity:1;" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
     `
     return (
@@ -256,7 +266,7 @@ export const savedIcon = (w?: any, h?: any, color?: any) => {
 
 export const unSavedIcon = (w?: any, h?: any, color?: any) => {
     const xml = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M4.5 6C4.5 3.88902 6 3 9 3C12 3 13.5 3.88902 13.5 6V14.3143C13.5 14.9825 12.6921 15.3171 12.2197 14.8447L9.53033 12.1553C9.23744 11.8624 8.76256 11.8624 8.46967 12.1553L5.78033 14.8447C5.30786 15.3171 4.5 14.9825 4.5 14.3143V6Z" stroke="white" style="stroke:white;stroke-opacity:1;" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M4.5 6C4.5 3.88902 6 3 9 3C12 3 13.5 3.88902 13.5 6V14.3143C13.5 14.9825 12.6921 15.3171 12.2197 14.8447L9.53033 12.1553C9.23744 11.8624 8.76256 11.8624 8.46967 12.1553L5.78033 14.8447C5.30786 15.3171 4.5 14.9825 4.5 14.3143V6Z" stroke="${color ? color : `#FBF8F2`}" style="stroke:white;stroke-opacity:1;" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
     `
     return (

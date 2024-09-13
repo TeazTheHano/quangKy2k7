@@ -196,6 +196,7 @@ export function imgSourceHandle(address: string) {
 // img picker and camera.
 // require >>>> react-native-image-picker <<<< package
 import { CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { editSetFnc, saveSetWithID } from "../data/storageFunc";
 
 const defaultCameraOptions: CameraOptions = {
     mediaType: 'photo',
@@ -264,37 +265,9 @@ export const openGallery = async (saveImgFnc: any, options = defaultCameraOption
 // END OF UNIVERSE FUNCTION________________________________________
 
 
-export function showSetCard(DATA: SetFormat[]) {
+export function showSetCard(DATA: SetFormat[], IS_SETS_SAVE: boolean[], chane_IS_SETS_SAVE_fnc: any) {
     const navigation = useNavigation();
     const [CURRENT_SETS, dispatch] = useContext(RootContext);
-
-    function showRateStar(rate: number) {
-        rate = Math.round(rate)
-        let rateStar = []
-        for (let index = 0; index < rate; index++) {
-            rateStar.push(goldStar(vw(3), vw(3)))
-        }
-        for (let index = 0; index < 5 - rate; index++) {
-            rateStar.push(noStar(vw(3), vw(3)))
-        }
-        return rateStar.map((item, index) => {
-            return (
-                <View key={index}>
-                    {item}
-                </View>
-            )
-        }
-        )
-    }
-    const handlePressSave = (itemIndex: number) => {
-        // TODO: Implement this function
-        // setSetData(prevItems => prevItems.map((item, index) => {
-        //     if (index === itemIndex) {
-        //         return { ...item, isSaved: !IS_SAVED };
-        //     }
-        //     return item;
-        // }));
-    };
 
     if (!DATA.length) {
         return (
@@ -304,7 +277,7 @@ export function showSetCard(DATA: SetFormat[]) {
         return (
             <View style={[styles.flexCol, styles.marginVertical4vw, styles.gap4vw]}>
                 {
-                    DATA.map((set: any, index: number) => {
+                    DATA.map((set: SetFormat, index: number) => {
                         let DESK_NUMBER: number = set.deskList.length
                         let TOTAL_CARD_NEED_MEMORIZED_NUMBER: number = set.deskList.map((item: any) => item.cardList.length).reduce((a: number, b: number) => a + b)
                         let MEMORIZED_CARD_NUMBER: number = set.deskList.map((item: any) => item.cardList.filter((item: any) => item.memorized).length).reduce((a: number, b: number) => a + b)
@@ -316,7 +289,7 @@ export function showSetCard(DATA: SetFormat[]) {
                         let TOTAL_RATE: number = set.rate.total
                         let PUBLIC_SET: boolean = set.private
                         let SAVED_NUMBER: number = set.numberOfSaved
-                        let IS_SAVED: boolean = set.isSaved
+                        let IS_SAVED: boolean = IS_SETS_SAVE[index] ? IS_SETS_SAVE[index] : false
 
                         return (
                             <TouchableOpacity key={index}
@@ -369,7 +342,7 @@ export function showSetCard(DATA: SetFormat[]) {
                                                     <View style={[styles.flexRowStartCenter, styles.gap1vw]}>
                                                         <Lex10RegAuto style={{ color: 'rgba(255, 255, 255, 1)' }}>{SAVED_NUMBER} saved</Lex10RegAuto>
                                                         <TouchableOpacity
-                                                            onPress={() => { handlePressSave(index) }}
+                                                            onPress={() => { handlePressSaveWithSetID(set, IS_SETS_SAVE, chane_IS_SETS_SAVE_fnc, index) }}
                                                         >
                                                             {IS_SAVED ? savedIcon(vw(4.5), vw(4.5)) : unSavedIcon(vw(4.5), vw(4.5))}
                                                         </TouchableOpacity>
@@ -387,4 +360,38 @@ export function showSetCard(DATA: SetFormat[]) {
             </View>
         )
     }
+}
+
+export async function handlePressSaveWithSetID(set: SetFormat, IS_SETS_SAVE: boolean[], chane_IS_SETS_SAVE_fnc: any, index: number) {
+    // TODO: improve this function to chane number of save in realtime
+
+    const new_IS_SETS_SAVE = IS_SETS_SAVE.map((saved, i) => i === index ? !saved : saved);
+    chane_IS_SETS_SAVE_fnc(new_IS_SETS_SAVE);
+
+    const newSet = {
+        ...set,
+        isSaved: new_IS_SETS_SAVE[index],
+        numberOfSaved: set.numberOfSaved + (new_IS_SETS_SAVE[index] ? 1 : -1)
+    };
+
+    await editSetFnc(newSet, set.id, setAsCurrent, null);
+}
+
+export function showRateStar(rate: number) {
+    rate = Math.round(rate)
+    let rateStar = []
+    for (let index = 0; index < rate; index++) {
+        rateStar.push(goldStar(vw(3), vw(3)))
+    }
+    for (let index = 0; index < 5 - rate; index++) {
+        rateStar.push(noStar(vw(3), vw(3)))
+    }
+    return rateStar.map((item, index) => {
+        return (
+            <View key={index}>
+                {item}
+            </View>
+        )
+    }
+    )
 }

@@ -534,7 +534,7 @@ export const editSetFnc = async (
     saveSetWithID(newSet).then(() => {
       getSetWithID(setID).then(ret => {
         if (ret && ret.id) {
-          fncDispatchSetCurrent(ret);
+          fncDispatchSetCurrent ? fncDispatchSetCurrent(ret) : null;
           goBack ? goBack() : null;
         } else {
           Alert.alert('Error', 'Failed to save set');

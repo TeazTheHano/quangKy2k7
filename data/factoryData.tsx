@@ -26,6 +26,7 @@ export let demoSets: SetFormat[] = [
         name: 'B1 Vocabularies',
         author: demoUser,
         description: 'This set is for B1 level English learners',
+        category: 'English',
         rate: {
             star: 4.35,
             total: 10,
@@ -188,25 +189,67 @@ export let demoSets: SetFormat[] = [
             star: 5,
             total: 10,
         },
-        private: true,
-        isSaved: true,
+        private: false,
+        isSaved: false,
         numberOfSaved: 6,
-        isDone: true,
+        isDone: false,
         deskList: [
             {
                 title: 'Desk 1',
                 isDone: false,
-                repeatSchedule: ['W'],
+                repeatSchedule: ['T'],
                 cardList: [
                     {
-                        front: 'b2 pro d1 front 1',
+                        front: 'b1 pro d1 front 1',
                         back: 'back 1',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: false,
                         repeatToday: false,
                     },
                     {
-                        front: 'b2 pro d1 front 2',
+                        front: 'b1 pro d1 front 2',
+                        back: 'back 2',
+                        imgAddress: 'assets/image/placeholder.jpeg',
+                        memorized: false,
+                        repeatToday: false,
+                    },
+                ],
+            },
+            {
+                title: 'Desk 2',
+                isDone: false,
+                repeatSchedule: ['all'],
+                cardList: [
+                    {
+                        front: 'b1 pro d2 front 1',
+                        back: 'back 1',
+                        imgAddress: 'assets/image/placeholder.jpeg',
+                        memorized: false,
+                        repeatToday: false,
+                    },
+                    {
+                        front: 'b1 pro d2 front 2',
+                        back: 'back 2',
+                        imgAddress: 'assets/image/placeholder.jpeg',
+                        memorized: false,
+                        repeatToday: false,
+                    },
+                ],
+            },
+            {
+                title: 'Desk 3',
+                isDone: false,
+                repeatSchedule: ['all'],
+                cardList: [
+                    {
+                        front: 'b1 pro d3 front 1',
+                        back: 'back 1',
+                        imgAddress: 'assets/image/placeholder.jpeg',
+                        memorized: false,
+                        repeatToday: false,
+                    },
+                    {
+                        front: 'b1 pro d3 front 2',
                         back: 'back 2',
                         imgAddress: 'assets/image/placeholder.jpeg',
                         memorized: false,

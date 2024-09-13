@@ -169,6 +169,28 @@ export class ViewColEndCenter extends Component<{ children?: React.ReactNode, cu
     }
 }
 
+export class ViewRowStartCenter extends Component<{ children?: React.ReactNode, customStyle?: any }> {
+    render() {
+        const { children, customStyle } = this.props;
+        return (
+            <View style={[styles.flexRowStartCenter, customStyle]}>
+                {children}
+            </View>
+        )
+    }
+}
+
+export class ViewColStartCenter extends Component<{ children?: React.ReactNode, customStyle?: any }> {
+    render() {
+        const { children, customStyle } = this.props;
+        return (
+            <View style={[styles.flexColStartCenter, customStyle]}>
+                {children}
+            </View>
+        )
+    }
+}
+
 // ____________________END OF UNIVERSAL CLASS_______________________
 
 // ____________________START OF FONT_______________________
@@ -280,12 +302,12 @@ export class Lex14RegAuto extends Component<{ children: React.ReactNode, style?:
     }
 }
 
-export class Lex10RegAuto extends Component<{ children: React.ReactNode, style?: any }> {
+export class Lex10RegAuto extends Component<{ children: React.ReactNode, style?: any, lineNum?: number }> {
     render() {
-        const { children, style } = this.props;
+        const { children, style, lineNum } = this.props;
 
         return (
-            <Text style={[{ fontFamily: 'LexendDeca-Regular', fontSize: vw(2.5), color: 'black' }, style]}>
+            <Text numberOfLines={lineNum} style={[{ fontFamily: 'LexendDeca-Regular', fontSize: vw(2.5), color: 'black' }, style]}>
                 {children}
             </Text>
         );
