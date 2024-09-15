@@ -120,6 +120,7 @@ export default function AddCard({ route }: any) {
           onChangeText2={(text: string) => setCurrentFront(text)}
           textColor1={clrStyle.neu5}
           textColor2={clrStyle.black}
+          borderClr={clrStyle.neu6}
           border
           placeholder2='Max 100 characters'
           isEdit={!isViewing}

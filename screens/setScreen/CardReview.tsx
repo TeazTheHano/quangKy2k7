@@ -160,7 +160,7 @@ export default function CardReview({ route }: any) {
                   :
                   <>
                     <Lex20RegAuto style={{ color: clrStyle.neu6 }}>{currentDesk?.cardList[currentCardIndex].back}</Lex20RegAuto>
-                    {currentDesk?.cardList[currentCardIndex].imgAddress != undefined && currentDesk?.cardList[currentCardIndex].imgAddress != `assets/image/placeholder.jpeg` ?
+                    {currentDesk?.cardList[currentCardIndex].imgAddress != undefined && currentDesk?.cardList[currentCardIndex].imgAddress != `assets/image/placeholder.png` ?
                       <TouchableOpacity
                         onPress={() => { setIsZoomPhoto(!isZoomPhoto); }}
                         style={[styles.flex1, styles.w90, styles.marginVertical2vw, styles.borderRadius10, { backgroundColor: clrStyle.black, }]}>
@@ -186,7 +186,7 @@ export default function CardReview({ route }: any) {
             {btnRender()}
           </View>
         </View>
-        {currentDesk?.cardList[currentCardIndex].imgAddress != undefined && currentDesk?.cardList[currentCardIndex].imgAddress != `assets/image/placeholder.jpeg` ?
+        {currentDesk?.cardList[currentCardIndex].imgAddress != undefined && currentDesk?.cardList[currentCardIndex].imgAddress != `assets/image/placeholder.png` ?
           <TouchableOpacity
             onPress={() => { setIsZoomPhoto(!isZoomPhoto); }}
             style={[styles.flex1, styles.w100, styles.alignSelfCenter, { backgroundColor: clrStyle.black, display: isZoomPhoto ? 'flex' : 'none' }]}>

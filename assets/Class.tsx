@@ -857,6 +857,17 @@ export class Card2lineInput extends Component<{
     rightIconFnc?: () => void
     isEdit?: boolean
 }> {
+    state = {
+        isFocused: false,
+    };
+
+    handleFocus = () => {
+        this.setState({ isFocused: true });
+    };
+
+    handleBlur = () => {
+        this.setState({ isFocused: false });
+    };
     render() {
         const { customStyle, text1, value2, onChangeText2, textColor1, textColor2, TextClass1, TextClass2, bgColor, border, borderClr, onPress, rightIcon, rightIconFnc, isEdit, placeholder2, textLimit2 } = this.props;
         let Text1 = TextClass1 ? TextClass1 : Lex16RegAuto
@@ -866,7 +877,7 @@ export class Card2lineInput extends Component<{
             <TouchableOpacity
                 onPress={() => { onPress && onPress() }}
                 disabled={onPress ? false : true}
-                style={[styles.padding3vw, styles.flexRowBetweenCenter, styles.borderRadius2vw, { backgroundColor: bgColor, borderWidth: border ? 1 : 0, borderColor: borderClr ? borderClr : 'black' }, customStyle]}>
+                style={[styles.padding3vw, styles.flexRowBetweenCenter, styles.borderRadius2vw, { backgroundColor: bgColor, borderWidth: border ? 1 : 0, borderColor: this.state.isFocused ? 'black' : borderClr ? borderClr : clrStyle.neu3 }, customStyle]}>
                 <View style={[styles.flexCol, styles.gap1vw, styles.flex1]}>
                     <Text1 style={[styles.paddingH1vw, { color: textColor1 ? textColor1 : clrStyle.black }]}>{text1}</Text1>
                     <TextInput
@@ -875,8 +886,10 @@ export class Card2lineInput extends Component<{
                         placeholder={placeholder2 ? placeholder2 : ''}
                         placeholderTextColor={clrStyle.neu3}
                         multiline
+                        onFocus={this.handleFocus}
+                        onBlur={this.handleBlur}
                         maxLength={textLimit2 ? textLimit2 : 10000}
-                        style={[styles.flex1, styles.borderRadius10, styles.padding1vw, { borderColor: isEdit === true ? clrStyle.neu3 : 'rgba(0,0,0,0)', borderWidth: 1, backgroundColor: isEdit === true ? clrStyle.white : 'rgba(0,0,0,0)' }]}>
+                        style={[styles.flex1, styles.borderRadius10, styles.padding1vw, { borderColor: isEdit === true ? clrStyle.neu3 : 'rgba(0,0,0,0)', borderWidth: 1, backgroundColor: this.state.isFocused || isEdit ? clrStyle.white : 'rgba(0,0,0,0)' }]}>
                         <Text2 style={[styles.flex1, styles.flexWrap, { color: textColor2 ? textColor2 : clrStyle.black, }]}>{value2}</Text2>
                     </TextInput>
                 </View>
@@ -914,13 +927,24 @@ export class Card3lineInputImg extends Component<{
     isEdit?: boolean
     photoAddress?: string | null
 }> {
+    state = {
+        isFocused: false,
+    };
+
+    handleFocus = () => {
+        this.setState({ isFocused: true });
+    };
+
+    handleBlur = () => {
+        this.setState({ isFocused: false });
+    };
     render() {
         const { customStyle, text1, value2, onChangeText2, onPress1, onPress2, onPress3, textColor1, textColor2, TextClass1, TextClass2, bgColor, border, borderClr, isEdit, placeholder2, textLimit2, photoAddress } = this.props;
         let Text1 = TextClass1 ? TextClass1 : Lex16RegAuto
         let Text2 = TextClass2 ? TextClass2 : Pay20BlackLine122
 
         return (
-            <View style={[styles.padding3vw, styles.flexCol, styles.gap2vw, styles.borderRadius2vw, styles.w100, { backgroundColor: bgColor, borderWidth: border ? 1 : 0, borderColor: borderClr ? borderClr : 'black' }, customStyle]}>
+            <View style={[styles.padding3vw, styles.flexCol, styles.gap2vw, styles.borderRadius2vw, styles.w100, { backgroundColor: bgColor, borderWidth: border ? 1 : 0, borderColor: this.state.isFocused ? 'black' : borderClr ? borderClr : clrStyle.neu3 }, customStyle]}>
                 <Text1 style={[styles.paddingH1vw, styles.flex1, { color: textColor1 ? textColor1 : clrStyle.black }]}>{text1}</Text1>
                 <TextInput
                     editable={isEdit !== undefined ? isEdit : true}
@@ -929,6 +953,8 @@ export class Card3lineInputImg extends Component<{
                     placeholderTextColor={clrStyle.neu3}
                     multiline
                     maxLength={textLimit2 ? textLimit2 : 10000}
+                    onFocus={this.handleFocus}
+                    onBlur={this.handleBlur}
                     style={[styles.flex1, styles.borderRadius10, styles.padding1vw, { borderColor: isEdit === true ? clrStyle.neu3 : 'rgba(0,0,0,0)', borderWidth: 1, backgroundColor: isEdit === true ? clrStyle.white : 'rgba(0,0,0,0)' }]}>
                     <Text2 style={[{ color: textColor2 ? textColor2 : clrStyle.black }]}>{value2}</Text2>
                 </TextInput>
@@ -967,6 +993,38 @@ export class Card3lineInputImg extends Component<{
     }
 }
 
+
+/**
+ * A React component that renders a customizable round button.
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <RoundBtn
+ *   icon={<SomeIcon />}
+ *   title="Click Me"
+ *   onPress={() => console.log('Button pressed')}
+ *   bgColor="#ff0000"
+ *   textClass={CustomTextComponent}
+ *   textColor="#ffffff"
+ *   iconColor="#000000"
+ *   border={true}
+ *   borderColor="#00ff00"
+ *   customStyle={{ margin: 10 }}
+ * />
+ * ```
+ *
+ * @prop {React.ReactNode} [icon] - The icon to display inside the button.
+ * @prop {string} [title] - The text to display inside the button.
+ * @prop {() => void} onPress - The function to call when the button is pressed.
+ * @prop {string} [bgColor] - The background color of the button.
+ * @prop {React.ComponentType<any>} [textClass] - The custom text component to use for the button text.
+ * @prop {string} [textColor] - The color of the button text.
+ * @prop {string} [iconColor] - The color of the icon.
+ * @prop {boolean} [border] - Whether the button should have a border.
+ * @prop {string} [borderColor] - The color of the border.
+ * @prop {any} [customStyle] - Additional custom styles for the button.
+ */
 export class RoundBtn extends Component<{
     icon?: React.ReactNode
     title?: string
@@ -985,7 +1043,7 @@ export class RoundBtn extends Component<{
         return (
             <TouchableOpacity
                 onPress={onPress}
-                style={[styles.flex1, styles.flexRowCenter, styles.paddingV3vw, styles.paddingH4vw, styles.borderRadius10, styles.overflowHidden, { backgroundColor: bgColor ? bgColor : undefined, borderWidth: border ? 1 : 0 }]}>
+                style={[styles.flex1, styles.flexRowCenter, styles.paddingV3vw, styles.paddingH4vw, styles.borderRadius10, styles.overflowHidden, { backgroundColor: bgColor ? bgColor : undefined, borderWidth: border ? 1 : 0, }, customStyle]}>
                 {icon ? icon : null}
                 <TextClass style={[styles.padding2vw, { color: textColor ? textColor : clrStyle.black }]}>{title}</TextClass>
             </TouchableOpacity>

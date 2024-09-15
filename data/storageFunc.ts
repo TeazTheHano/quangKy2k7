@@ -1,11 +1,11 @@
 import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
-import {Alert} from 'react-native';
-import {Card, Desk, SetFormat, setList, UserFormat} from './data';
-import {demoSets} from './factoryData';
-import {useContext} from 'react';
-import {CURRENT_SET_PUBLIC, RootContext} from './store';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { Alert } from 'react-native';
+import { Card, Desk, SetFormat, setList, UserFormat } from './data';
+import { demoSets } from './factoryData';
+import { useContext } from 'react';
+import { CURRENT_SET_PUBLIC, RootContext } from './store';
 
 const storage = new Storage({
   // maximum capacity, default 1000 key-ids
@@ -90,7 +90,7 @@ export const weeklyProgressData = async () => {
 function getWeeksWithDaysInCurrentMonth(): void {
   console.log('getWeeksWithDaysInCurrentMonth');
 
-  const checkInData: {month: string; data: {}}[] = [];
+  const checkInData: { month: string; data: {} }[] = [];
   let monthInfo = `${new Date().getFullYear()}/${new Date().getMonth() + 1}`;
 
   const currentMonth: number = new Date().getMonth(); // Get the current month
@@ -104,7 +104,7 @@ function getWeeksWithDaysInCurrentMonth(): void {
   // Get the day of the week for the last day of the month in text format
   const lastDayOfMonthOfWeekText: string = lastDayOfMonth.toLocaleString(
     'default',
-    {weekday: 'long'},
+    { weekday: 'long' },
   );
 
   const weeks: {
@@ -125,16 +125,16 @@ function getWeeksWithDaysInCurrentMonth(): void {
           console.log('ii', ii);
         }
       }
-      weeks.push({weekIndex, days, checked});
+      weeks.push({ weekIndex, days, checked });
       weekIndex++;
       days = [];
       checked = [null];
     } else if (i === lastDayOfMonthOfWeek) {
-      weeks.push({weekIndex, days, checked});
+      weeks.push({ weekIndex, days, checked });
     }
   }
 
-  checkInData.push({month: monthInfo, data: weeks});
+  checkInData.push({ month: monthInfo, data: weeks });
 
   storage.save({
     key: 'weeklyProgress',
@@ -413,7 +413,7 @@ export const editCardFnc = async (
   fncDispatchSetCurrent: any,
   goBack?: any,
 ) => {
-  const newDesk = {...currentDesk};
+  const newDesk = { ...currentDesk };
   newDesk.cardList[cardIndex] = newCard;
   removeCardInDesk(setID, currentDesk.title, originalFront)
     .then(() => {
@@ -567,3 +567,25 @@ export const editDeskFnc = async (
     console.log(error);
   }
 };
+
+export const createDeskFnc = async (
+  newDesk: Desk,
+  setID: string,
+  fncDispatchSetCurrent: any,
+  goBack?: any,
+) => {
+  getSetWithID(setID).then((set: false | SetFormat) => {
+    if (set && set.name) {
+      let newSet = set;
+      let deskListTitles = newSet.deskList.map(desk => desk.title);
+      if (deskListTitles.includes(newDesk.title)) {
+        Alert.alert('Desk already exists', 'Please choose another name');
+      } else {
+        newSet.deskList.push(newDesk);
+        editSetFnc(newSet, setID, fncDispatchSetCurrent, goBack);
+      }
+    }
+  }
+  );
+}
+
