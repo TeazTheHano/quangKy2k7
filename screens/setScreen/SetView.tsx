@@ -3,8 +3,8 @@ import React, { useContext, useEffect } from 'react'
 import { Lex10RegAuto, Lex12BoldAuto, Lex16RegAuto, Pay16RegAuto, Pay20BlackLine122, Pay24BlackLine122, SaveViewWithColorStatusBar, SSBar, TopNav2 } from '../../assets/Class'
 import styles, { vw } from '../../assets/stylesheet'
 import { useNavigation } from '@react-navigation/native'
-import { CURRENT_SET_DONE, RootContext, setAsCurrent, setDone } from '../../data/store'
-import { imgSourceHandle } from '../../assets/component'
+import { CURRENT_SET_DONE, currentSaveAddSetID, currentSaveAddType, currentSetCurrentDesk, RootContext, setAsCurrent, setDone } from '../../data/store'
+import { imgSourceHandle, marginBottomForScrollView } from '../../assets/component'
 import { deskAddIcon, deskCheckIcon, deskNaviIcon, deskYellowIcon, notiBellIcon, sharpLeftArrow } from '../../assets/svgXml'
 import clrStyle from '../../assets/componentStyleSheet'
 
@@ -50,6 +50,11 @@ export default function SetView() {
     let ALL_MEMORIZED = theSet.deskList.map(desk => desk.cardList.filter(card => card.memorized).length).reduce((a, b) => a + b, 0)
     let ALL_DESK_COMPLETE = theSet.deskList.filter(desk => desk.cardList.filter(card => card.memorized).length == desk.cardList.length).length
     let ALL_CARD = theSet.deskList.map(desk => desk.cardList.length).reduce((a, b) => a + b, 0)
+    ALL_REPEATED_TODAY ? ALL_REPEATED_TODAY : ALL_REPEATED_TODAY = 0;
+    ALL_NEEDED_TO_REPEATED_TODAY ? ALL_NEEDED_TO_REPEATED_TODAY : ALL_NEEDED_TO_REPEATED_TODAY = 0;
+    ALL_MEMORIZED ? ALL_MEMORIZED : ALL_MEMORIZED = 0;
+    ALL_DESK_COMPLETE ? ALL_DESK_COMPLETE : ALL_DESK_COMPLETE = 0;
+    ALL_CARD ? ALL_CARD : ALL_CARD = 0;
 
     let data = [
       [ALL_REPEATED_TODAY, ALL_NEEDED_TO_REPEATED_TODAY, clrStyle.neu6, <Lex10RegAuto style={[styles.textCenter, styles.w100, styles.marginTop1vw, { color: clrStyle.white }]}>cards of this set <Lex10RegAuto style={{ color: clrStyle.neu6 }}>repeated today</Lex10RegAuto></Lex10RegAuto>],
@@ -62,7 +67,7 @@ export default function SetView() {
           return (
             <View key={index} style={[styles.flexColStartCenter, styles.flex1, styles.h100]}>
               <Pay24BlackLine122 style={{ color: item[2] }}>{item[0]}<Pay16RegAuto style={{ color: clrStyle.neu3 }}>/{item[1]}</Pay16RegAuto></Pay24BlackLine122>
-              <Progress.Bar progress={item[0] / item[1]} width={vw(19)} color={item[2]} borderWidth={0} unfilledColor={clrStyle.white} />
+              <Progress.Bar progress={item[0] / (item[1] ? item[1] : 1)} width={vw(19)} color={item[2]} borderWidth={0} unfilledColor={clrStyle.white} />
               {item[3]}
             </View>
           )
@@ -83,7 +88,7 @@ export default function SetView() {
 
             return (
               <TouchableOpacity
-                onPress={() => { navigation.navigate('DeskView', { deskItem: desk }) }}
+                onPress={() => { navigation.navigate('DeskView'); dispatch(currentSetCurrentDesk(desk)) }}
                 key={index} style={[styles.flexColStartCenter, styles.borderRadius10, styles.positionRelative, styles.marginTop4vw, { width: vw(40), height: vw(50), backgroundColor: bgColor, }]}>
                 {/* head */}
                 <View style={[styles.positionAbsolute, { top: -vw(4) }]}>
@@ -103,23 +108,27 @@ export default function SetView() {
                     :
                     deskYellowIcon(vw(20), vw(20))
                   }
-                  <Progress.Bar progress={process / desk.cardList.length} width={vw(19)} color={clrStyle.black} borderWidth={0} unfilledColor={clrStyle.neu3} />
+                  <Progress.Bar progress={process / (desk.cardList.length ? desk.cardList.length : 1)} width={vw(19)} color={clrStyle.black} borderWidth={0} unfilledColor={clrStyle.neu3} />
                   <Lex10RegAuto>{process}/{desk.cardList.length}</Lex10RegAuto>
                 </View>
               </TouchableOpacity>
             )
           })}
 
-          <TouchableOpacity
-            onPress={() => {
-              // TODO: add new desk
-            }}
-            style={[styles.flexColCenter, styles.borderRadius10, styles.positionRelative, { width: vw(40), height: vw(50), borderWidth: 2, borderColor: clrStyle.neu6 }]}>
-            <Lex16RegAuto style={[styles.textCenter, styles.positionAbsolute, styles.top4vw, styles.w70]}>Create a new desk</Lex16RegAuto>
-            {deskAddIcon(vw(14), vw(14))}
-          </TouchableOpacity>
+          {theSet.author && theSet.author.email == CURRENT_SETS.userInfo?.email ?
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(currentSaveAddType('desk'))
+                dispatch(currentSaveAddSetID(theSet.id))
+                navigation.navigate('BottomTab', { screen: 'Add' })
+              }}
+              style={[styles.flexColCenter, styles.borderRadius10, styles.positionRelative, { width: vw(40), height: vw(50), borderWidth: 2, borderColor: clrStyle.neu6 }]}>
+              <Lex16RegAuto style={[styles.textCenter, styles.positionAbsolute, styles.top4vw, styles.w70]}>Create a new desk</Lex16RegAuto>
+              {deskAddIcon(vw(14), vw(14))}
+            </TouchableOpacity>
+            : null}
 
-          {theSet.deskList.length % 2 == 0 ?
+          {theSet.deskList.length % 2 == 0 || theSet.author && theSet.author.email != CURRENT_SETS.userInfo?.email ?
             <View style={[{ width: vw(40), height: vw(50) }]}>
             </View> : null}
         </View>
@@ -146,6 +155,8 @@ export default function SetView() {
       </TopNav2>
       <ScrollView style={[styles.flex1,]}>
         {deskPreview()}
+
+        {marginBottomForScrollView(2)}
       </ScrollView>
     </SSBar>
   )

@@ -31,7 +31,10 @@ import {
     CURRENT_SET_RE_SAVED,
     CURRENT_CLEAR_RE_PUBLIC,
     CURRENT_CLEAR_RE_PRIVATE,
-    CURRENT_CLEAR_RE_SAVED
+    CURRENT_CLEAR_RE_SAVED,
+    CURRENT_SAVE_ADD_TYPE,
+    CURRENT_SAVE_ADD_SETID,
+    CURRENT_SAVE_ADD_DESKTITLE
 } from "./index";
 
 export default function setReducer(state = initialState, action: Action): CurrentSets {
@@ -184,6 +187,21 @@ export default function setReducer(state = initialState, action: Action): Curren
                 ...state,
                 reSaved: []
             };
+        case CURRENT_SAVE_ADD_TYPE:
+            return {
+                ...state,
+                addType: action.payload as string
+            }
+        case CURRENT_SAVE_ADD_SETID:
+            return {
+                ...state,
+                addSetID: action.payload as string
+            }
+        case CURRENT_SAVE_ADD_DESKTITLE:
+            return {
+                ...state,
+                addDeskTitle: action.payload as string
+            }
         default:
             return state;
     }

@@ -40,6 +40,10 @@ export const SAVE_NUMBER_OF_CARDS_NEED_TO_MEMORIZE = `SAVE_NUMBER_OF_CARDS_NEED_
 export const SAVE_NUMBER_OF_CARDS_REVIEWED_TODAY = `SAVE_NUMBER_OF_CARDS_REVIEWED_TODAY`;
 export const SAVE_NUMBER_OF_CARDS_MEMORIZED = `SAVE_NUMBER_OF_CARDS_MEMORIZED`;
 
+export const CURRENT_SAVE_ADD_TYPE = `CURRENT_SAVE_ADD_TYPE`;
+export const CURRENT_SAVE_ADD_SETID = `CURRENT_SAVE_ADD_SETID`;
+export const CURRENT_SAVE_ADD_DESKTITLE = `CURRENT_SAVE_ADD_DESKTITLE`;
+
 export const saveTheSet = (item: SetFormat) => {
     return {
         type: CURRENT_SAVE_THE_SET,
@@ -224,5 +228,26 @@ export const currentClearRePrivate = () => {
 export const currentClearReSaved = () => {
     return {
         type: CURRENT_CLEAR_RE_SAVED,
+    }
+}
+
+export const currentSaveAddType = (item: string) => {
+    return {
+        type: CURRENT_SAVE_ADD_TYPE,
+        payload: item
+    }
+}
+
+export const currentSaveAddSetID = (item: string) => {
+    return {
+        type: CURRENT_SAVE_ADD_SETID,
+        payload: item
+    }
+}
+
+export const currentSaveAddDeskTitle = (item: string) => {
+    return {
+        type: CURRENT_SAVE_ADD_DESKTITLE,
+        payload: item
     }
 }

@@ -1,19 +1,20 @@
 import { Image, ImageStyle, Platform, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect } from 'react'
-import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex20RegAuto, SaveViewWithColorStatusBar, SSBar, TopNav2, TopNavLib, ViewRowBetweenCenter, ViewRowCenter, ViewRowStartCenter } from '../assets/Class'
+import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex16RegAuto, Lex20RegAuto, SaveViewWithColorStatusBar, SearchBox, SSBar, TopNav2, TopNavLib, ViewRowBetweenCenter, ViewRowCenter, ViewRowStartCenter } from '../assets/Class'
 import styles, { vh, vw } from '../assets/stylesheet'
-import { adjustIcon, lockIcon, notiBellIcon, peopleIcon, savedIcon, searchIcon, sharpLeftArrow, sharpRightArrow, unSavedIcon } from '../assets/svgXml'
+import { adjustIcon, lockIcon, notiBellIcon, peopleIcon, savedIcon, searchIcon, sharpLeftArrow, sharpRightArrow, unSavedIcon, xIcon } from '../assets/svgXml'
 import { RootContext, setAsCurrent } from '../data/store'
 import clrStyle from '../assets/componentStyleSheet'
 import { useNavigation } from '@react-navigation/native'
 import { SvgXml } from 'react-native-svg'
-import { handlePressSaveWithSetID, imgSourceHandle, marginBottomForScrollView, showRateStar } from '../assets/component'
+import { handlePressSaveWithSetID, imgSourceHandle, marginBottomForScrollView, searchEngine, showRateStar, showSetCard } from '../assets/component'
 import { SetFormat } from '../data/data'
 
 export default function Library() {
   const navigation = useNavigation()
   const [CURRENT_SETS, dispatch] = React.useContext(RootContext)
-  const [seachContent, setSearchContent] = React.useState('')
+  const [searchContent, setSearchContent] = React.useState('')
+  const [searchResult, setSearchResult] = React.useState<SetFormat[]>([])
 
   const [refreshing, setRefreshing] = React.useState(false)
   const [topRatedSets, setTopRatedSets] = React.useState<SetFormat[]>([])
@@ -184,6 +185,16 @@ export default function Library() {
     }
   }
 
+  useEffect(() => {
+    if (searchContent) {
+      searchEngine(searchContent, CURRENT_SETS.public, 'set').then((result) => {
+        setSearchResult(result as SetFormat[])
+      })
+    } else {
+      setSearchResult([])
+    }
+  }, [searchContent])
+
   return (
     <SSBar trans barColor={'rgba(0,0,0,0)'} barContentStyle='dark-content' notMargin>
 
@@ -198,27 +209,50 @@ export default function Library() {
           <TouchableOpacity>
             {adjustIcon(vw(10), vw(10))}
           </TouchableOpacity>
-          <ViewRowBetweenCenter
+          {/* <ViewRowBetweenCenter
             customStyle={[styles.flex1, styles.gap3vw, styles.borderRadius10, styles.h100, styles.shadowW0H0Black, styles.paddingH4vw, { backgroundColor: clrStyle.white, borderColor: clrStyle.neu3 }]}>
             {searchIcon(vw(5), vw(5), clrStyle.black)}
             <TextInput
               style={[styles.flex1, { color: clrStyle.black, fontSize: vw(3.5) }]}
-              value={seachContent}
+              value={searchContent}
               onChangeText={(text) => setSearchContent(text as string)}
               placeholder='Search'
             />
-          </ViewRowBetweenCenter>
+            <TouchableOpacity
+              onPress={() => setSearchContent('')}
+            >
+              {xIcon(vw(5), vw(5), clrStyle.black)}
+            </TouchableOpacity>
+          </ViewRowBetweenCenter> */}
+          <SearchBox 
+            value={searchContent}
+            onChangeText={(text) => setSearchContent(text as string)}
+            onClear={() => setSearchContent('')}
+            showSearchIcon
+          />
         </ViewRowBetweenCenter>
       </TopNavLib>
       <ScrollView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         style={[styles.flex1, styles.paddingV4vw]}>
-        <TitleView
-          customStyle={[styles.paddingH6vw, styles.paddingV2vw]}
-          icon={`<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.29138 15C4.82486 15 3.57329 13.9398 3.3322 12.4932L2.25 6L5.06699 8.30481C5.7628 8.87411 6.79967 8.70766 7.28234 7.94919L9 5.25L10.7177 7.94918C11.2003 8.70766 12.2372 8.87411 12.933 8.30481L15.75 6L14.6678 12.4932C14.4267 13.9398 13.1751 15 11.7086 15H6.29138Z" fill="#FFC800" style="fill:#FFC800;fill:color(display-p3 1.0000 0.7843 0.0000);fill-opacity:1;"/><path d="M2.25 6L3.3322 12.4932C3.57329 13.9398 4.82486 15 6.29138 15H11.7086C13.1751 15 14.4267 13.9398 14.6678 12.4932L15.75 6M2.25 6L5.06699 8.30481C5.7628 8.87411 6.79967 8.70766 7.28234 7.94919L9 5.25M2.25 6C2.87132 6 3.375 5.49632 3.375 4.875C3.375 4.25368 2.87132 3.75 2.25 3.75C1.62868 3.75 1.125 4.25368 1.125 4.875C1.125 5.49632 1.62868 6 2.25 6ZM15.75 6L12.933 8.30481C12.2372 8.87411 11.2003 8.70766 10.7177 7.94918L9 5.25M15.75 6C16.3713 6 16.875 5.49632 16.875 4.875C16.875 4.25368 16.3713 3.75 15.75 3.75C15.1287 3.75 14.625 4.25368 14.625 4.875C14.625 5.49632 15.1287 6 15.75 6ZM9 5.25C9.62132 5.25 10.125 4.74632 10.125 4.125C10.125 3.50368 9.62132 3 9 3C8.37868 3 7.875 3.50368 7.875 4.125C7.875 4.74632 8.37868 5.25 9 5.25Z" stroke="#161616" style="stroke:#161616;stroke:color(display-p3 0.0848 0.0848 0.0848);stroke-opacity:1;" stroke-linecap="round" stroke-linejoin="round"/></svg>`}
-          title='Top Rated Set'
-          onPress={() => { }} />
-        {showSetCard2(topRatedSets, topRatedSetsSaved, setTopRatedSetsSaved)}
+        {searchContent ?
+          <View style={[styles.paddingH8vw]}>
+            {
+              searchResult.length > 0 ?
+                showSetCard(searchResult, [], () => { })
+                :
+                <Lex16RegAuto style={{ color: clrStyle.black }}>No set found</Lex16RegAuto>
+            }
+          </View>
+          :
+          <>
+            <TitleView
+              customStyle={[styles.paddingH6vw, styles.paddingV2vw]}
+              icon={`<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.29138 15C4.82486 15 3.57329 13.9398 3.3322 12.4932L2.25 6L5.06699 8.30481C5.7628 8.87411 6.79967 8.70766 7.28234 7.94919L9 5.25L10.7177 7.94918C11.2003 8.70766 12.2372 8.87411 12.933 8.30481L15.75 6L14.6678 12.4932C14.4267 13.9398 13.1751 15 11.7086 15H6.29138Z" fill="#FFC800" style="fill:#FFC800;fill:color(display-p3 1.0000 0.7843 0.0000);fill-opacity:1;"/><path d="M2.25 6L3.3322 12.4932C3.57329 13.9398 4.82486 15 6.29138 15H11.7086C13.1751 15 14.4267 13.9398 14.6678 12.4932L15.75 6M2.25 6L5.06699 8.30481C5.7628 8.87411 6.79967 8.70766 7.28234 7.94919L9 5.25M2.25 6C2.87132 6 3.375 5.49632 3.375 4.875C3.375 4.25368 2.87132 3.75 2.25 3.75C1.62868 3.75 1.125 4.25368 1.125 4.875C1.125 5.49632 1.62868 6 2.25 6ZM15.75 6L12.933 8.30481C12.2372 8.87411 11.2003 8.70766 10.7177 7.94918L9 5.25M15.75 6C16.3713 6 16.875 5.49632 16.875 4.875C16.875 4.25368 16.3713 3.75 15.75 3.75C15.1287 3.75 14.625 4.25368 14.625 4.875C14.625 5.49632 15.1287 6 15.75 6ZM9 5.25C9.62132 5.25 10.125 4.74632 10.125 4.125C10.125 3.50368 9.62132 3 9 3C8.37868 3 7.875 3.50368 7.875 4.125C7.875 4.74632 8.37868 5.25 9 5.25Z" stroke="#161616" style="stroke:#161616;stroke:color(display-p3 0.0848 0.0848 0.0848);stroke-opacity:1;" stroke-linecap="round" stroke-linejoin="round"/></svg>`}
+              title='Top Rated Set'
+              onPress={() => { }} />
+            {showSetCard2(topRatedSets, topRatedSetsSaved, setTopRatedSetsSaved)}
+          </>}
         {marginBottomForScrollView(2)}
       </ScrollView>
     </SSBar>

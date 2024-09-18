@@ -10,7 +10,7 @@ import { vw, vh } from './stylesheet';
 import { imgSourceHandle, marginBottomForScrollView } from './component';
 
 // svg import
-import { cameraIcon, goldStar, imgPickerIcon, inVisibilityIcon, leftArrow, lockIcon, noStar, peopleIcon, savedIcon, searchIcon, unSavedIcon, visibilityIcon } from './svgXml';
+import { cameraIcon, goldStar, imgPickerIcon, inVisibilityIcon, leftArrow, lockIcon, noStar, peopleIcon, savedIcon, searchIcon, unSavedIcon, visibilityIcon, xIcon } from './svgXml';
 import clrStyle from './componentStyleSheet';
 
 // other import
@@ -1047,6 +1047,38 @@ export class RoundBtn extends Component<{
                 {icon ? icon : null}
                 <TextClass style={[styles.padding2vw, { color: textColor ? textColor : clrStyle.black }]}>{title}</TextClass>
             </TouchableOpacity>
+        );
+    }
+}
+
+export class SearchBox extends Component<{
+    customStyle?: any
+    placeholder?: string
+    placeholderTextColor?: any
+    value?: string
+    onChangeText?: (input: any) => void
+    onClear?: () => void
+    showSearchIcon?: boolean
+}> {
+    render() {
+        const { customStyle, placeholder, placeholderTextColor, value, onChangeText, onClear, showSearchIcon } = this.props;
+        return (
+            <ViewRowBetweenCenter
+                customStyle={[styles.flex1, styles.gap3vw, styles.borderRadius10, styles.h100, styles.shadowW0H0Black, styles.paddingH4vw, { backgroundColor: clrStyle.white, borderColor: clrStyle.neu3 }, customStyle]}>
+                {showSearchIcon ? searchIcon(vw(5), vw(5), clrStyle.black) : null}
+                <TextInput
+                    style={[styles.flex1, { color: clrStyle.black, fontSize: vw(3.5) }]}
+                    value={value}
+                    onChangeText={onChangeText}
+                    placeholder={placeholder ? placeholder : 'Search'}
+                    placeholderTextColor={placeholderTextColor ? placeholderTextColor : ''}
+                />
+                <TouchableOpacity
+                    onPress={onClear}
+                >
+                    {xIcon(vw(5), vw(5), clrStyle.black)}
+                </TouchableOpacity>
+            </ViewRowBetweenCenter>
         );
     }
 }

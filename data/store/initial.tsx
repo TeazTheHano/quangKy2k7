@@ -19,11 +19,14 @@ export interface CurrentSets {
     cardsNeedToMemorize: number;
     cardsReviewedToday: number;
     cardsMemorized: number;
+    addType?: string;
+    addSetID?: string;
+    addDeskTitle?: string;
 }
 
 export interface Action {
     type: string;
-    payload?: SetFormat | SetFormat[] | UserFormat | Desk | number;
+    payload?: SetFormat | SetFormat[] | UserFormat | Desk | number | string | null;
 }
 
 export const initialState: CurrentSets = {
@@ -42,4 +45,7 @@ export const initialState: CurrentSets = {
     cardsNeedToMemorize: 0,
     cardsReviewedToday: 0,
     cardsMemorized: 0,
+    addType: '',
+    addSetID: '',
+    addDeskTitle: '',
 };

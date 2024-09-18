@@ -16,7 +16,7 @@ import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex16RegAuto } from "./Class
 
 // other import
 import * as Progress from 'react-native-progress';
-import { SetFormat } from "../data/data";
+import { Card, Desk, SetFormat } from "../data/data";
 import { RootContext, setAsCurrent } from "../data/store";
 
 // font import 
@@ -265,7 +265,7 @@ export const openGallery = async (saveImgFnc: any, options = defaultCameraOption
 // END OF UNIVERSE FUNCTION________________________________________
 
 
-export function showSetCard(DATA: SetFormat[], IS_SETS_SAVE: boolean[], chane_IS_SETS_SAVE_fnc: any) {
+export function showSetCard(DATA: SetFormat[], IS_SETS_SAVE: boolean[], chane_IS_SETS_SAVE_fnc?: any) {
     const navigation = useNavigation();
     const [CURRENT_SETS, dispatch] = useContext(RootContext);
 
@@ -300,7 +300,7 @@ export function showSetCard(DATA: SetFormat[], IS_SETS_SAVE: boolean[], chane_IS
                                 <View style={[styles.flexRowStartCenter, styles.gap1vw, styles.wfit, styles.paddingH4vw, styles.paddingV2vw, { backgroundColor: 'rgba(79, 79, 79, 1)', borderTopLeftRadius: vw(4), borderTopRightRadius: vw(4), transform: [{ translateY: 1 }] }]}>
                                     <Lex12BoldAuto style={{ color: 'white' }}>{DESK_NUMBER} {DESK_NUMBER > 1 ? 'desks' : 'desk'}:</Lex12BoldAuto>
                                     <Progress.Circle
-                                        progress={MEMORIZED_CARD_NUMBER / TOTAL_CARD_NEED_MEMORIZED_NUMBER}
+                                        progress={MEMORIZED_CARD_NUMBER / (TOTAL_CARD_NEED_MEMORIZED_NUMBER ? TOTAL_CARD_NEED_MEMORIZED_NUMBER : 1)}
                                         strokeCap='round'
                                         showsText={false}
                                         color={clrStyle.neu6}
@@ -342,7 +342,7 @@ export function showSetCard(DATA: SetFormat[], IS_SETS_SAVE: boolean[], chane_IS
                                                     <View style={[styles.flexRowStartCenter, styles.gap1vw]}>
                                                         <Lex10RegAuto style={{ color: 'rgba(255, 255, 255, 1)' }}>{SAVED_NUMBER} saved</Lex10RegAuto>
                                                         <TouchableOpacity
-                                                            onPress={() => { handlePressSaveWithSetID(set, IS_SETS_SAVE, chane_IS_SETS_SAVE_fnc, index) }}
+                                                            onPress={() => { chane_IS_SETS_SAVE_fnc ? handlePressSaveWithSetID(set, IS_SETS_SAVE, chane_IS_SETS_SAVE_fnc, index) : null }}
                                                         >
                                                             {IS_SAVED ? savedIcon(vw(4.5), vw(4.5)) : unSavedIcon(vw(4.5), vw(4.5))}
                                                         </TouchableOpacity>
@@ -394,4 +394,30 @@ export function showRateStar(rate: number) {
         )
     }
     )
+}
+
+export async function searchEngine(keyword: string, dataBank: SetFormat[] | Desk[] | Card[], type: 'set' | 'desk' | 'card') {
+    keyword = keyword.trim();
+    let result: SetFormat[] | Desk[] | Card[] = [];
+    const regex = new RegExp(`\\b${keyword}`, 'i');
+
+    if (type === 'set' && dataBank as SetFormat[]) {
+        result = dataBank.filter((item): item is SetFormat =>
+            (item as SetFormat).name !== undefined && regex.test((item as SetFormat).name)
+        );
+    } else if (type === 'desk' && dataBank as Desk[]) {
+        result = dataBank.filter((item): item is Desk =>
+            (item as Desk).title !== undefined && regex.test((item as Desk).title)
+        );
+    } else if (type === 'card' && dataBank as Card[]) {
+        result = dataBank.filter((item): item is Card =>
+            (item as Card).front !== undefined && regex.test((item as Card).front)
+        );
+    }
+
+    if (keyword === '') {
+        return [];
+    }
+
+    return result;
 }

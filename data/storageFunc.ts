@@ -413,24 +413,26 @@ export const editCardFnc = async (
   fncDispatchSetCurrent: any,
   goBack?: any,
 ) => {
-  const newDesk = { ...currentDesk };
-  newDesk.cardList[cardIndex] = newCard;
-  removeCardInDesk(setID, currentDesk.title, originalFront)
-    .then(() => {
-      if (currentFront == originalFront) {
-        saveCardInDesk(setID, currentDesk.title, newCard);
-      }
-    })
-    .then(() => {
-      getSetWithID(setID).then(ret => {
-        if (ret && ret.id) {
-          fncDispatchSetCurrent(ret);
-          goBack ? goBack() : null;
-        } else {
-          Alert.alert('Error', 'Failed to save card');
-        }
-      });
-    });
+  try {
+    const newDesk = { ...currentDesk };
+    newDesk.cardList[cardIndex] = newCard;
+    await removeCardInDesk(setID, currentDesk.title, originalFront);
+    if (currentFront === originalFront) {
+      await saveCardInDesk(setID, currentDesk.title, newCard);
+    }
+    const ret = await getSetWithID(setID);
+    if (ret && ret.id) {
+      fncDispatchSetCurrent(ret);
+      if (goBack) goBack();
+      return true;
+    } else {
+      Alert.alert('Error', 'Failed to save card');
+      return false;
+    }
+  } catch (error) {
+    Alert.alert('Error', 'Failed to save card');
+    return false;
+  }
 };
 
 export const createCardFnc = async (
@@ -440,16 +442,21 @@ export const createCardFnc = async (
   setAsCurrent: any,
   goBack?: any,
 ) => {
-  saveCardInDesk(setID, deskTitle, newCard).then(() => {
-    getSetWithID(setID).then(ret => {
-      if (ret && ret.id) {
-        setAsCurrent(ret);
-        goBack ? goBack() : null;
-      } else {
-        Alert.alert('Error', 'Failed to save card');
-      }
-    });
-  });
+  try {
+    await saveCardInDesk(setID, deskTitle, newCard);
+    const ret = await getSetWithID(setID);
+    if (ret && ret.id) {
+      setAsCurrent(ret);
+      if (goBack) goBack();
+      return true;
+    } else {
+      Alert.alert('Error', 'Failed to save card');
+      return false;
+    }
+  } catch (error) {
+    Alert.alert('Error', 'Failed to save card');
+    return false;
+  }
 };
 
 export const removeCardFnc = async (
@@ -459,16 +466,23 @@ export const removeCardFnc = async (
   setAsCurrent: any,
   goBack?: any,
 ) => {
-  removeCardInDesk(setID, deskTitle, cardFront).then(() => {
-    getSetWithID(setID).then(ret => {
-      if (ret && ret.id) {
+  try {
+    await removeCardInDesk(setID, deskTitle, cardFront);
+    const ret = await getSetWithID(setID);
+    if (ret && ret.id) {
+      if (setAsCurrent) {
         setAsCurrent(ret);
-        goBack ? goBack() : null;
-      } else {
-        Alert.alert('Error', 'Failed to remove card');
       }
-    });
-  });
+      if (goBack) goBack();
+      return true;
+    } else {
+      Alert.alert('Error', 'Failed to remove card');
+      return false;
+    }
+  } catch (error) {
+    Alert.alert('Error', 'Failed to remove card');
+    return false;
+  }
 };
 
 export const saveCardInDeskWithInfo = async (
@@ -498,7 +512,7 @@ export const saveCardInDeskWithInfo = async (
               console.log('Card saved');
               return res;
             } else {
-              return Alert.alert('Failed to save card');
+              return false;
             }
           });
         }
@@ -530,18 +544,22 @@ export const editSetFnc = async (
   fncDispatchSetCurrent: any,
   goBack?: any,
 ) => {
-  removeSetWithID(setID).then(() => {
-    saveSetWithID(newSet).then(() => {
-      getSetWithID(setID).then(ret => {
-        if (ret && ret.id) {
-          fncDispatchSetCurrent ? fncDispatchSetCurrent(ret) : null;
-          goBack ? goBack() : null;
-        } else {
-          Alert.alert('Error', 'Failed to save set');
-        }
-      });
-    });
-  });
+  try {
+    await removeSetWithID(setID);
+    await saveSetWithID(newSet);
+    const ret = await getSetWithID(setID);
+    if (ret && ret.id) {
+      if (fncDispatchSetCurrent) fncDispatchSetCurrent(ret);
+      if (goBack) goBack();
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    Alert.alert('Error', 'Failed to save set');
+    console.log(error);
+    return false;
+  }
 };
 
 export const editDeskFnc = async (
@@ -552,19 +570,21 @@ export const editDeskFnc = async (
   goBack?: any,
 ) => {
   try {
-    getSetWithID(setID).then((set: false | SetFormat) => {
-      console.log(set);
-      if (set !== false) {
-        let newSet = set;
-        newSet.deskList = newSet.deskList.map(desk =>
-          desk.title === currentDesk?.title ? newDesk : desk,
-        );
-        editSetFnc(newSet, setID, fncDispatchSetCurrent, goBack);
-      }
-    });
+    const set = await getSetWithID(setID);
+    if (set !== false) {
+      let newSet = set;
+      newSet.deskList = newSet.deskList.map(desk =>
+        desk.title === currentDesk?.title ? newDesk : desk,
+      );
+      await editSetFnc(newSet, setID, fncDispatchSetCurrent, goBack);
+      return true;
+    } else {
+      return false;
+    }
   } catch (error) {
     Alert.alert('Error', 'Failed to save desk');
     console.log(error);
+    return false;
   }
 };
 
@@ -574,18 +594,25 @@ export const createDeskFnc = async (
   fncDispatchSetCurrent: any,
   goBack?: any,
 ) => {
-  getSetWithID(setID).then((set: false | SetFormat) => {
+  try {
+    const set = await getSetWithID(setID);
     if (set && set.name) {
       let newSet = set;
       let deskListTitles = newSet.deskList.map(desk => desk.title);
       if (deskListTitles.includes(newDesk.title)) {
         Alert.alert('Desk already exists', 'Please choose another name');
+        return false;
       } else {
         newSet.deskList.push(newDesk);
-        editSetFnc(newSet, setID, fncDispatchSetCurrent, goBack);
+        await editSetFnc(newSet, setID, fncDispatchSetCurrent, goBack);
+        return true;
       }
+    } else {
+      return false;
     }
+  } catch (error) {
+    Alert.alert('Error', 'Failed to create desk');
+    console.log(error);
+    return false;
   }
-  );
-}
-
+};

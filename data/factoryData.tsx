@@ -12,7 +12,7 @@ export const demoUser: UserFormat = {
 
 export const demoUser2: UserFormat = {
     name: 'demo2222',
-    email: 'demo@demo2222.com',
+    email: 'ta@gmail.com',
     password: 'demo',
     savedSet: [],
     doneSet: [],
