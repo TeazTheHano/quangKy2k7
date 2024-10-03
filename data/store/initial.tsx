@@ -1,7 +1,7 @@
 //FIXME: NEED CHANGE IN NEW PJ: Add action types and action creators here
 
 import User from "../../screens/User";
-import { Desk, SetFormat, UserFormat } from "../data";
+import { Desk, FolderFormat, SetFormat, UserFormat } from "../data";
 
 export interface CurrentSets {
     all: SetFormat[];
@@ -22,11 +22,12 @@ export interface CurrentSets {
     addType?: string;
     addSetID?: string;
     addDeskTitle?: string;
+    folderList?: FolderFormat[]
 }
 
 export interface Action {
     type: string;
-    payload?: SetFormat | SetFormat[] | UserFormat | Desk | number | string | null;
+    payload?: SetFormat | SetFormat[] | UserFormat | Desk | number | string | null | FolderFormat[] | FolderFormat;
 }
 
 export const initialState: CurrentSets = {
@@ -48,4 +49,5 @@ export const initialState: CurrentSets = {
     addType: '',
     addSetID: '',
     addDeskTitle: '',
+    folderList: []
 };

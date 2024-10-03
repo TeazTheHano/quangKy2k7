@@ -1,6 +1,6 @@
 //FIXME: NEED CHANGE IN NEW PJ: Add action types and action creators here
 
-import { Desk, SetFormat, UserFormat } from "../data";
+import { Desk, FolderFormat, SetFormat, UserFormat } from "../data";
 
 export const CURRENT_SET_ALL_SET = `CURRENT_SET_ALL_SET`;
 export const CURRENT_CLEAR_ALL_SET = `CURRENT_CLEAR_ALL_SET`;
@@ -43,6 +43,10 @@ export const SAVE_NUMBER_OF_CARDS_MEMORIZED = `SAVE_NUMBER_OF_CARDS_MEMORIZED`;
 export const CURRENT_SAVE_ADD_TYPE = `CURRENT_SAVE_ADD_TYPE`;
 export const CURRENT_SAVE_ADD_SETID = `CURRENT_SAVE_ADD_SETID`;
 export const CURRENT_SAVE_ADD_DESKTITLE = `CURRENT_SAVE_ADD_DESKTITLE`;
+
+export const CURRENT_ADD_TO_FOLDER_LIST = `CURRENT_ADD_TO_FOLDER_LIST`;
+export const CURRENT_REMOVE_FROM_FOLDER_LIST = `CURRENT_REMOVE_FROM_FOLDER_LIST`;
+export const CURRENT_OVERWRITE_FOLDER_LIST = `CURRENT_OVERWRITE_FOLDER_LIST`;
 
 export const saveTheSet = (item: SetFormat) => {
     return {
@@ -248,6 +252,28 @@ export const currentSaveAddSetID = (item: string) => {
 export const currentSaveAddDeskTitle = (item: string) => {
     return {
         type: CURRENT_SAVE_ADD_DESKTITLE,
+        payload: item
+    }
+}
+
+// folderList
+export const currentAddToFolderList = (item: FolderFormat[]) => {
+    return {
+        type: CURRENT_ADD_TO_FOLDER_LIST,
+        payload: item
+    }
+}
+
+export const currentRemoveFromFolderList = (item: FolderFormat[]) => {
+    return {
+        type: CURRENT_REMOVE_FROM_FOLDER_LIST,
+        payload: item
+    }
+}
+
+export const currentOverwriteFolderList = (item: FolderFormat[]) => {
+    return {
+        type: CURRENT_OVERWRITE_FOLDER_LIST,
         payload: item
     }
 }

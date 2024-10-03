@@ -1,22 +1,22 @@
 import { View, Text, StatusBar, ScrollView, Platform, PermissionsAndroid, Image, Alert, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import { Card2line, Card2lineInput, Card3lineInputImg, Lex14RegAuto, Lex16BoldAuto, Lex16MedAuto, Lex16RegAuto, Lex18RegAuto, Lex20RegAuto, RoundBtn, SearchBox, TopNav1, TopNav2, TopNav3, ViewColBetweenCenter, ViewColCenter, ViewRowBetweenCenter, ViewRowEvenlyCenter } from '../assets/Class'
+import { Card2line, Card2lineInput, Card3lineInputImg, Lex14RegAuto, Lex16BoldAuto, Lex16MedAuto, Lex16RegAuto, Lex18RegAuto, Lex20RegAuto, RoundBtn, SearchBox, TopNav1, TopNav2, TopNav3, ViewCol, ViewColBetweenCenter, ViewColCenter, ViewRow, ViewRowBetweenCenter, ViewRowEvenlyCenter } from '../assets/Class'
 import styles, { vw } from '../assets/stylesheet'
 import { useNavigation } from '@react-navigation/native'
 import { RootContext, setAsCurrent } from '../data/store'
 import clrStyle from '../assets/componentStyleSheet'
-import { cardDeleteIcon, checkIcon, deskCardEditIcon, deskMiniBlackCheckIcon, deskNaviIcon, doneEditIcon, sharpLeftArrow } from '../assets/svgXml'
+import { cardDeleteIcon, checkIcon, deskCardEditIcon, deskMiniBlackCheckIcon, deskNaviIcon, doneEditIcon, sharpLeftArrow, unCheckIcon } from '../assets/svgXml'
 import { marginBottomForScrollView, openCamera, openGallery, searchEngine } from '../assets/component'
 
 import { CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { createCardFnc, createDeskFnc, editCardFnc, getSetWithID, removeCardFnc, removeCardInDesk, saveCardInDesk } from '../data/storageFunc'
-import { Card, Desk, SetFormat } from '../data/data'
+import { createCardFnc, createDeskFnc, createSetFnc, editCardFnc, getSetWithID, removeCardFnc, removeCardInDesk, saveCardInDesk } from '../data/storageFunc'
+import { Card, Desk, SetFormat, UserFormat } from '../data/data'
 
 export default function Add() {
   const navigation = useNavigation()
   const [CURRENT_SETS, dispatch] = useContext(RootContext)
 
-  const [createType, setCreateType] = useState<'set' | 'desk' | 'card' | 'chosing'>('chosing')
+  const [createType, setCreateType] = useState<'set' | 'desk' | 'card' | 'folder' | 'chosing'>('chosing')
 
   // card_input
   const [cardItem, setCardItem] = React.useState<Card | null>(null)
@@ -32,6 +32,17 @@ export default function Add() {
   const [DeskRepeat, setDeskRepeat] = useState<Array<'M' | 'T' | 'W' | 'TH' | 'F' | 'S' | 'SU' | 'all' | null>>(['all']);
   // end of desk_input
 
+  // set_input
+  const [CreateSETNAME, setCreateSETNAME] = useState<string>('')
+  const [CreateSETDESCRIPTION, setCreateSETDESCRIPTION] = useState<string>('')
+  const [CreateSETPRIVATE, setCreateSETPRIVATE] = useState<boolean>(false)
+  const [CreateSETCATEGORY, setCreateSETCATEGORY] = useState<string>('')
+  // end of set_input
+
+  // folder_input
+  const [CreateFolderName, setCreateFolderName] = useState<string>('')
+  // end of folder_input
+
   const [setSearch, setSetSearch] = useState<string>('')
   const [deskSearch, setDeskSearch] = useState<string>('')
   const [cardSearch, setCardSearch] = useState<string>('')
@@ -39,6 +50,10 @@ export default function Add() {
   const [setSearchResult, setSetSearchResult] = useState<SetFormat[]>([])
   const [deskSearchResult, setDeskSearchResult] = useState<Desk[]>([])
   const [cardSearchResult, setCardSearchResult] = useState<Card[]>([])
+
+  function cancelPress() {
+    setCreateType('chosing'); setSetSearch(''); setDeskSearch(''); setCardSearch(''); setSetName(''); setSETID(null); setDESKTITLE(null); setCurrentFront(''); setCurrentBack(''); setImage(null); setDeskRepeat(['all']); setCreateSETNAME(''); setCreateSETDESCRIPTION(''); setCreateSETCATEGORY(''); setCreateSETPRIVATE(false)
+  }
 
   const saveCard = () => {
     if (currentFront !== '' && currentBack !== '') {
@@ -71,7 +86,25 @@ export default function Add() {
               repeatSchedule: DeskRepeat,
               cardList: [],
             };
-            createDeskFnc(newDesk, SETID as string, setAsCurrent, null).then((ret) => { ret ? Alert.alert('Desk created', 'Desk has been created') : null });
+            createDeskFnc(newDesk, SETID as string, setAsCurrent, null).then((ret) => {
+              ret ? Alert.alert('Desk created', 'Do you want create Cards in this Desk?', [
+                {
+                  text: 'Yes',
+                  onPress: () => {
+                    setCreateType('card');
+                    setSETID(SETID);
+                    setDESKTITLE(DESKTITLE);
+                  },
+                },
+                {
+                  text: 'No',
+                  onPress: () => {
+                    setCreateType('chosing');
+                    cancelPress();
+                  },
+                }
+              ]) : null
+            });
           }
         }
       )
@@ -81,10 +114,53 @@ export default function Add() {
   }
 
   const saveSet = () => {
-    if (SETID !== null) {
-      // let newSet: SetFormat = {
-      // }
+    if (CreateSETNAME.trim().length > 0) {
+      if (!CURRENT_SETS.userInfo) {
+        Alert.alert('Error', 'User information is missing');
+        return;
+      }
+      let newSet: SetFormat = {
+        id: Date.now().toString(),
+        name: CreateSETNAME,
+        author: CURRENT_SETS.userInfo as UserFormat,
+        description: CreateSETDESCRIPTION,
+        category: CreateSETCATEGORY,
+        rate: { star: 0, total: 0 },
+        private: CreateSETPRIVATE,
+        isSaved: false,
+        numberOfSaved: 0,
+        isDone: false,
+        deskList: [],
+      }
+      createSetFnc(newSet, setAsCurrent, null).then(() => {
+        Alert.alert('Set created', 'Do you want to add a desk to this set?', [
+          {
+            text: 'Yes',
+            onPress: () => {
+              setCreateType('desk');
+              setSETID(newSet.id);
+              setSetName(newSet.name);
+            },
+          },
+          {
+            text: 'No',
+            onPress: () => {
+              setCreateType('chosing');
+              cancelPress();
+            },
+          }
+        ]);
+        setCreateSETNAME('');
+        setCreateSETDESCRIPTION('');
+        setCreateSETCATEGORY('');
+        setCreateSETPRIVATE(false);
+      });
+    } else {
+      Alert.alert('Error', 'Please fill in the set name');
     }
+  }
+
+  const saveFolder = () => {
   }
 
   useEffect(() => {
@@ -127,6 +203,8 @@ export default function Add() {
         setSetName(CURRENT_SETS.addSetID ? CURRENT_SETS.all.find((set) => set.id === CURRENT_SETS.addSetID)?.name as string : '')
       } else if (CURRENT_SETS.addType === 'set') {
         setCreateType('set')
+      } else if (CURRENT_SETS.addType === 'folder') {
+        setCreateType('folder')
       }
     });
     return unsubscribe;
@@ -321,7 +399,69 @@ export default function Add() {
           </ViewColCenter>
         )
       case 'set':
-        break;
+        return (
+          <ViewColCenter customStyle={[styles.flex1, styles.gap6vw]}>
+            <Card2lineInput
+              text1='Set Title'
+              value2={CreateSETNAME as string}
+              onChangeText2={(text: string) => setCreateSETNAME(text)}
+              textColor1={clrStyle.neu5}
+              textColor2={clrStyle.black}
+              borderClr={clrStyle.neu6}
+              border
+              placeholder2='Max 100 characters'
+              isEdit={true}
+            />
+            <Card2lineInput
+              text1='Description'
+              value2={CreateSETDESCRIPTION as string}
+              onChangeText2={(text: string) => setCreateSETDESCRIPTION(text)}
+              textColor1={clrStyle.neu5}
+              textColor2={clrStyle.black}
+              borderClr={clrStyle.neu6}
+              border
+              placeholder2='Max 100 characters'
+              isEdit={true}
+            />
+            <Card2lineInput
+              text1='Category'
+              value2={CreateSETCATEGORY as string}
+              onChangeText2={(text: string) => setCreateSETCATEGORY(text)}
+              textColor1={clrStyle.neu5}
+              textColor2={clrStyle.black}
+              borderClr={clrStyle.neu6}
+              border
+              placeholder2='Max 100 characters'
+              isEdit={true}
+            />
+            <TouchableOpacity
+              onPress={() => setCreateSETPRIVATE(!CreateSETPRIVATE)}
+              style={[styles.padding2vw]}
+            >
+              <ViewRow>
+                {CreateSETPRIVATE ? checkIcon(vw(6), vw(6), clrStyle.you) : unCheckIcon(vw(6), vw(6), clrStyle.neu5)}
+                <Lex16RegAuto style={{ color: clrStyle.neu5 }}> Make this Set PRIVATE</Lex16RegAuto>
+              </ViewRow>
+            </TouchableOpacity>
+          </ViewColCenter>
+        )
+      case 'folder':
+        return (
+          <ViewColCenter customStyle={[styles.flex1, styles.gap6vw]}>
+            <Card2lineInput
+              text1='Folder Title'
+              value2={CreateSETNAME as string}
+              onChangeText2={(text: string) => setCreateSETNAME(text)}
+              textColor1={clrStyle.neu5}
+              textColor2={clrStyle.black}
+              borderClr={clrStyle.neu6}
+              border
+              placeholder2='Max 100 characters'
+              isEdit={true}
+            />
+          </ViewColCenter>
+        )
+
       default:
         return (
           <ViewColCenter customStyle={[styles.flex1, styles.paddingV8vw, styles.gap8vw]}>
@@ -346,6 +486,13 @@ export default function Add() {
               textClass={Lex18RegAuto}
               customStyle={[styles.paddingV6vw, styles.w60vw]}
             />
+            <RoundBtn
+              title='Create new Folder'
+              onPress={() => setCreateType('folder')}
+              bgColor={clrStyle.pur1}
+              textClass={Lex18RegAuto}
+              customStyle={[styles.paddingV6vw, styles.w60vw]}
+            />
           </ViewColCenter>
         )
     }
@@ -361,7 +508,7 @@ export default function Add() {
         title={createType == 'chosing' ? ' Create new' : createType == 'card' ? 'Create Card' : createType == 'desk' ? 'Create Desk' : 'Create Set'}
         textColor='white'
         leftText={createType == 'chosing' ? '' : 'Cancel'}
-        leftFnc={() => { setCreateType('chosing'); setSetSearch(''); setDeskSearch(''); setCardSearch(''); setSetName(''); setSETID(null); setDESKTITLE(null); setCurrentFront(''); setCurrentBack(''); setImage(null); setDeskRepeat(['all']) }}
+        leftFnc={cancelPress}
         rightText={createType == 'chosing' ? '' : 'Done'}
         rightFnc={() => { createType == 'card' ? saveCard() : createType == 'desk' ? saveDesk() : saveSet() }}
         sideColor={clrStyle.neu5}

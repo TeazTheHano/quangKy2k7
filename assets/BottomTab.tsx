@@ -1,5 +1,5 @@
 // system imports
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { createBottomTabNavigator, BottomTabBar } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 
@@ -15,14 +15,19 @@ import Add from '../screens/Add';
 import { AddIcon, AddIconInactive, HomeIcon, HomeIconInactive, LibraryIcon, LibraryIconInactive, NewFeedIcon, NewFeedIconInactive, SettingIcon, SettingIconInactive } from './svgXml';
 import { Platform } from 'react-native';
 import { getUser } from '../data/storageFunc';
+import { RootContext, saveUserInfo } from '../data/store';
 
 // ____________________END OF IMPORT_______________________
 
 export default function BottomTab() {
     const navigation = useNavigation()
+    const [CURRENT_SETS, dispatch] = useContext(RootContext);
     useEffect(() => {
         getUser().then((user) => {
-            if (!user) {
+            if (user) {
+                dispatch(saveUserInfo(user))
+            }
+            else {
                 return navigation.navigate('OnBoarding' as never)
             }
         })
@@ -33,6 +38,7 @@ export default function BottomTab() {
             tabBar={props => <BottomTabBar {...props} />}
             screenOptions={{
                 headerShown: false,
+                tabBarHideOnKeyboard: true,
                 tabBarShowLabel: false,
                 tabBarStyle: {
                     height: Platform.OS === 'android' ? vh(7) : vh(8),

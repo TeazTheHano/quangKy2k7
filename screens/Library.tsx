@@ -3,12 +3,13 @@ import React, { useEffect } from 'react'
 import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex16RegAuto, Lex20RegAuto, SaveViewWithColorStatusBar, SearchBox, SSBar, TopNav2, TopNavLib, ViewRowBetweenCenter, ViewRowCenter, ViewRowStartCenter } from '../assets/Class'
 import styles, { vh, vw } from '../assets/stylesheet'
 import { adjustIcon, lockIcon, notiBellIcon, peopleIcon, savedIcon, searchIcon, sharpLeftArrow, sharpRightArrow, unSavedIcon, xIcon } from '../assets/svgXml'
-import { RootContext, setAsCurrent } from '../data/store'
+import { currentOverwriteFolderList, RootContext, setAsCurrent } from '../data/store'
 import clrStyle from '../assets/componentStyleSheet'
 import { useNavigation } from '@react-navigation/native'
 import { SvgXml } from 'react-native-svg'
 import { handlePressSaveWithSetID, imgSourceHandle, marginBottomForScrollView, searchEngine, showRateStar, showSetCard } from '../assets/component'
-import { SetFormat } from '../data/data'
+import { FolderFormat, SetFormat } from '../data/data'
+import { getAllFoldersFnc } from '../data/storageFunc'
 
 export default function Library() {
   const navigation = useNavigation()
@@ -20,9 +21,7 @@ export default function Library() {
   const [topRatedSets, setTopRatedSets] = React.useState<SetFormat[]>([])
   const [topRatedSetsSaved, setTopRatedSetsSaved] = React.useState<boolean[]>([])
 
-  const [languageSetIDs, setLanguageSetIDs] = React.useState<string[]>([])
-  const [scienceSetIDs, setScienceSetIDs] = React.useState<string[]>([])
-  const [professionSetIDs, setProfessionSetIDs] = React.useState<string[]>([])
+  const [folderList, setFolderList] = React.useState<FolderFormat[]>([])
 
   useEffect(() => {
     const unSubscribe = navigation.addListener('focus', () => {
@@ -31,7 +30,6 @@ export default function Library() {
     return unSubscribe
 
   }, [navigation])
-
 
   useEffect(() => {
     let savedList: boolean[] = []
@@ -45,10 +43,8 @@ export default function Library() {
 
   function fetchData() {
     setTopRatedSets([])
-    setLanguageSetIDs([])
-    setScienceSetIDs([])
-    setProfessionSetIDs([])
     setTopRatedSetsSaved([])
+    setFolderList(CURRENT_SETS.folderList ? CURRENT_SETS.folderList : [])
     CURRENT_SETS.all.forEach((set) => {
       console.log('focus');
 
@@ -57,15 +53,6 @@ export default function Library() {
           const newTopRatedSets = [...prev, set].sort((a, b) => b.rate.star - a.rate.star)
           return newTopRatedSets
         })
-      }
-      if (set.category === 'Language') {
-        setLanguageSetIDs((prev) => [...prev, set.id])
-      }
-      if (set.category === 'Science') {
-        setScienceSetIDs((prev) => [...prev, set.id])
-      }
-      if (set.category === 'Profession') {
-        setProfessionSetIDs((prev) => [...prev, set.id])
       }
     })
   }
@@ -77,6 +64,9 @@ export default function Library() {
         index: 0,
         routes: [{ name: 'Library' as never }]
       })
+      getAllFoldersFnc().then((folders) => {
+        dispatch(currentOverwriteFolderList(folders ? folders : []))
+      })
       setRefreshing(false)
     }, 1000)
   }
@@ -84,7 +74,7 @@ export default function Library() {
 
   class TitleView extends React.Component<{
     title: string
-    icon: string
+    icon?: string
     onPress: () => void
     customStyle?: any
   }> {
@@ -92,7 +82,7 @@ export default function Library() {
       return (
         <ViewRowBetweenCenter customStyle={[styles.w100, styles.gap3vw, this.props.customStyle]}>
           <ViewRowStartCenter customStyle={[styles.gap1vw]}>
-            <SvgXml xml={this.props.icon} />
+            {this.props.icon ? <SvgXml xml={this.props.icon} /> : null}
             <Lex20RegAuto style={[{ color: clrStyle.black }]}>{this.props.title}</Lex20RegAuto>
           </ViewRowStartCenter>
           <TouchableOpacity onPress={this.props.onPress}>
@@ -185,6 +175,25 @@ export default function Library() {
     }
   }
 
+  function renderFolder() {
+    if (folderList.length > 0) {
+      folderList.map((folder, index) => {
+        return (
+          <>
+            <TitleView
+              customStyle={[styles.paddingH6vw, styles.paddingV2vw]}
+              title={folder.name}
+              onPress={() => { }}
+            />
+
+          </>
+        )
+      })
+    } else {
+      return <Lex16RegAuto style={[styles.padding6vw]}>No user folders found</Lex16RegAuto>
+    }
+  }
+
   useEffect(() => {
     if (searchContent) {
       searchEngine(searchContent, CURRENT_SETS.public, 'set').then((result) => {
@@ -224,7 +233,7 @@ export default function Library() {
               {xIcon(vw(5), vw(5), clrStyle.black)}
             </TouchableOpacity>
           </ViewRowBetweenCenter> */}
-          <SearchBox 
+          <SearchBox
             value={searchContent}
             onChangeText={(text) => setSearchContent(text as string)}
             onClear={() => setSearchContent('')}
@@ -253,6 +262,7 @@ export default function Library() {
               onPress={() => { }} />
             {showSetCard2(topRatedSets, topRatedSetsSaved, setTopRatedSetsSaved)}
           </>}
+        {renderFolder()}
         {marginBottomForScrollView(2)}
       </ScrollView>
     </SSBar>

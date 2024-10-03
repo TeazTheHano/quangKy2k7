@@ -44,6 +44,11 @@ export interface SetFormat {
     // inner set view: card need today / card all time / desk completed
 }
 
+export interface FolderFormat {
+    name: string;
+    setListIDs: string[];
+}
+
 export const setList: SetFormat[] = [
 ]
 

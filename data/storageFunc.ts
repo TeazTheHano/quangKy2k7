@@ -2,7 +2,7 @@ import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { Alert } from 'react-native';
-import { Card, Desk, SetFormat, setList, UserFormat } from './data';
+import { Card, Desk, FolderFormat, SetFormat, setList, UserFormat } from './data';
 import { demoSets } from './factoryData';
 import { useContext } from 'react';
 import { CURRENT_SET_PUBLIC, RootContext } from './store';
@@ -616,3 +616,111 @@ export const createDeskFnc = async (
     return false;
   }
 };
+
+export const createFolderFnc = async (
+  data: FolderFormat,
+  fncDispatchSetCurrent: any,
+  goBack?: any,
+) => {
+  try {
+    const exists = await getFolderWithIDFnc(data.name);
+    if (exists) {
+      Alert.alert('Folder already exists', 'Please choose another name');
+      return false;
+    } else {
+      await storage.save({
+        key: 'folder',
+        id: data.name,
+        data: data,
+      });
+      const ret = await getFolderWithIDFnc(data.name);
+      if (ret) {
+        fncDispatchSetCurrent(ret);
+        if (goBack) goBack();
+        return true;
+      } else {
+        return false;
+      }
+    }
+  } catch (error) {
+    Alert.alert('Error', 'Failed to create folder');
+    return false;
+  }
+}
+
+export const getFolderWithIDFnc = async (id: string) => {
+  try {
+    const ret = await storage.load({
+      key: 'folder',
+      id: id,
+    });
+    return ret;
+  } catch (error) {
+    return false;
+  }
+}
+
+export const getAllFoldersFnc = async () => {
+  try {
+    const ret = await storage.getAllDataForKey('folder');
+    return ret;
+  } catch (error) {
+    return false;
+  }
+}
+
+export const removeFolderFnc = async (id: string) => {
+  try {
+    await storage.remove({
+      key: 'folder',
+      id: id,
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+export const editFolderFnc = async (id: string, data: FolderFormat, fncDispatchSetCurrent: any, goBack?: any) => {
+  try {
+    await storage.save({
+      key: 'folder',
+      id: id,
+      data: data,
+    });
+    const ret = await getFolderWithIDFnc(id);
+    if (ret) {
+      fncDispatchSetCurrent(ret);
+      if (goBack) goBack();
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    Alert.alert('Error', 'Failed to edit folder');
+    return false;
+  }
+}
+
+export const createSetFnc = async (data: SetFormat, fncDispatchSetCurrent: any, goBack?: any) => {
+  try {
+    let exists = await getSetWithID(data.id);
+    if (exists) {
+      Alert.alert('Set already exists', 'Please choose another name');
+      return false;
+    } else {
+      await saveSetWithID(data);
+      const ret = await getSetWithID(data.id);
+      if (ret) {
+        fncDispatchSetCurrent(ret);
+        if (goBack) goBack();
+        return true;
+      } else {
+        return false;
+      }
+    }
+  } catch (error) {
+    Alert.alert('Error', 'Failed to create set');
+    return false;
+  }
+}

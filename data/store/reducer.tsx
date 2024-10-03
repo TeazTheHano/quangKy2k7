@@ -1,6 +1,6 @@
 //FIXME: NEED CHANGE IN NEW PJ: Add action types and action creators here
 
-import { Desk, SetFormat, UserFormat } from "../data";
+import { Desk, FolderFormat, SetFormat, UserFormat } from "../data";
 import {
     initialState, Action,
     CurrentSets,
@@ -34,7 +34,10 @@ import {
     CURRENT_CLEAR_RE_SAVED,
     CURRENT_SAVE_ADD_TYPE,
     CURRENT_SAVE_ADD_SETID,
-    CURRENT_SAVE_ADD_DESKTITLE
+    CURRENT_SAVE_ADD_DESKTITLE,
+    CURRENT_ADD_TO_FOLDER_LIST,
+    CURRENT_OVERWRITE_FOLDER_LIST,
+    CURRENT_REMOVE_FROM_FOLDER_LIST
 } from "./index";
 
 export default function setReducer(state = initialState, action: Action): CurrentSets {
@@ -43,7 +46,7 @@ export default function setReducer(state = initialState, action: Action): Curren
         case CURRENT_SAVE_THE_SET:
             return {
                 ...state,
-                saved: Array.isArray(action.payload) ? [...state.saved, ...action.payload] : [...state.saved, action.payload as SetFormat]
+                saved: Array.isArray(action.payload) ? [...state.saved, ...(action.payload as SetFormat[])] : [...state.saved, action.payload as SetFormat]
             };
         case CURRENT_UNSAVE_THE_SET:
             return {
@@ -63,22 +66,22 @@ export default function setReducer(state = initialState, action: Action): Curren
         case CURRENT_SET_PUBLIC:
             return {
                 ...state,
-                public: [...state.public, ...(Array.isArray(action.payload) ? action.payload : [action.payload as SetFormat])]
+                public: [...state.public, ...(Array.isArray(action.payload) ? (action.payload as SetFormat[]) : [action.payload as SetFormat])]
             };
         case CURRENT_SET_PRIVATE:
             return {
                 ...state,
-                private: [...state.private, ...(Array.isArray(action.payload) ? action.payload : [action.payload as SetFormat])]
+                private: [...state.private, ...(Array.isArray(action.payload) ? action.payload as SetFormat[] : [action.payload as SetFormat])]
             };
         case CURRENT_SET_DONE:
             return {
                 ...state,
-                done: Array.isArray(action.payload) ? [...state.done, ...action.payload] : [...state.done, action.payload as SetFormat]
+                done: Array.isArray(action.payload) ? [...state.done, ...(action.payload as SetFormat[])] : [...state.done, action.payload as SetFormat]
             };
         case CURRENT_SET_SAVED:
             return {
                 ...state,
-                saved: Array.isArray(action.payload) ? action.payload : [action.payload as SetFormat]
+                saved: Array.isArray(action.payload) ? (action.payload as SetFormat[]) : [action.payload as SetFormat]
             };
         case SAVE_USER_INFO:
             return {
@@ -88,7 +91,7 @@ export default function setReducer(state = initialState, action: Action): Curren
         case CURRENT_SET_ALL_SET:
             return {
                 ...state,
-                all: Array.isArray(action.payload) ? action.payload : [action.payload as SetFormat]
+                all: Array.isArray(action.payload) ? (action.payload as SetFormat[]) : [action.payload as SetFormat]
             };
         case CURRENT_CLEAR_ALL_SET:
             return {
@@ -201,6 +204,21 @@ export default function setReducer(state = initialState, action: Action): Curren
             return {
                 ...state,
                 addDeskTitle: action.payload as string
+            }
+        case CURRENT_OVERWRITE_FOLDER_LIST:
+            return {
+                ...state,
+                folderList: action.payload as FolderFormat[]
+            }
+        case CURRENT_ADD_TO_FOLDER_LIST:
+            return {
+                ...state,
+                folderList: [...state.folderList as FolderFormat[], ...(action.payload as FolderFormat[])]
+            }
+        case CURRENT_REMOVE_FROM_FOLDER_LIST:
+            return {
+                ...state,
+                folderList: (state.folderList as FolderFormat[]).filter(item => item !== action.payload)
             }
         default:
             return state;

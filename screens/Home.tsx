@@ -45,11 +45,6 @@ const Home = () => {
                     const res = await weeklyProgressData();
                     setCheckInData(res);
                     weeklyFnc(res);
-                    getUser().then((user) => {
-                        if (user !== false && user.email) {
-                            dispatch(saveUserInfo(user));
-                        }
-                    })
                     getAndAlignData();
                 } catch (error) {
                     console.log(error);
