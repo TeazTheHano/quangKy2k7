@@ -88,7 +88,7 @@ export default function SetView() {
 
             return (
               <TouchableOpacity
-                onPress={() => { navigation.navigate('DeskView'); dispatch(currentSetCurrentDesk(desk)) }}
+                onPress={() => { navigation.navigate('DeskView' as never); dispatch(currentSetCurrentDesk(desk)) }}
                 key={index} style={[styles.flexColStartCenter, styles.borderRadius10, styles.positionRelative, styles.marginTop4vw, { width: vw(40), height: vw(50), backgroundColor: bgColor, }]}>
                 {/* head */}
                 <View style={[styles.positionAbsolute, { top: -vw(4) }]}>
@@ -120,7 +120,7 @@ export default function SetView() {
               onPress={() => {
                 dispatch(currentSaveAddType('desk'))
                 dispatch(currentSaveAddSetID(theSet.id))
-                navigation.navigate('BottomTab', { screen: 'Add' })
+                navigation.navigate('BottomTab', { screen: 'Add', params: { addType: 'desk' } })
               }}
               style={[styles.flexColCenter, styles.borderRadius10, styles.positionRelative, { width: vw(40), height: vw(50), borderWidth: 2, borderColor: clrStyle.neu6 }]}>
               <Lex16RegAuto style={[styles.textCenter, styles.positionAbsolute, styles.top4vw, styles.w70]}>Create a new desk</Lex16RegAuto>

@@ -30,6 +30,7 @@ export interface SetFormat {
     author: UserFormat;
     description: string;
     category?: string;
+    inFolderIDs?: string[];
     rate: {
         star: number;
         total: number;
