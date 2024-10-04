@@ -1,4 +1,4 @@
-import { Image, ImageStyle, Platform, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, ImageStyle, Platform, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex16RegAuto, Lex20RegAuto, SaveViewWithColorStatusBar, SearchBox, SSBar, TopNav2, TopNavLib, ViewRowBetweenCenter, ViewRowCenter, ViewRowStartCenter } from '../assets/Class'
 import styles, { vh, vw } from '../assets/stylesheet'
@@ -7,7 +7,7 @@ import { currentOverwriteFolderList, RootContext, setAsCurrent } from '../data/s
 import clrStyle from '../assets/componentStyleSheet'
 import { useNavigation } from '@react-navigation/native'
 import { SvgXml } from 'react-native-svg'
-import { handlePressSaveWithSetID, imgSourceHandle, marginBottomForScrollView, searchEngine, showRateStar, showSetCard } from '../assets/component'
+import { handlePressSaveWithSetID, imgSourceHandle, marginBottomForScrollView, searchEngine, showRateStar, showSetCard, showSetCardGray } from '../assets/component'
 import { FolderFormat, SetFormat } from '../data/data'
 import { getAllFoldersFnc } from '../data/storageFunc'
 
@@ -37,22 +37,30 @@ export default function Library() {
       set.isSaved ? savedList.push(true) : savedList.push(false)
     })
     setTopRatedSetsSaved(savedList)
-    console.log('topRatedSetsSaved', topRatedSetsSaved);
+    // console.log('topRatedSetsSaved', topRatedSetsSaved);
 
   }, [topRatedSets])
 
-  function fetchData() {
+  const fetchData = async function () {
     setTopRatedSets([])
+    await loadFolder()
     setTopRatedSetsSaved([])
-    setFolderList(CURRENT_SETS.folderList ? CURRENT_SETS.folderList : [])
+    // setFolderList(CURRENT_SETS.folderList ? CURRENT_SETS.folderList : [])
     CURRENT_SETS.all.forEach((set) => {
-      console.log('focus');
-
       if (set.rate.star >= 4 && set.rate.total >= 10 && set.private === false) {
         setTopRatedSets((prev) => {
           const newTopRatedSets = [...prev, set].sort((a, b) => b.rate.star - a.rate.star)
           return newTopRatedSets
         })
+      }
+    })
+  }
+
+  const loadFolder = async function () {
+    await getAllFoldersFnc().then((folders) => {
+      if (folders) {
+        dispatch(currentOverwriteFolderList(folders))
+        setFolderList(folders)
       }
     })
   }
@@ -64,9 +72,7 @@ export default function Library() {
         index: 0,
         routes: [{ name: 'Library' as never }]
       })
-      getAllFoldersFnc().then((folders) => {
-        dispatch(currentOverwriteFolderList(folders ? folders : []))
-      })
+      loadFolder()
       setRefreshing(false)
     }, 1000)
   }
@@ -177,18 +183,26 @@ export default function Library() {
 
   function renderFolder() {
     if (folderList.length > 0) {
-      folderList.map((folder, index) => {
-        return (
-          <>
-            <TitleView
-              customStyle={[styles.paddingH6vw, styles.paddingV2vw]}
-              title={folder.name}
-              onPress={() => { }}
-            />
 
-          </>
-        )
-      })
+      return (
+        <View style={[styles.flex1]}>
+          {folderList.map((folder, index) => {
+            return (
+              <View key={index}>
+                <TitleView
+                  customStyle={[styles.paddingH6vw, styles.paddingV2vw]}
+                  title={folder.name}
+                  onPress={() => { }}
+                />
+                {/* <FlatList
+                  data={folder}
+                  keyExtractor={item => item.name}
+                /> */}
+              </View>
+            )
+          })}
+        </View>
+      )
     } else {
       return <Lex16RegAuto style={[styles.padding6vw]}>No user folders found</Lex16RegAuto>
     }
@@ -203,6 +217,14 @@ export default function Library() {
       setSearchResult([])
     }
   }, [searchContent])
+
+  function disFnc(item: SetFormat) {
+    dispatch(setAsCurrent(item))
+  }
+
+  function na1() {
+    navigation.navigate('SetView' as never)
+  }
 
   return (
     <SSBar trans barColor={'rgba(0,0,0,0)'} barContentStyle='dark-content' notMargin>
@@ -261,6 +283,7 @@ export default function Library() {
               title='Top Rated Set'
               onPress={() => { }} />
             {showSetCard2(topRatedSets, topRatedSetsSaved, setTopRatedSetsSaved)}
+            {/* {showSetCardGray(topRatedSets, topRatedSetsSaved, setTopRatedSetsSaved, disFnc, na1)} */}
           </>}
         {renderFolder()}
         {marginBottomForScrollView(2)}

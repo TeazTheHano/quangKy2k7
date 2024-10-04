@@ -39,6 +39,7 @@ export interface SetFormat {
     isSaved: boolean;
     numberOfSaved: number;
     isDone: boolean;
+    isAddedToLibrary?: boolean;
     deskList: Desk[];
     // desk.length
     // card need memorize progress
@@ -48,6 +49,7 @@ export interface SetFormat {
 export interface FolderFormat {
     name: string;
     setListIDs: string[];
+    category: string[];
 }
 
 export const setList: SetFormat[] = [

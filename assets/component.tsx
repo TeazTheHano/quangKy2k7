@@ -1,6 +1,6 @@
 // system imports
 import React, { Component, ComponentType, ReactElement, ReactNode, useContext, useEffect, useRef, useState } from "react";
-import { Text, View, TextInput, TouchableOpacity, Image, FlatList, ImageBackground, Alert, Share, StatusBar, ImageStyle, Platform, PermissionsAndroid } from "react-native";
+import { Text, View, TextInput, TouchableOpacity, Image, FlatList, ImageBackground, Alert, Share, StatusBar, ImageStyle, Platform, PermissionsAndroid, ScrollView } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { Dimensions } from "react-native";
 
@@ -12,7 +12,7 @@ import Svg, { SvgXml } from 'react-native-svg';
 // SVG import
 import { goldStar, lockIcon, noStar, peopleIcon, savedIcon, searchIcon, shareIcon, unSavedIcon, } from "./svgXml";
 import clrStyle, { componentStyle } from "./componentStyleSheet";
-import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex16RegAuto } from "./Class";
+import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex16RegAuto, Lex20RegAuto } from "./Class";
 
 // other import
 import * as Progress from 'react-native-progress';
@@ -420,4 +420,84 @@ export async function searchEngine(keyword: string, dataBank: SetFormat[] | Desk
     }
 
     return result;
+}
+
+export function showSetCardGray(DATA: SetFormat[], IS_SETS_SAVE: boolean[], chane_IS_SETS_SAVE_fnc: any, dispatchFnc: (item: any) => void, navigateFnc: () => void, otherFnc?: () => void) {
+    if (DATA.length > 0) {
+        return (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {
+                    DATA.map((set: SetFormat, index: number) => {
+                        let DESK_NUMBER: number = set.deskList.length
+                        let TOTAL_CARD_NEED_MEMORIZED_NUMBER: number = set.deskList.map((item: any) => item.cardList.length).reduce((a: number, b: number) => a + b)
+                        let MEMORIZED_CARD_NUMBER: number = set.deskList.map((item: any) => item.cardList.filter((item: any) => item.memorized).length).reduce((a: number, b: number) => a + b)
+                        let TOTAL_CARD: number = set.deskList.map((item: any) => item.cardList.length).reduce((a: number, b: number) => a + b)
+                        let SET_TITLE: string = set.name
+                        let CATEGORY: string = set.category ? set.category : ''
+                        let NEED_REPEAT_CARD_NUMBER: number = set.deskList.map((item: any) => item.cardList.filter((item: any) => item.repeatToday).length).reduce((a: number, b: number) => a + b)
+                        let AUTHOR: string = set.author.name
+                        let AUTHOR_IMG_ADDRESS: string = set.author.imgAddress
+                        let STAR_RATE: number = set.rate.star
+                        let TOTAL_RATE: number = set.rate.total
+                        let PUBLIC_SET: boolean = set.private
+                        let SAVED_NUMBER: number = set.numberOfSaved
+                        let IS_SAVED: boolean = IS_SETS_SAVE[index] ? IS_SETS_SAVE[index] : false
+
+                        return (
+                            <TouchableOpacity key={index}
+                                style={{ marginLeft: index == 0 ? vw(6) : 0, marginRight: vw(6) }}
+                                onPress={() => {
+                                    otherFnc ? otherFnc() : null
+                                    dispatchFnc(set);
+                                    navigateFnc()
+                                }}>
+                                <View style={[styles.flexRowStartCenter, styles.gap1vw, styles.wfit, styles.paddingH4vw, styles.paddingV2vw, { backgroundColor: '#4F4F4F', borderTopLeftRadius: vw(4), borderTopRightRadius: vw(4), transform: [{ translateY: 1 }] }]}>
+                                    <Lex12BoldAuto style={{ color: clrStyle.white }}>{DESK_NUMBER} {DESK_NUMBER > 1 ? 'desks' : 'desk'}:</Lex12BoldAuto>
+                                    <Lex12RegAuto style={{ color: clrStyle.green }}> {TOTAL_CARD}</Lex12RegAuto>
+                                    <Lex12RegAuto style={{ color: clrStyle.green }}>{TOTAL_CARD > 1 ? 'cards' : 'card'}</Lex12RegAuto>
+                                </View>
+                                <View style={[styles.w60vw, { backgroundColor: '#4F4F4F', borderRadius: vw(4), borderTopLeftRadius: 0 }]}>
+                                    <View style={[styles.padding4vw, styles.flexCol, styles.justifyContentSpaceBetween, styles.gap2vw, styles.w100, { backgroundColor: clrStyle.neu1, borderRadius: vw(4) }]}>
+                                        <Text numberOfLines={1} style={{ fontFamily: 'LexendDeca-Black', fontSize: vw(4), color: clrStyle.white }}>{SET_TITLE}</Text>
+                                        {/* <Lex10RegAuto lineNum={1} style={{ color: CATEGORY ? clrStyle.neu1 : clrStyle.neu3 }}>{CATEGORY ? CATEGORY : 'Genaral'}</Lex10RegAuto> */}
+                                        <View style={[styles.flexRowBetweenCenter,]}>
+                                            <View style={[styles.flexRowStartCenter, styles.gap2vw]}>
+                                                <Image
+                                                    source={imgSourceHandle(AUTHOR_IMG_ADDRESS)}
+                                                    style={[styles.borderRadius100, { width: vw(7), height: vw(7) }] as ImageStyle}
+                                                />
+                                                <View>
+                                                    <Lex10RegAuto style={{ color: clrStyle.white }}>{AUTHOR}</Lex10RegAuto>
+                                                    <View style={[styles.flexRowStartCenter, styles.marginTop1vw, { gap: vw(0.25) }]}>
+                                                        {showRateStar(STAR_RATE)}
+                                                        <Lex10RegAuto style={{ color: clrStyle.white }}> ({TOTAL_RATE})</Lex10RegAuto>
+                                                    </View>
+                                                </View>
+                                            </View>
+
+                                            <View style={[styles.flexRowStartCenter, styles.gap4vw]}>
+
+                                                <View style={[styles.flexRowStartCenter, styles.gap1vw]}>
+                                                    <Lex10RegAuto style={{ color: clrStyle.white }}>{SAVED_NUMBER} saved</Lex10RegAuto>
+                                                    <TouchableOpacity
+                                                        onPress={() => { handlePressSaveWithSetID(set, IS_SETS_SAVE, chane_IS_SETS_SAVE_fnc, index) }}
+                                                    >
+                                                        {IS_SAVED ? savedIcon(vw(4.5), vw(4.5), clrStyle.white) : unSavedIcon(vw(4.5), vw(4.5), clrStyle.white)}
+                                                    </TouchableOpacity>
+                                                </View>
+
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        )
+                    })
+                }
+
+            </ ScrollView>
+        )
+    } else {
+        return <Lex20RegAuto>No set found</Lex20RegAuto>
+    }
 }

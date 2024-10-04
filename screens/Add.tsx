@@ -48,6 +48,7 @@ export default function Add({ routes }: any) {
   // folder_input
   const [CreateFolderName, setCreateFolderName] = useState<string>('')
   const [CreateFolderSetList, setCreateFolderSetList] = useState<string[]>([])
+  const [CreateFolderCategory, setCreateFolderCategory] = useState<string[]>([])
   // end of folder_input
 
   const [setSearch, setSetSearch] = useState<string>('')
@@ -59,7 +60,7 @@ export default function Add({ routes }: any) {
   const [cardSearchResult, setCardSearchResult] = useState<Card[]>([])
 
   function cancelPress() {
-    setCreateType('chosing'); setSetSearch(''); setDeskSearch(''); setCardSearch(''); setSetName(''); setSETID(null); setDESKTITLE(null); setCurrentFront(''); setCurrentBack(''); setImage(null); setDeskRepeat(['all']); setCreateSETNAME(''); setCreateSETDESCRIPTION(''); setCreateSETCATEGORY(''); setCreateSETPRIVATE(false)
+    setCreateType('chosing'); setSetSearch(''); setDeskSearch(''); setCardSearch(''); setSetName(''); setSETID(null); setDESKTITLE(null); setCurrentFront(''); setCurrentBack(''); setImage(null); setDeskRepeat(['all']); setCreateSETNAME(''); setCreateSETDESCRIPTION(''); setCreateSETCATEGORY(''); setCreateSETPRIVATE(false); setCreateFolderName(''); setCreateFolderSetList([]); setCreateFolderCategory([]); setCreateSETinFOLDERNAMES([]); setCardItem(null); setCardSearchResult([]); setDESKLIST([]); setSetSearchResult([]); setDeskSearchResult([]);
   }
   function donePress() {
     switch (createType) {
@@ -189,6 +190,7 @@ export default function Add({ routes }: any) {
   const saveFolder = () => {
     let folder: FolderFormat = {
       name: CreateFolderName,
+      category: CreateFolderCategory,
       setListIDs: CreateFolderSetList,
     }
     createFolderFnc(folder, currentAddToFolderList).then(() => {
@@ -204,7 +206,7 @@ export default function Add({ routes }: any) {
         <Card2lineInput
           text1='Set Title'
           value2={CreateSETNAME as string}
-          onChangeText2={(text: string) => setCreateSETNAME(text)}
+          onChangeText2={(text: string) => setCreateSETNAME(text.trim())}
           textColor1={clrStyle.neu5}
           textColor2={clrStyle.black}
           borderClr={clrStyle.neu6}
@@ -215,7 +217,7 @@ export default function Add({ routes }: any) {
         <Card2lineInput
           text1='Description'
           value2={CreateSETDESCRIPTION as string}
-          onChangeText2={(text: string) => setCreateSETDESCRIPTION(text)}
+          onChangeText2={(text: string) => setCreateSETDESCRIPTION(text.trim())}
           textColor1={clrStyle.neu5}
           textColor2={clrStyle.black}
           borderClr={clrStyle.neu6}
@@ -226,7 +228,7 @@ export default function Add({ routes }: any) {
         <Card2lineInput
           text1='Category'
           value2={CreateSETCATEGORY as string}
-          onChangeText2={(text: string) => setCreateSETCATEGORY(text)}
+          onChangeText2={(text: string) => setCreateSETCATEGORY(text.trim())}
           textColor1={clrStyle.neu5}
           textColor2={clrStyle.black}
           borderClr={clrStyle.neu6}
@@ -234,7 +236,7 @@ export default function Add({ routes }: any) {
           placeholder2='Max 100 characters'
           isEdit={true}
         />
-        
+
         <TouchableOpacity
           onPress={() => setCreateSETPRIVATE(!CreateSETPRIVATE)}
           style={[styles.padding2vw]}
@@ -372,7 +374,7 @@ export default function Add({ routes }: any) {
             <Card2lineInput
               text1='Frontside'
               value2={currentFront}
-              onChangeText2={(text: string) => setCurrentFront(text)}
+              onChangeText2={(text: string) => setCurrentFront(text.trim())}
               textColor1={clrStyle.neu5}
               textColor2={clrStyle.black}
               borderClr={clrStyle.neu6}
@@ -385,7 +387,7 @@ export default function Add({ routes }: any) {
               text1='Backside'
               value2={currentBack}
               TextClass2={Lex16MedAuto}
-              onChangeText2={(text: string) => setCurrentBack(text)}
+              onChangeText2={(text: string) => setCurrentBack(text.trim())}
               textColor1={clrStyle.neu5}
               textColor2={clrStyle.black}
               border
@@ -450,7 +452,7 @@ export default function Add({ routes }: any) {
             <Card2lineInput
               text1='Desk Title'
               value2={DESKTITLE as string}
-              onChangeText2={(text: string) => setDESKTITLE(text)}
+              onChangeText2={(text: string) => setDESKTITLE(text.trim())}
               textColor1={clrStyle.neu5}
               textColor2={clrStyle.black}
               borderClr={clrStyle.neu6}
@@ -491,12 +493,23 @@ export default function Add({ routes }: any) {
             <Card2lineInput
               text1='Folder Title'
               value2={CreateFolderName as string}
-              onChangeText2={(text: string) => setCreateFolderName(text)}
+              onChangeText2={(text: string) => setCreateFolderName(text.trim())}
               textColor1={clrStyle.neu5}
               textColor2={clrStyle.black}
               borderClr={clrStyle.neu6}
               border
               placeholder2='Max 100 characters'
+              isEdit={true}
+            />
+            <Card2lineInput
+              text1='Folder Category'
+              value2={CreateFolderCategory.join(', ')}
+              onChangeText2={(text: string) => setCreateFolderCategory(text.split(',').map((item) => item.trim()))}
+              textColor1={clrStyle.neu5}
+              textColor2={clrStyle.black}
+              borderClr={clrStyle.neu6}
+              border
+              placeholder2='Ex: Math, Science, English'
               isEdit={true}
             />
             <View style={[styles.padding3vw, styles.flexRowBetweenCenter, styles.borderRadius2vw, { backgroundColor: clrStyle.white, borderWidth: 1, borderColor: clrStyle.neu3 }]}>
