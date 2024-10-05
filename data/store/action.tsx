@@ -47,6 +47,7 @@ export const CURRENT_SAVE_ADD_DESKTITLE = `CURRENT_SAVE_ADD_DESKTITLE`;
 export const CURRENT_ADD_TO_FOLDER_LIST = `CURRENT_ADD_TO_FOLDER_LIST`;
 export const CURRENT_REMOVE_FROM_FOLDER_LIST = `CURRENT_REMOVE_FROM_FOLDER_LIST`;
 export const CURRENT_OVERWRITE_FOLDER_LIST = `CURRENT_OVERWRITE_FOLDER_LIST`;
+export const CURRENT_EDIT_FOLDER_ITEM_IN_LIST = `CURRENT_EDIT_FOLDER_ITEM_IN_LIST`;
 
 export const saveTheSet = (item: SetFormat) => {
     return {
@@ -272,6 +273,13 @@ export const currentRemoveFromFolderList = (item: FolderFormat[]) => {
 }
 
 export const currentOverwriteFolderList = (item: FolderFormat[]) => {
+    return {
+        type: CURRENT_OVERWRITE_FOLDER_LIST,
+        payload: item
+    }
+}
+
+export const currentEditFolderItemInList = (item: FolderFormat) => {
     return {
         type: CURRENT_OVERWRITE_FOLDER_LIST,
         payload: item

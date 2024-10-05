@@ -3,13 +3,13 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Card2line, Card2lineInput, Card3lineInputImg, Lex14RegAuto, Lex16BoldAuto, Lex16MedAuto, Lex16RegAuto, Lex18RegAuto, Lex20RegAuto, RoundBtn, SearchBox, TopNav1, TopNav2, TopNav3, ViewCol, ViewColBetweenCenter, ViewColCenter, ViewRow, ViewRowBetweenCenter, ViewRowEvenlyCenter } from '../assets/Class'
 import styles, { vw } from '../assets/stylesheet'
 import { useNavigation } from '@react-navigation/native'
-import { currentAddToFolderList, RootContext, setAsCurrent } from '../data/store'
+import { currentAddToFolderList, currentEditFolderItemInList, RootContext, setAsCurrent } from '../data/store'
 import clrStyle from '../assets/componentStyleSheet'
-import { cardDeleteIcon, checkIcon, deskCardEditIcon, deskMiniBlackCheckIcon, deskNaviIcon, doneEditIcon, sharpLeftArrow, unCheckIcon } from '../assets/svgXml'
+import { cardDeleteIcon, checkIcon, deskCardEditIcon, deskMiniBlackCheckIcon, deskNaviIcon, doneEditIcon, sharpLeftArrow, unCheckIcon, xIcon } from '../assets/svgXml'
 import { marginBottomForScrollView, openCamera, openGallery, searchEngine } from '../assets/component'
 
 import { CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { createCardFnc, createDeskFnc, createFolderFnc, createSetFnc, editCardFnc, getSetWithID, removeCardFnc, removeCardInDesk, saveCardInDesk } from '../data/storageFunc'
+import { createCardFnc, createDeskFnc, createFolderFnc, createSetFnc, editCardFnc, editFolderFnc, getSetWithID, removeCardFnc, removeCardInDesk, saveCardInDesk } from '../data/storageFunc'
 import { Card, Desk, FolderFormat, SetFormat, UserFormat } from '../data/data'
 import { create } from 'react-test-renderer'
 
@@ -49,18 +49,22 @@ export default function Add({ routes }: any) {
   const [CreateFolderName, setCreateFolderName] = useState<string>('')
   const [CreateFolderSetList, setCreateFolderSetList] = useState<string[]>([])
   const [CreateFolderCategory, setCreateFolderCategory] = useState<string[]>([])
+  const [CreateFolderPhoto, setCreateFolderPhoto] = useState<string | null>(null)
   // end of folder_input
 
   const [setSearch, setSetSearch] = useState<string>('')
   const [deskSearch, setDeskSearch] = useState<string>('')
   const [cardSearch, setCardSearch] = useState<string>('')
+  const [folderSearch, setFolderSearch] = useState<string>('')
   const [setName, setSetName] = useState<string>('')
+  const [setFolderName, setSetFolderName] = useState<string[]>([])
   const [setSearchResult, setSetSearchResult] = useState<SetFormat[]>([])
   const [deskSearchResult, setDeskSearchResult] = useState<Desk[]>([])
   const [cardSearchResult, setCardSearchResult] = useState<Card[]>([])
+  const [folderSearchResult, setFolderSearchResult] = useState<FolderFormat[]>([])
 
   function cancelPress() {
-    setCreateType('chosing'); setSetSearch(''); setDeskSearch(''); setCardSearch(''); setSetName(''); setSETID(null); setDESKTITLE(null); setCurrentFront(''); setCurrentBack(''); setImage(null); setDeskRepeat(['all']); setCreateSETNAME(''); setCreateSETDESCRIPTION(''); setCreateSETCATEGORY(''); setCreateSETPRIVATE(false); setCreateFolderName(''); setCreateFolderSetList([]); setCreateFolderCategory([]); setCreateSETinFOLDERNAMES([]); setCardItem(null); setCardSearchResult([]); setDESKLIST([]); setSetSearchResult([]); setDeskSearchResult([]);
+    setCreateType('chosing'); setSetSearch(''); setDeskSearch(''); setCardSearch(''); setSetName(''); setSETID(null); setDESKTITLE(null); setCurrentFront(''); setCurrentBack(''); setImage(null); setDeskRepeat(['all']); setCreateSETNAME(''); setCreateSETDESCRIPTION(''); setCreateSETCATEGORY(''); setCreateSETPRIVATE(false); setCreateFolderName(''); setCreateFolderSetList([]); setCreateFolderCategory([]); setCreateSETinFOLDERNAMES([]); setCardItem(null); setCardSearchResult([]); setDESKLIST([]); setSetSearchResult([]); setDeskSearchResult([]); setFolderSearchResult([]); setSetFolderName([]);
   }
   function donePress() {
     switch (createType) {
@@ -139,53 +143,73 @@ export default function Add({ routes }: any) {
     }
   }
 
-  const saveSet = () => {
-    if (CreateSETNAME.trim().length > 0) {
-      if (!CURRENT_SETS.userInfo) {
-        Alert.alert('Error', 'User information is missing');
-        return;
-      }
-      let newSet: SetFormat = {
-        id: Date.now().toString(),
-        name: CreateSETNAME,
-        author: CURRENT_SETS.userInfo as UserFormat,
-        description: CreateSETDESCRIPTION,
-        category: CreateSETCATEGORY,
-        inFolderIDs: CreateSETinFOLDERNAMES,
-        rate: { star: 0, total: 0 },
-        private: CreateSETPRIVATE,
-        isSaved: false,
-        numberOfSaved: 0,
-        isDone: false,
-        deskList: [],
-      }
-      createSetFnc(newSet, setAsCurrent, null).then(() => {
-        Alert.alert('Set created', 'Do you want to add a desk to this set?', [
-          {
-            text: 'Yes',
-            onPress: () => {
-              setCreateType('desk');
-              setSETID(newSet.id);
-              setSetName(newSet.name);
-            },
-          },
-          {
-            text: 'No',
-            onPress: () => {
-              setCreateType('chosing');
-              cancelPress();
-            },
-          }
-        ]);
-        setCreateSETNAME('');
-        setCreateSETDESCRIPTION('');
-        setCreateSETCATEGORY('');
-        setCreateSETPRIVATE(false);
-      });
-    } else {
+  const saveSet = async () => {
+    if (!CreateSETNAME.trim()) {
       Alert.alert('Error', 'Please fill in the set name');
+      return;
     }
-  }
+
+    if (!CURRENT_SETS.userInfo) {
+      Alert.alert('Error', 'User information is missing');
+      return;
+    }
+
+    const newSet: SetFormat = {
+      id: Date.now().toString(),
+      name: CreateSETNAME,
+      author: CURRENT_SETS.userInfo as UserFormat,
+      description: CreateSETDESCRIPTION,
+      category: CreateSETCATEGORY,
+      inFolderIDs: CreateSETinFOLDERNAMES,
+      rate: { star: 0, total: 0 },
+      private: CreateSETPRIVATE,
+      isSaved: false,
+      numberOfSaved: 0,
+      isDone: false,
+      deskList: [],
+    };
+
+    if (newSet.inFolderIDs?.length) {
+      await Promise.all(
+        newSet.inFolderIDs.map(async (folderID) => {
+          const folder = CURRENT_SETS.folderList?.find((folder) => folder.name === folderID);
+          if (folder) {
+            folder.setListIDs.push(newSet.id);
+            let newFolder: FolderFormat = {
+              name: folder.name,
+              category: folder.category,
+              setListIDs: folder.setListIDs,
+            };
+            await editFolderFnc(newFolder.name, newFolder, () => dispatch(currentEditFolderItemInList(newFolder)));
+          }
+        })
+      );
+    }
+
+    await createSetFnc(newSet, setAsCurrent, null);
+    Alert.alert('Set created', 'Do you want to add a desk to this set?', [
+      {
+        text: 'Yes',
+        onPress: () => {
+          setCreateType('desk');
+          setSETID(newSet.id);
+          setSetName(newSet.name);
+        },
+      },
+      {
+        text: 'No',
+        onPress: () => {
+          setCreateType('chosing');
+          cancelPress();
+        },
+      }
+    ]);
+
+    setCreateSETNAME('');
+    setCreateSETDESCRIPTION('');
+    setCreateSETCATEGORY('');
+    setCreateSETPRIVATE(false);
+  };
 
   const saveFolder = () => {
     let folder: FolderFormat = {
@@ -236,7 +260,62 @@ export default function Add({ routes }: any) {
           placeholder2='Max 100 characters'
           isEdit={true}
         />
+        <View style={[styles.padding3vw, styles.flexRowBetweenCenter, styles.borderRadius2vw, { backgroundColor: clrStyle.white, borderWidth: 1, borderColor: clrStyle.neu3 }]}>
+          <View style={[styles.flexCol, styles.gap1vw, styles.flex1]}>
+            <Lex16RegAuto style={[styles.paddingH1vw, { color: clrStyle.you }]}>Add to Folder (optional)</Lex16RegAuto>
+            {setFolderName.length > 0 ?
+              <ViewRow customStyle={[styles.flexWrap, styles.gap2vw, styles.marginVertical2vw]}>
+                {setFolderName.map((folder, index) => {
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => {
+                        setCreateSETinFOLDERNAMES(CreateSETinFOLDERNAMES.filter((item) => item !== folder));
+                        setSetFolderName(setFolderName.filter((item) => item !== folder));
+                      }}
+                      style={[styles.padding2vw, styles.borderRadius10, styles.border1, styles.wfit, styles.flexRowCenter]}>
+                      <Lex14RegAuto>{folder} </Lex14RegAuto>
+                      {xIcon(vw(4), vw(4), clrStyle.redA)}
+                    </TouchableOpacity>
+                  )
+                })}
+              </ViewRow>
+              :
+              null
+            }
+            <SearchBox
+              value={folderSearch}
+              onChangeText={setFolderSearch}
+              onClear={() => { setFolderSearch(''); setCreateSETinFOLDERNAMES([]) }}
+              customStyle={[styles.paddingV2vw,]}
+              placeholder={'Search for folder'}
+              placeholderTextColor={clrStyle.black}
+            />
+            {
+              folderSearchResult.length > 0 ?
+                folderSearchResult.map((folder, index) => {
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => {
+                        if (!CreateSETinFOLDERNAMES.includes(folder.name)) {
+                          setCreateSETinFOLDERNAMES([...CreateSETinFOLDERNAMES, folder.name]);
+                          setSetFolderName([...setFolderName, folder.name]);
+                        }
+                        setFolderSearch('');
+                        console.log(CreateSETinFOLDERNAMES);
 
+                      }}
+                      style={[styles.padding2vw, { backgroundColor: clrStyle.you }]}>
+                      <Lex14RegAuto>{folder.name}</Lex14RegAuto>
+                    </TouchableOpacity>
+                  )
+                })
+                :
+                setSearch ? <Lex14RegAuto>No folder found</Lex14RegAuto> : null
+            }
+          </View>
+        </View>
         <TouchableOpacity
           onPress={() => setCreateSETPRIVATE(!CreateSETPRIVATE)}
           style={[styles.padding2vw]}
@@ -275,6 +354,19 @@ export default function Add({ routes }: any) {
       setDeskSearchResult([])
     }
   }, [deskSearch, SETID])
+
+  // serach for folder 
+  useEffect(() => {
+    if (folderSearch) {
+      searchEngine(folderSearch, CURRENT_SETS.folderList ?? [], 'folder').then((result) => {
+        setFolderSearchResult(result as FolderFormat[])
+        console.log(result);
+
+      })
+    } else {
+      setFolderSearchResult([])
+    }
+  }, [folderSearch])
 
   // navigate from other screen
   useEffect(() => {
@@ -514,7 +606,7 @@ export default function Add({ routes }: any) {
             />
             <View style={[styles.padding3vw, styles.flexRowBetweenCenter, styles.borderRadius2vw, { backgroundColor: clrStyle.white, borderWidth: 1, borderColor: clrStyle.neu3 }]}>
               <View style={[styles.flexCol, styles.gap1vw, styles.flex1]}>
-                <Lex16RegAuto style={[styles.paddingH1vw, { color: clrStyle.you }]}>Select Sets to add to Folder (optional)</Lex16RegAuto>
+                <Lex16RegAuto style={[styles.paddingH1vw, { color: clrStyle.you }]}>Select one first Set to add to Folder (optional)</Lex16RegAuto>
                 <SearchBox
                   value={setSearch}
                   onChangeText={setSetSearch}
@@ -545,16 +637,13 @@ export default function Add({ routes }: any) {
                 }
               </View>
             </View>
-            <Lex14RegAuto>Or Create a new Set</Lex14RegAuto>
-            <RoundBtn
-              title='Create new Set'
-              onPress={() => { cancelPress(); setCreateType('set') }}
-              bgColor={clrStyle.you}
-              textClass={Lex18RegAuto}
-              customStyle={[styles.paddingV6vw, styles.w60vw]}
-            />
+            <TouchableOpacity
+              style={[styles.padding2vw, styles.marginVertical4vw]}
+              onPress={() => { cancelPress(); setCreateType('set') }}>
+              <Lex14RegAuto style={{ color: 'blue' }}>Or Create a new Set</Lex14RegAuto>
+            </TouchableOpacity>
 
-          </ViewColCenter>
+          </ViewColCenter >
         )
 
       default:

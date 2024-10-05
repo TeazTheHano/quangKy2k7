@@ -681,7 +681,7 @@ export const removeFolderFnc = async (id: string) => {
   }
 }
 
-export const editFolderFnc = async (id: string, data: FolderFormat, fncDispatchSetCurrent: any, goBack?: any) => {
+export const editFolderFnc = async (id: string, data: FolderFormat, fncDispatchSetCurrent: (item: FolderFormat) => void, goBack?: any) => {
   try {
     await storage.save({
       key: 'folder',
@@ -697,6 +697,8 @@ export const editFolderFnc = async (id: string, data: FolderFormat, fncDispatchS
       return false;
     }
   } catch (error) {
+    console.log(error);
+
     Alert.alert('Error', 'Failed to edit folder');
     return false;
   }

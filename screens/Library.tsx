@@ -1,6 +1,6 @@
 import { FlatList, Image, ImageStyle, Platform, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect } from 'react'
-import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex16RegAuto, Lex20RegAuto, SaveViewWithColorStatusBar, SearchBox, SSBar, TopNav2, TopNavLib, ViewRowBetweenCenter, ViewRowCenter, ViewRowStartCenter } from '../assets/Class'
+import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex14RegAuto, Lex16RegAuto, Lex20RegAuto, SaveViewWithColorStatusBar, SearchBox, SSBar, TopNav2, TopNavLib, ViewRowBetweenCenter, ViewRowCenter, ViewRowStartCenter } from '../assets/Class'
 import styles, { vh, vw } from '../assets/stylesheet'
 import { adjustIcon, lockIcon, notiBellIcon, peopleIcon, savedIcon, searchIcon, sharpLeftArrow, sharpRightArrow, unSavedIcon, xIcon } from '../assets/svgXml'
 import { currentOverwriteFolderList, RootContext, setAsCurrent } from '../data/store'
@@ -22,6 +22,15 @@ export default function Library() {
   const [topRatedSetsSaved, setTopRatedSetsSaved] = React.useState<boolean[]>([])
 
   const [folderList, setFolderList] = React.useState<FolderFormat[]>([])
+  // const [categoryList, setCategoryList] = React.useState<CateListLib[]>([])
+  // interface CateListLib { cate: string, setIDs: string[] }
+
+  interface CateWithFolderInit {
+    cate: string;
+    folder: FolderFormat[];
+  }
+  const [cateListWithFolderInit, setCateListWithFolderInit] = React.useState<CateWithFolderInit[]>([]);
+
 
   useEffect(() => {
     const unSubscribe = navigation.addListener('focus', () => {
@@ -57,13 +66,63 @@ export default function Library() {
   }
 
   const loadFolder = async function () {
-    await getAllFoldersFnc().then((folders) => {
-      if (folders) {
-        dispatch(currentOverwriteFolderList(folders))
-        setFolderList(folders)
-      }
-    })
+    const folders = await getAllFoldersFnc();
+    if (!folders) return;
+
+    dispatch(currentOverwriteFolderList(folders));
+    setFolderList(folders);
+
+    const folderCateList = new Set<string>(['General']);
+    const outPutCateList: CateWithFolderInit[] = [];
+
+    folders.forEach(folder => {
+      folder.category?.forEach((cate: string) => folderCateList.add(cate));
+    });
+
+    folderCateList.forEach(cate => {
+      const filteredFolders = folders.filter(folder =>
+        cate === 'General'
+          ? folder.category?.length === 0 || folder.category?.includes('General') || !folder.category
+          : folder.category?.includes(cate)
+      );
+
+      outPutCateList.push({ cate, folder: filteredFolders });
+    });
+    console.log('outPutCateList', outPutCateList);
+
+    setCateListWithFolderInit(outPutCateList);
   }
+
+  // this damn good but i need another
+  // const loadFolder = async function () {
+  //   const folders = await getAllFoldersFnc();
+  //   if (!folders) return;
+
+  //   dispatch(currentOverwriteFolderList(folders));
+  //   setFolderList(folders);
+
+  //   const folderCateList = new Set<string>(['General']);
+  //   const outPutCateList: CateListLib[] = [];
+
+  //   folders.forEach(folder => {
+  //     folder.category?.forEach((cate: string) => folderCateList.add(cate));
+  //   });
+
+  //   folderCateList.forEach(cate => {
+  //     const filteredFolders = folders.filter(folder =>
+  //       cate === 'General'
+  //         ? folder.category?.length === 0 || folder.category?.includes('General') || !folder.category
+  //         : folder.category?.includes(cate)
+  //     );
+
+  //     const setIDs = filteredFolders.flatMap(folder => folder.setListIDs);
+  //     const uniqueSetIDs = [...new Set(setIDs)];
+
+  //     outPutCateList.push({ cate, setIDs: uniqueSetIDs });
+  //   });
+
+  //   setCategoryList(outPutCateList);
+  // }
 
   function onRefresh() {
     setRefreshing(true)
@@ -181,30 +240,74 @@ export default function Library() {
     }
   }
 
-  function renderFolder() {
-    if (folderList.length > 0) {
+  // function renderFolder() {
+  //   if (folderList.length > 0 && categoryList.length > 0) {
+  //     return (
+  //       <View>
+  //         {categoryList.map((cateItem, index) => {
+  //           return (
+  //             <View key={index} style={[styles.marginVertical4vw]}>
+  //               <TitleView
+  //                 customStyle={[styles.paddingH6vw, styles.paddingV2vw]}
+  //                 title={cateItem.cate}
+  //                 onPress={() => { }}
+  //               />
+  //               <FlatList
+  //                 data={cateItem.setIDs}
+  //                 horizontal
+  //                 keyExtractor={item => index + item}
+  //                 renderItem={({ item, index }) => {
+  //                   return <TouchableOpacity style={[styles.w40vw, styles.h30vw, styles.borderRadius10, styles.flexCol, styles.justifyContentSpaceBetween, styles.padding4vw, { backgroundColor: '#86DFD04A', marginRight: vw(4), marginLeft: index === 0 ? vw(6) : 0 }]}>
+  //                     <Lex16RegAuto>{item}</Lex16RegAuto>
+  //                     <ViewRowBetweenCenter customStyle={[styles.w100]}>
+  //                       <View style={[styles.borderRadius100, { width: vw(7), height: vw(7), backgroundColor: clrStyle.grey }]} />
+  //                       <Lex14RegAuto style={{ color: clrStyle.grey1 }}>{item.length}</Lex14RegAuto>
+  //                     </ViewRowBetweenCenter>
+  //                   </TouchableOpacity>
+  //                 }}
+  //               />
+  //             </View>
+  //           )
+  //         })}
+  //       </View>
+  //     )
+  //   } else {
+  //     return <Lex16RegAuto style={[styles.padding6vw]}>No user folders found</Lex16RegAuto>
+  //   }
+  // }
 
+  function renderFolder() {
+    if (folderList.length > 0 && cateListWithFolderInit.length > 0) {
       return (
-        <View style={[styles.flex1]}>
-          {folderList.map((folder, index) => {
+        <View style={[styles.marginVertical4vw]}>
+          {cateListWithFolderInit.map((cateItem, index) => {
             return (
-              <View key={index}>
+              <View key={index} style={[styles.marginVertical2vw]}>
                 <TitleView
                   customStyle={[styles.paddingH6vw, styles.paddingV2vw]}
-                  title={folder.name}
+                  title={cateItem.cate}
                   onPress={() => { }}
                 />
-                {/* <FlatList
-                  data={folder}
-                  keyExtractor={item => item.name}
-                /> */}
+                <FlatList
+                  data={cateItem.folder}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  keyExtractor={item => (item + ' ' + Math.random()).toString()}
+                  renderItem={({ item, index }) => {
+                    return <TouchableOpacity style={[styles.w40vw, styles.h30vw, styles.borderRadius10, styles.flexCol, styles.justifyContentSpaceBetween, styles.padding4vw, { backgroundColor: '#86DFD04A', marginRight: vw(4), marginLeft: index === 0 ? vw(6) : 0 }]}>
+                      <Lex16RegAuto>{item.name}</Lex16RegAuto>
+                      <ViewRowBetweenCenter customStyle={[styles.w100]}>
+                        <View style={[styles.borderRadius100, { width: vw(7), height: vw(7), backgroundColor: clrStyle.grey }]} />
+                        <Lex14RegAuto style={{ color: clrStyle.grey1 }}>{item.setListIDs.length} set(s)</Lex14RegAuto>
+                      </ViewRowBetweenCenter>
+                    </TouchableOpacity>
+                  }}
+                />
               </View>
             )
           })}
         </View>
       )
-    } else {
-      return <Lex16RegAuto style={[styles.padding6vw]}>No user folders found</Lex16RegAuto>
     }
   }
 
@@ -240,21 +343,6 @@ export default function Library() {
           <TouchableOpacity>
             {adjustIcon(vw(10), vw(10))}
           </TouchableOpacity>
-          {/* <ViewRowBetweenCenter
-            customStyle={[styles.flex1, styles.gap3vw, styles.borderRadius10, styles.h100, styles.shadowW0H0Black, styles.paddingH4vw, { backgroundColor: clrStyle.white, borderColor: clrStyle.neu3 }]}>
-            {searchIcon(vw(5), vw(5), clrStyle.black)}
-            <TextInput
-              style={[styles.flex1, { color: clrStyle.black, fontSize: vw(3.5) }]}
-              value={searchContent}
-              onChangeText={(text) => setSearchContent(text as string)}
-              placeholder='Search'
-            />
-            <TouchableOpacity
-              onPress={() => setSearchContent('')}
-            >
-              {xIcon(vw(5), vw(5), clrStyle.black)}
-            </TouchableOpacity>
-          </ViewRowBetweenCenter> */}
           <SearchBox
             value={searchContent}
             onChangeText={(text) => setSearchContent(text as string)}

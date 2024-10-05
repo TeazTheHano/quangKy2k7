@@ -16,7 +16,7 @@ import { Lex10RegAuto, Lex12BoldAuto, Lex12RegAuto, Lex16RegAuto, Lex20RegAuto }
 
 // other import
 import * as Progress from 'react-native-progress';
-import { Card, Desk, SetFormat } from "../data/data";
+import { Card, Desk, FolderFormat, SetFormat } from "../data/data";
 import { RootContext, setAsCurrent } from "../data/store";
 
 // font import 
@@ -396,9 +396,9 @@ export function showRateStar(rate: number) {
     )
 }
 
-export async function searchEngine(keyword: string, dataBank: SetFormat[] | Desk[] | Card[], type: 'set' | 'desk' | 'card') {
+export async function searchEngine(keyword: string, dataBank: SetFormat[] | Desk[] | Card[] | FolderFormat[], type: 'set' | 'desk' | 'card' | 'folder') {
     keyword = keyword.trim();
-    let result: SetFormat[] | Desk[] | Card[] = [];
+    let result: SetFormat[] | Desk[] | Card[] | FolderFormat[] = [];
     const regex = new RegExp(`\\b${keyword}`, 'i');
 
     if (type === 'set' && dataBank as SetFormat[]) {
@@ -413,8 +413,11 @@ export async function searchEngine(keyword: string, dataBank: SetFormat[] | Desk
         result = dataBank.filter((item): item is Card =>
             (item as Card).front !== undefined && regex.test((item as Card).front)
         );
+    } else if (type === 'folder' && dataBank as FolderFormat[]) {
+        result = dataBank.filter((item): item is FolderFormat =>
+            (item as FolderFormat).name !== undefined && regex.test((item as FolderFormat).name)
+        );
     }
-
     if (keyword === '') {
         return [];
     }

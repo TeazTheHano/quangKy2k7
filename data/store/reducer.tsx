@@ -37,7 +37,8 @@ import {
     CURRENT_SAVE_ADD_DESKTITLE,
     CURRENT_ADD_TO_FOLDER_LIST,
     CURRENT_OVERWRITE_FOLDER_LIST,
-    CURRENT_REMOVE_FROM_FOLDER_LIST
+    CURRENT_REMOVE_FROM_FOLDER_LIST,
+    CURRENT_EDIT_FOLDER_ITEM_IN_LIST
 } from "./index";
 
 export default function setReducer(state = initialState, action: Action): CurrentSets {
@@ -219,6 +220,16 @@ export default function setReducer(state = initialState, action: Action): Curren
             return {
                 ...state,
                 folderList: (state.folderList as FolderFormat[]).filter(item => item !== action.payload)
+            }
+        case CURRENT_EDIT_FOLDER_ITEM_IN_LIST:
+            return {
+                ...state,
+                folderList: (state.folderList as FolderFormat[]).map(item => {
+                    if (item.name === (action.payload as FolderFormat).name) {
+                        return action.payload as FolderFormat;
+                    }
+                    return item;
+                })
             }
         default:
             return state;
