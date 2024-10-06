@@ -648,13 +648,14 @@ export class TopNav2 extends Component<{
     containerStyle?: any
     backGoundImage?: string
     darken?: number
+    darkenColor?: string
 }> {
     render() {
-        let { title, leftIcon, rightIcon, returnPreScreen, rightIconFnc, leftIconFnc, returnPreScreenFnc, textCenter, children, subTitle, textColor, containerStyle, backGoundImage, darken } = this.props
+        let { title, leftIcon, rightIcon, returnPreScreen, rightIconFnc, leftIconFnc, returnPreScreenFnc, textCenter, children, subTitle, textColor, containerStyle, backGoundImage, darken, darkenColor } = this.props
         darken = darken ? darken : 0
         return (
             <ImageBackground source={backGoundImage ? imgSourceHandle(backGoundImage) : null} style={[styles.overflowHidden, { borderBottomLeftRadius: vw(6), borderBottomRightRadius: vw(6), }]}>
-                <View style={[styles.w100, styles.padding4vw, styles.paddingH8vw, { backgroundColor: `rgba(0,0,0,${darken})` }, containerStyle]}>
+                <View style={[styles.w100, styles.padding4vw, styles.paddingH8vw, { backgroundColor: darkenColor ? darkenColor : `rgba(0,0,0,${darken})` }, containerStyle]}>
                     <View style={[styles.w100, styles.flexRowBetweenCenter]}>
                         {returnPreScreen ?
                             <TouchableOpacity

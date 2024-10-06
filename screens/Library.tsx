@@ -294,7 +294,9 @@ export default function Library() {
                   showsHorizontalScrollIndicator={false}
                   keyExtractor={item => (item + ' ' + Math.random()).toString()}
                   renderItem={({ item, index }) => {
-                    return <TouchableOpacity style={[styles.w40vw, styles.h30vw, styles.borderRadius10, styles.flexCol, styles.justifyContentSpaceBetween, styles.padding4vw, { backgroundColor: '#86DFD04A', marginRight: vw(4), marginLeft: index === 0 ? vw(6) : 0 }]}>
+                    return <TouchableOpacity
+                      onPress={() => { navigation.navigate('FolderView', { folderName: item.name, cate: cateItem.cate }) }}
+                      style={[styles.w40vw, styles.h30vw, styles.borderRadius10, styles.flexCol, styles.justifyContentSpaceBetween, styles.padding4vw, { backgroundColor: '#86DFD04A', marginRight: vw(4), marginLeft: index === 0 ? vw(6) : 0 }]}>
                       <Lex16RegAuto>{item.name}</Lex16RegAuto>
                       <ViewRowBetweenCenter customStyle={[styles.w100]}>
                         <View style={[styles.borderRadius100, { width: vw(7), height: vw(7), backgroundColor: clrStyle.grey }]} />
@@ -371,7 +373,6 @@ export default function Library() {
               title='Top Rated Set'
               onPress={() => { }} />
             {showSetCard2(topRatedSets, topRatedSetsSaved, setTopRatedSetsSaved)}
-            {/* {showSetCardGray(topRatedSets, topRatedSetsSaved, setTopRatedSetsSaved, disFnc, na1)} */}
           </>}
         {renderFolder()}
         {marginBottomForScrollView(2)}

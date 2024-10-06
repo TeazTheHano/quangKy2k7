@@ -64,7 +64,7 @@ export default function Add({ routes }: any) {
   const [folderSearchResult, setFolderSearchResult] = useState<FolderFormat[]>([])
 
   function cancelPress() {
-    setCreateType('chosing'); setSetSearch(''); setDeskSearch(''); setCardSearch(''); setSetName(''); setSETID(null); setDESKTITLE(null); setCurrentFront(''); setCurrentBack(''); setImage(null); setDeskRepeat(['all']); setCreateSETNAME(''); setCreateSETDESCRIPTION(''); setCreateSETCATEGORY(''); setCreateSETPRIVATE(false); setCreateFolderName(''); setCreateFolderSetList([]); setCreateFolderCategory([]); setCreateSETinFOLDERNAMES([]); setCardItem(null); setCardSearchResult([]); setDESKLIST([]); setSetSearchResult([]); setDeskSearchResult([]); setFolderSearchResult([]); setSetFolderName([]);
+    setCreateType('chosing'); setSetSearch(''); setDeskSearch(''); setCardSearch(''); setSetName(''); setSETID(null); setDESKTITLE(null); setCurrentFront(''); setCurrentBack(''); setImage(null); setDeskRepeat(['all']); setCreateSETNAME(''); setCreateSETDESCRIPTION(''); setCreateSETCATEGORY(''); setCreateSETPRIVATE(false); setCreateFolderName(''); setCreateFolderSetList([]); setCreateFolderCategory([]); setCreateSETinFOLDERNAMES([]); setCardItem(null); setCardSearchResult([]); setDESKLIST([]); setSetSearchResult([]); setDeskSearchResult([]); setFolderSearchResult([]); setSetFolderName([]); setFolderSearch('')
   }
   function donePress() {
     switch (createType) {

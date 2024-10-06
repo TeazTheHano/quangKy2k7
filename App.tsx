@@ -20,6 +20,7 @@ import SetView from './screens/setScreen/SetView';
 import DeskView from './screens/setScreen/DeskView';
 import CardReview from './screens/setScreen/CardReview';
 import AddCard from './screens/setScreen/AddCard';
+import FolderView from './screens/setScreen/FolderView';
 
 // ____________________END OF IMPORT_______________________
 
@@ -44,6 +45,7 @@ function App(): React.JSX.Element {
           <Stack.Screen name="CardReview" component={CardReview} />
           <Stack.Screen name="AddCard" component={AddCard} />
           {/* <<<<<<<<<<<<<<<< */}
+          <Stack.Screen name="FolderView" component={FolderView} />
         </Stack.Navigator>
       </NavigationContainer>
     </ProviderTotal>

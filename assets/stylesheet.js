@@ -760,6 +760,10 @@ const styles = StyleSheet.create({
         flexWrap: 'nowrap',
     },
 
+    flex0: {
+        flex: 0,
+    },
+
     flex1: {
         flex: 1,
     },
