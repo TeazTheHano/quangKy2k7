@@ -1,11 +1,11 @@
-import { View, Text, StatusBar, ScrollView, Platform, PermissionsAndroid, Image, Alert, TouchableOpacity } from 'react-native'
+import { View, Text, StatusBar, ScrollView, Platform, PermissionsAndroid, Image, Alert, TouchableOpacity, ImageStyle } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { Card2line, Card2lineInput, Card3lineInputImg, Lex14RegAuto, Lex16BoldAuto, Lex16MedAuto, Lex16RegAuto, Lex18RegAuto, Lex20RegAuto, RoundBtn, SearchBox, TopNav1, TopNav2, TopNav3, ViewCol, ViewColBetweenCenter, ViewColCenter, ViewRow, ViewRowBetweenCenter, ViewRowEvenlyCenter } from '../assets/Class'
 import styles, { vw } from '../assets/stylesheet'
 import { useNavigation } from '@react-navigation/native'
 import { currentAddToFolderList, currentEditFolderItemInList, RootContext, setAsCurrent } from '../data/store'
 import clrStyle from '../assets/componentStyleSheet'
-import { cardDeleteIcon, checkIcon, deskCardEditIcon, deskMiniBlackCheckIcon, deskNaviIcon, doneEditIcon, sharpLeftArrow, unCheckIcon, xIcon } from '../assets/svgXml'
+import { cameraIcon, cardDeleteIcon, checkIcon, deskCardEditIcon, deskMiniBlackCheckIcon, deskNaviIcon, doneEditIcon, imgPickerIcon, sharpLeftArrow, unCheckIcon, xIcon } from '../assets/svgXml'
 import { marginBottomForScrollView, openCamera, openGallery, searchEngine } from '../assets/component'
 
 import { CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
@@ -179,6 +179,7 @@ export default function Add({ routes }: any) {
               name: folder.name,
               category: folder.category,
               setListIDs: folder.setListIDs,
+              photoAddress: folder.photoAddress,
             };
             await editFolderFnc(newFolder.name, newFolder, () => dispatch(currentEditFolderItemInList(newFolder)));
           }
@@ -216,6 +217,7 @@ export default function Add({ routes }: any) {
       name: CreateFolderName,
       category: CreateFolderCategory,
       setListIDs: CreateFolderSetList,
+      photoAddress: CreateFolderPhoto ? CreateFolderPhoto : '',
     }
     createFolderFnc(folder, currentAddToFolderList).then(() => {
       Alert.alert('Folder created', 'Folder has been created');
@@ -637,6 +639,30 @@ export default function Add({ routes }: any) {
                 }
               </View>
             </View>
+            <Card3lineInputImg
+              isEdit={true}
+              TextClass2={Lex16MedAuto}
+              textColor1={clrStyle.neu5}
+              textColor2={clrStyle.black}
+              border
+              borderClr={clrStyle.neu6}
+              photoAddress={CreateFolderPhoto}
+              onPress1={() => openGallery(setCreateFolderPhoto)}
+              onPress2={() => openCamera(setCreateFolderPhoto)}
+              onPress3={() =>
+                Alert.alert('Retake image', 'Are you sure you want to delete and retake this image?', [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Delete',
+                    style: 'destructive',
+                    onPress: () => setCreateFolderPhoto(null),
+                  },
+                ])
+              }
+            />
             <TouchableOpacity
               style={[styles.padding2vw, styles.marginVertical4vw]}
               onPress={() => { cancelPress(); setCreateType('set') }}>

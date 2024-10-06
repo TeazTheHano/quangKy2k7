@@ -17,9 +17,13 @@ export default function SetView() {
   const navigation = useNavigation()
   const [CURRENT_SETS, dispatch] = useContext(RootContext)
   const [theSet, setTheSet] = React.useState<SetFormat | null>(null)
+  const [preViewMode, setPreViewMode] = React.useState<boolean>(CURRENT_SETS.current?.author.email == CURRENT_SETS.userInfo?.email || CURRENT_SETS.current?.isAddedToLibrary ? false : true)
+
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
+      console.log('preViewMode: ' + preViewMode);
+
       getSetWithID(CURRENT_SETS.current?.id as string).then((ret) => {
         ret && ret.id ? setTheSet(ret) : () => { console.log('error at SetView.tsx'); setTheSet(CURRENT_SETS.current) }
         console.log(CURRENT_SETS.done.length + 'done');

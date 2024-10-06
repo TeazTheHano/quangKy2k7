@@ -50,6 +50,7 @@ export interface FolderFormat {
     name: string;
     setListIDs: string[];
     category: string[];
+    photoAddress: string;
 }
 
 export const setList: SetFormat[] = [

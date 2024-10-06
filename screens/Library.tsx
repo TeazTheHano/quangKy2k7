@@ -46,7 +46,6 @@ export default function Library() {
       set.isSaved ? savedList.push(true) : savedList.push(false)
     })
     setTopRatedSetsSaved(savedList)
-    // console.log('topRatedSetsSaved', topRatedSetsSaved);
 
   }, [topRatedSets])
 
@@ -88,7 +87,6 @@ export default function Library() {
 
       outPutCateList.push({ cate, folder: filteredFolders });
     });
-    console.log('outPutCateList', outPutCateList);
 
     setCateListWithFolderInit(outPutCateList);
   }
@@ -236,7 +234,7 @@ export default function Library() {
         </ ScrollView>
       )
     } else {
-      return <Lex20RegAuto>No set found</Lex20RegAuto>
+      return <Lex20RegAuto style={[styles.marginLeft6vw, styles.marginVertical4vw]}>No set found</Lex20RegAuto>
     }
   }
 
@@ -299,7 +297,9 @@ export default function Library() {
                       style={[styles.w40vw, styles.h30vw, styles.borderRadius10, styles.flexCol, styles.justifyContentSpaceBetween, styles.padding4vw, { backgroundColor: '#86DFD04A', marginRight: vw(4), marginLeft: index === 0 ? vw(6) : 0 }]}>
                       <Lex16RegAuto>{item.name}</Lex16RegAuto>
                       <ViewRowBetweenCenter customStyle={[styles.w100]}>
-                        <View style={[styles.borderRadius100, { width: vw(7), height: vw(7), backgroundColor: clrStyle.grey }]} />
+                        <View style={[styles.borderRadius100, { width: vw(7), height: vw(7), backgroundColor: clrStyle.pur1 }]} >
+                          {item.photoAddress ? <Image source={{ uri: item.photoAddress }} style={[styles.borderRadius100, { width: vw(7), height: vw(7) }] as ImageStyle} /> : null}
+                        </View>
                         <Lex14RegAuto style={{ color: clrStyle.grey1 }}>{item.setListIDs.length} set(s)</Lex14RegAuto>
                       </ViewRowBetweenCenter>
                     </TouchableOpacity>

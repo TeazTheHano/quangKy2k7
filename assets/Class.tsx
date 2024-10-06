@@ -529,9 +529,10 @@ export class InputCardVer1 extends Component<{
     placeholderColor?: string
     valueColor?: string
     autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters' | undefined
+    editable?: boolean
 }> {
     render() {
-        const { customStyle, onChangeText, value, hideContent, hideContentFnc, textContentType, title, placeholder, titleColor, placeholderColor, valueColor, autoCapitalize } = this.props;
+        const { customStyle, onChangeText, value, hideContent, hideContentFnc, textContentType, title, placeholder, titleColor, placeholderColor, valueColor, autoCapitalize, editable } = this.props;
         let type: string = textContentType ? textContentType : "none"
 
         return (
@@ -549,6 +550,7 @@ export class InputCardVer1 extends Component<{
                     passwordRules={type === 'password' ? "minlength: 6; maxlength: 10" : ''}
                     textContentType={type as "none"}
                     maxLength={type === 'password' ? 10 : 100}
+                    editable={editable !== undefined ? editable : true}
                     style={[styles.flex1, styles.padding1vw,]}
                 ><Lex16RegAuto style={[styles.flex1]}>{value}</Lex16RegAuto></TextInput>
                 {hideContentFnc ?
@@ -910,7 +912,7 @@ export class Card2lineInput extends Component<{
 
 export class Card3lineInputImg extends Component<{
     customStyle?: any
-    text1: string
+    text1?: string
     textColor1?: string
     textColor2?: string
     TextClass1?: React.ComponentType<any>
@@ -946,8 +948,8 @@ export class Card3lineInputImg extends Component<{
 
         return (
             <View style={[styles.padding3vw, styles.flexCol, styles.gap2vw, styles.borderRadius2vw, styles.w100, { backgroundColor: bgColor, borderWidth: border ? 1 : 0, borderColor: this.state.isFocused ? 'black' : borderClr ? borderClr : clrStyle.neu3 }, customStyle]}>
-                <Text1 style={[styles.paddingH1vw, styles.flex1, { color: textColor1 ? textColor1 : clrStyle.black }]}>{text1}</Text1>
-                <TextInput
+                {text1 ? <Text1 style={[styles.paddingH1vw, styles.flex1, { color: textColor1 ? textColor1 : clrStyle.black }]}>{text1}</Text1> : null}
+                {onChangeText2 ? <TextInput
                     editable={isEdit !== undefined ? isEdit : true}
                     onChangeText={onChangeText2}
                     placeholder={placeholder2 ? placeholder2 : ''}
@@ -958,7 +960,7 @@ export class Card3lineInputImg extends Component<{
                     onBlur={this.handleBlur}
                     style={[styles.flex1, styles.borderRadius10, styles.padding1vw, { borderColor: isEdit === true ? clrStyle.neu3 : 'rgba(0,0,0,0)', borderWidth: 1, backgroundColor: isEdit === true ? clrStyle.white : 'rgba(0,0,0,0)' }]}>
                     <Text2 style={[{ color: textColor2 ? textColor2 : clrStyle.black }]}>{value2}</Text2>
-                </TextInput>
+                </TextInput> : null}
                 <Text1 style={[styles.paddingH1vw, styles.flex1, { color: textColor1 ? textColor1 : clrStyle.black }]}>Add photo</Text1>
                 <TouchableOpacity
                     onPress={() => { onPress3 && onPress3() }}

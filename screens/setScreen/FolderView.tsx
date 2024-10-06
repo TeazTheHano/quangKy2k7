@@ -16,6 +16,7 @@ export default function FolderView({ route }: any) {
 
     const navigation = useNavigation()
     const [CURRENT_SETS, dispatch] = useContext(RootContext)
+    const [currentFolder, setCurrentFolder] = React.useState<FolderFormat | undefined>(CURRENT_SETS.folderList?.filter(folder => folder.name === folderName)[0])
     const [isFolderEdit, setIsFolderEdit] = React.useState<boolean>(false)
     const [isShowPopup, setIsShowPopup] = React.useState<boolean>(false)
 
@@ -43,7 +44,9 @@ export default function FolderView({ route }: any) {
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            setSetListIDs(CURRENT_SETS.folderList?.filter(folder => folder.name === folderName)[0].setListIDs as string[])
+            let listIDs = CURRENT_SETS.folderList?.filter(folder => folder.name === folderName)[0].setListIDs as string[]
+            setSetListIDs(listIDs)
+            listIDs.length == 0 ? setIsFolderEdit(true) : null
         });
         return unsubscribe;
     }, [navigation]);
@@ -183,45 +186,47 @@ export default function FolderView({ route }: any) {
         return (
             <ViewColBetweenCenter customStyle={[styles.flex1]}>
                 <ScrollView style={[styles.w100]}>
-                    {setList.map((item, index) => {
-                        return (
-                            <ViewRowBetweenCenter key={index} customStyle={[styles.paddingV2vw, styles.gap1vw, styles.marginTop4vw, { borderColor: clrStyle.neu3, borderBottomWidth: vw(1) }]}>
-                                <Lex16RegAuto style={[styles.flex1, { color: clrStyle.black }]}>{item.name}</Lex16RegAuto>
-                                <Lex16RegAuto style={[{ color: clrStyle.neu2 }]}>{item.deskList.length} {item.deskList.length > 1 ? `desks` : `desk`}</Lex16RegAuto>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        Alert.alert(
-                                            "Remove Set from Folder",
-                                            "Are you sure you want to remove this set?",
-                                            [
-                                                {
-                                                    text: "Cancel",
-                                                    onPress: () => console.log("Cancel Pressed"),
-                                                    style: "cancel"
-                                                },
-                                                {
-                                                    text: "OK", onPress: () => {
-                                                        let newFolder: FolderFormat | undefined = CURRENT_SETS.folderList?.filter(folder => folder.name === folderName)[0]
-                                                        if (newFolder) {
-                                                            newFolder.setListIDs = newFolder.setListIDs.filter(id => id !== item.id)
-                                                            function dispatchFnc(item: FolderFormat) {
-                                                                currentEditFolderItemInList(item)
+                    {setList.length == 0 ? <Lex16RegAuto style={[styles.textCenter, styles.marginTop4vw]}>No Set in this folder. Please add some</Lex16RegAuto> :
+                        setList.map((item, index) => {
+                            return (
+                                <ViewRowBetweenCenter key={index} customStyle={[styles.paddingV2vw, styles.gap1vw, styles.marginTop4vw, { borderColor: clrStyle.neu3, borderBottomWidth: vw(1) }]}>
+                                    <Lex16RegAuto style={[styles.flex1, { color: clrStyle.black }]}>{item.name}</Lex16RegAuto>
+                                    <Lex16RegAuto style={[{ color: clrStyle.neu2 }]}>{item.deskList.length} {item.deskList.length > 1 ? `desks` : `desk`}</Lex16RegAuto>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            Alert.alert(
+                                                "Remove Set from Folder",
+                                                "Are you sure you want to remove this set?",
+                                                [
+                                                    {
+                                                        text: "Cancel",
+                                                        onPress: () => console.log("Cancel Pressed"),
+                                                        style: "cancel"
+                                                    },
+                                                    {
+                                                        text: "OK", onPress: () => {
+                                                            let newFolder: FolderFormat | undefined = CURRENT_SETS.folderList?.filter(folder => folder.name === folderName)[0]
+                                                            if (newFolder) {
+                                                                newFolder.setListIDs = newFolder.setListIDs.filter(id => id !== item.id)
+                                                                function dispatchFnc(item: FolderFormat) {
+                                                                    currentEditFolderItemInList(item)
+                                                                }
+                                                                editFolderFnc(newFolder.name, newFolder, dispatchFnc)
+                                                                setSetListIDs(newFolder.setListIDs)
                                                             }
-                                                            editFolderFnc(newFolder.name, newFolder, dispatchFnc)
-                                                            setSetListIDs(newFolder.setListIDs)
                                                         }
                                                     }
-                                                }
-                                            ]
-                                        );
-                                    }}
-                                    style={[styles.padding1vw, styles.borderRadius10, styles.marginLeft1vw, { backgroundColor: clrStyle.redA }]}>
-                                    {xIcon(vw(6), vw(6), 'white')}
-                                </TouchableOpacity>
-                            </ViewRowBetweenCenter>
+                                                ]
+                                            );
+                                        }}
+                                        style={[styles.padding1vw, styles.borderRadius10, styles.marginLeft1vw, { backgroundColor: clrStyle.redA }]}>
+                                        {xIcon(vw(6), vw(6), 'white')}
+                                    </TouchableOpacity>
+                                </ViewRowBetweenCenter>
+                            )
+                        }
                         )
                     }
-                    )}
                     {marginBottomForScrollView(2)}
                 </ScrollView>
                 {renderAddSetBtn()}
@@ -232,10 +237,10 @@ export default function FolderView({ route }: any) {
     return (
         <SSBar barContentStyle='light-content' trans barColor={'rgba(0,0,0,0)'} notMargin bgColor={clrStyle.white}>
             <TopNav2
-                title={CURRENT_SETS.current?.name as string}
+                title={`Folder View`}
                 subTitle={folderName && cate ? `${cate} \\ ${folderName}` : 'Folder'}
                 textColor='white'
-                backGoundImage={`../assets/image/topNav.png`}
+                backGoundImage={currentFolder?.photoAddress ? currentFolder.photoAddress : `../assets/image/topNav.png`}
                 leftIcon={sharpLeftArrow(vw(8), vw(8), 'white')}
                 leftIconFnc={() => navigation.goBack()}
                 rightIcon={isFolderEdit ? doneEditIcon(vw(8), vw(8), 'white') : deskCardEditIcon(vw(8), vw(8), 'white')}

@@ -1,7 +1,7 @@
 import { Card, SetFormat, UserFormat } from "./data";
 
 export const demoUser: UserFormat = {
-    name: 'demo',
+    name: 'Eric',
     email: 'demo@demo.com',
     password: 'demo',
     savedSet: [],
@@ -11,7 +11,7 @@ export const demoUser: UserFormat = {
 }
 
 export const demoUser2: UserFormat = {
-    name: 'demo2222',
+    name: 'Rinner',
     email: 'ta@gmail.com',
     password: 'demo',
     savedSet: [],
@@ -27,6 +27,7 @@ export let demoSets: SetFormat[] = [
         author: demoUser,
         description: 'This set is for B1 level English learners',
         category: 'English',
+        isAddedToLibrary: true,
         rate: {
             star: 4.35,
             total: 10,
@@ -102,10 +103,10 @@ export let demoSets: SetFormat[] = [
         ]
     },
     {
-        id: 'B1 pro',
-        name: 'B1 Vocabularies vip pro',
+        id: 'B2 pro',
+        name: 'B2 Vocabularies',
         author: demoUser2,
-        description: 'This set is for B1 level English learners',
+        description: 'This set is for B2 level English learners',
         rate: {
             star: 5,
             total: 10,
@@ -181,10 +182,10 @@ export let demoSets: SetFormat[] = [
         ]
     },
     {
-        id: 'B2 pro',
-        name: 'B2 Vocabularies vip pro',
+        id: 'C1 pro',
+        name: 'C1 Vocabularies',
         author: demoUser2,
-        description: 'This set is for B1 level English learners',
+        description: 'This set is for C1 level English learners',
         rate: {
             star: 5,
             total: 10,

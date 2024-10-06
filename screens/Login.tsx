@@ -18,7 +18,7 @@ export default function Login() {
     const [confirmPassword, setConfirmPassword] = React.useState('')
     const [userName, setUserName] = React.useState('')
     // TODO: change and make fnc to upload image
-    const [avtURL, setAvtURL] = React.useState("https://cdn.oneesports.gg/cdn-data/2024/07/ZenlessZoneZero_Agent_EllenJoe.jpg")
+    const [avtURL, setAvtURL] = React.useState("https://vz.cnwimg.com/wp-content/uploads/2019/11/Henry-Cavill.jpg")
 
     const [isShowSignUp, setIsShowSignUp] = React.useState(true)
     const [isHidePassword, setIsHidePassword] = React.useState(true)

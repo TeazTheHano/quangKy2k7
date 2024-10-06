@@ -681,6 +681,15 @@ export const removeFolderFnc = async (id: string) => {
   }
 }
 
+export const clearAllFolder = async () => {
+  try {
+    await storage.clearMapForKey('folder');
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 export const editFolderFnc = async (id: string, data: FolderFormat, fncDispatchSetCurrent: (item: FolderFormat) => void, goBack?: any) => {
   try {
     await storage.save({
