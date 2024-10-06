@@ -43,6 +43,8 @@ const Home = () => {
                 try {
                     dispatch(currentClearAllSet());
                     const res = await weeklyProgressData();
+                    const userRet = await getUser();
+                    dispatch(saveUserInfo(userRet as UserFormat));
                     setCheckInData(res);
                     weeklyFnc(res);
                     getAndAlignData();
